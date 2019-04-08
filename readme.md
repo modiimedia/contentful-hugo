@@ -44,7 +44,7 @@ In order to pull the data you want you will need to create a **contentful-settin
 Example **contentful-settings.yaml** file (see below for complete configuration options)
 
 ```yaml
-singleInstances: 
+singleTypes: # fetches only the most recently updated entry in a particular content type
   - id: homepage
     directory: /content/
     fileName: _index
@@ -55,7 +55,7 @@ singleInstances:
     fileName: settings
     fileExtension: yaml
 
-contentTypes:
+repeatableTypes: # feteches all the entrys of a content type an places them in a directory
   - id: posts
     directory: /content/posts/
     fileExtension: md
@@ -74,11 +74,13 @@ contentTypes:
     directory: /content/staff/
 ```
 
+**Configuration Options**
+
 | field | required | description |
 | ------ | -------- | ------------ | 
 | id | required | contentful content type ID goes here |
 | directory | required | directory where you want the file(s) to be generated (leading and trailing slashes required for the time being) |
-| fileName | required (single instances only) | name of the file generated | 
-| fileExtension | optional | can be "md", "yml", or "yaml" (defaults to "md") |
+| fileName | required (single types only) | name of the file generated | 
+| fileExtension | optional (repeatable types only) | can be "md", "yml", or "yaml" (defaults to "md") |
 | isHeadless | optional (repeated instances only) | turns content type into a headless bundle (see hugo docs) |
 | mainContent | optional | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)
