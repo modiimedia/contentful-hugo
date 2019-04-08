@@ -2,6 +2,15 @@
 
 This is a simple Node.js CLI tool that pulls data from Contentful and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
+**Table of Contents**
+
+- [Prerequisites](#Prerequisites)
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Configuration](#Configuration)
+- [Field Compatibility](#Field-Compatibility)
+
+
 # Prerequisites
 
 Install [Node.js](https://nodejs.org)
@@ -55,7 +64,7 @@ singleTypes: # fetches only the most recently updated entry in a particular cont
     fileName: settings
     fileExtension: yaml
 
-repeatableTypes: # feteches all the entrys of a content type an places them in a directory
+repeatableTypes: # feteches all the entrys of a content type and places them in a directory
   - id: posts
     directory: /content/posts/
     fileExtension: md
@@ -82,5 +91,12 @@ repeatableTypes: # feteches all the entrys of a content type an places them in a
 | directory | required | directory where you want the file(s) to be generated (leading and trailing slashes required for the time being) |
 | fileName | required (single types only) | name of the file generated | 
 | fileExtension | optional (repeatable types only) | can be "md", "yml", or "yaml" (defaults to "md") |
-| isHeadless | optional (repeated instances only) | turns content type into a headless bundle (see hugo docs) |
+| isHeadless | optional (repeated instances only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
 | mainContent | optional | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)
+
+# Compatibility Issues
+
+These are know compatibility issues.
+
+- Hugo cannot parse date field if field is set to "date and time without timezone"
+- Rich Text Fields give errors when using "inline-entry" "link-to-asset" "link-to-entry". Please disable these for the time being.

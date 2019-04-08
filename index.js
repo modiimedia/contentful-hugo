@@ -160,29 +160,33 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
                         } 
                         // arrays
                         else {
-                            frontMatter[field] = []
-                            for(let i = 0; i < fieldContent.length; i++) {
-                                let arrayNode = fieldContent[i];
-                                switch(typeof(arrayNode)){
-                                    case 'object':
-                                        let arrayObject = {}
-                                        switch(arrayNode.sys.type){
-                                            case 'Asset':
-                                                getAssetFields(arrayNode, arrayObject)
-                                                frontMatter[field].push(arrayObject)
-                                                break;
-                                            case 'Entry':
-                                                getEntryFields(arrayNode, arrayObject)
-                                                frontMatter[field].push(arrayObject);
-                                                break;
-                                            default:
-                                                frontMatter[field].push(arrayNode);
-                                                break;
-                                        }
-                                        break;
-                                    default:
-                                        frontMatter[field].push(arrayNode);
-                                        break;
+                            if (!fieldContent.length) {
+                                frontMatter[field] = fieldContent
+                            } else {
+                                frontMatter[field] = []
+                                for(let i = 0; i < fieldContent.length; i++) {
+                                    let arrayNode = fieldContent[i];
+                                    switch(typeof(arrayNode)){
+                                        case 'object':
+                                            let arrayObject = {}
+                                            switch(arrayNode.sys.type){
+                                                case 'Asset':
+                                                    getAssetFields(arrayNode, arrayObject)
+                                                    frontMatter[field].push(arrayObject)
+                                                    break;
+                                                case 'Entry':
+                                                    getEntryFields(arrayNode, arrayObject)
+                                                    frontMatter[field].push(arrayObject);
+                                                    break;
+                                                default:
+                                                    frontMatter[field].push(arrayNode);
+                                                    break;
+                                            }
+                                            break;
+                                        default:
+                                            frontMatter[field].push(arrayNode);
+                                            break;
+                                    }
                                 }
                             }
                         }
