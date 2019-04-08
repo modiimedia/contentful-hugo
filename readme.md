@@ -32,36 +32,36 @@ You can also declare the environment variables in the command line
 In order to pull the data you want you will need to create a contentful-settings.yaml file in the root of your repository.
 
 ```
-singleInstances:
-  - id: homepage
-    directory: /content/
-    fileName: _index
-    fileExtension: md
+---
+singleInstances: # will only pull the most recent entry of a content type. Useful for content types like homepages and settings
+  - id: homepage # your content type ID
+    directory: /content/ # directory you wan the file to appear
+    fileName: _index # filename (available only in single instances)
+    fileExtension: md # defaults to "md". "md", "yml", and "yaml" are all available
 
   - id: siteSettings
     directory: /data/
     fileName: settings
     fileExtension: yaml
 
-contentTypes:
-  - id: posts
-    directory: /content/posts/
-    fileExtension: 
-    mainContent: 
+contentTypes: # will pull all the entries of a content type
+  - id: posts # content type ID
+    directory: /content/posts/ # destination directory
+    fileExtension: # optional defaults to "md"
+    mainContent: # optional sets as the Main content in a markdown file (does not work on rich-text fields)
   
   - id: seoFields
-    title: metaTitle
     isHeadless: true
     directory: /content/seo-fields/
     fileExtension: 
     mainContent: 
 
   - id: reviews
-    title: companyName
     isHeadless: true
     directory: /content/reviews/
 
   - id: staff
     isHeadless: true
     directory: /content/staff/
+---
 ```
