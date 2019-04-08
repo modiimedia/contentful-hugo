@@ -125,9 +125,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
             }
             frontMatter.updated = item.sys.updatedAt; 
             frontMatter.createdAt = item.sys.createdAt;
-            if (!contentSettings.dateField){
-                frontMatter.date = item.sys.createdAt;
-            }
+            frontMatter.date = item.sys.createdAt;
             for(let field of Object.keys(item.fields)) {
                 if (field === contentSettings.mainContent){
                     continue;
