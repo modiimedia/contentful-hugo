@@ -80,5 +80,5 @@ contentTypes:
 | directory | required | directory where you want the file(s) to be generated (leading and trailing slashes required for the time being) |
 | fileName | required (single instances only) | name of the file generated | 
 | fileExtension | optional | can be "md", "yml", or "yaml" (defaults to "md") |
-| isHeadless | optional | turns content type into a headless bundle (see hugo docs) |
+| isHeadless | optional (repeated instances only) | turns content type into a headless bundle (see hugo docs) |
 | mainContent | optional | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)

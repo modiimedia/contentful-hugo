@@ -19,8 +19,8 @@ function initialize(){
         console.log(`\n///////////////////////////////////\n///////////////////////////////////\n    Pulling Data from Contentful\n///////////////////////////////////\n///////////////////////////////////\n`)
         try {
             let config = yaml.safeLoad(fs.readFileSync('contentful-settings.yaml'));
-            // loop through contentTypes
-            let types = config.contentTypes
+            // loop through repeatable content types
+            let types = config.repeatableTypes
             for(let i = 0; i < types.length; i++){
                 // object to pass settings into the function
                 let contentSettings = {
@@ -46,8 +46,8 @@ function initialize(){
                         break;
                 }
             }
-            // loop through single instances
-            let singles = config.singleInstances
+            // loop through single content types
+            let singles = config.singleTypes
             for (let i = 0; i < singles.length; i++){
                 let single = singles[i]
                 let contentSettings = {
