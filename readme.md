@@ -68,7 +68,7 @@ singleTypes:
     fileExtension: yaml
 
 repeatableTypes: 
-# feteches all the entries of a content type and places them in a directory. 
+# fetches all the entries of a content type and places them in a directory. 
 # Generated files will be named after their Entry ID in Contentful.
   - id: posts
     directory: /content/posts/
