@@ -7,6 +7,9 @@ This is a simple Node.js CLI tool that pulls data from Contentful and turns it i
 Install [Node.js](https://nodejs.org)
 
 # Installation
+```
+npm install contentful-hugo
+```
 
 # Usage
 
@@ -38,27 +41,25 @@ You can also declare the environment variables in the command line
 
 In order to pull the data you want you will need to create a **contentful-settings.yaml** file in the root of your repository.
 
+Example **contentful-settings.yaml** file (see below for complete configuration options)
+
 ```yaml
-# Single instance types. 
-# For these content types contentful-hugo will only pull the most recent entry of a content type. Useful for things like homepages and settings
 singleInstances: 
-  - id: homepage # content type id (required)
-    directory: /content/ # destination directory (required)
-    fileName: _index # filename (required)
-    fileExtension: md # can be "md", "yaml", or "yml". It defaults to "md" 
+  - id: homepage
+    directory: /content/
+    fileName: _index
+    fileExtension: md 
 
   - id: siteSettings
-    directory: /data/ # example of a single instance being used for a data file instead of a content file
+    directory: /data/
     fileName: settings
     fileExtension: yaml
 
-# repeated content types
 contentTypes:
-  - id: posts # content type ID (required)
-    directory: /content/posts/ # destination directory (required)
-    fileExtension: # This can be "md", "yaml", or "yml". It defaults to "md" if not set.
-    mainContent: content # field you want to map as main content (optional. Does not work with rich-text fields. See below)
-    isHeadless: false # makes content type a headless bundle (see hugo docs)
+  - id: posts
+    directory: /content/posts/
+    fileExtension: md
+    mainContent: content
   
   - id: seoFields
     isHeadless: true 
@@ -72,3 +73,12 @@ contentTypes:
     isHeadless: true
     directory: /content/staff/
 ```
+
+| field | required | description |
+| ------ | -------- | ------------ | 
+| id | required | contentful content type ID goes here |
+| directory | required | directory where you want the file(s) to be generated (leading and trailing slashes required for the time being) |
+| fileName | required (single instances only) | name of the file generated | 
+| fileExtension | optional | can be "md", "yml", or "yaml" (defaults to "md") |
+| isHeadless | optional | turns content type into a headless bundle (see hugo docs) |
+| mainContent | optional | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)
