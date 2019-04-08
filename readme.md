@@ -8,7 +8,8 @@ This is a simple Node.js CLI tool that pulls data from Contentful and turns it i
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Configuration](#Configuration)
-- [Field Compatibility](#Field-Compatibility)
+- [Expected Output](#Expected-Output)
+- [Compatibility Issues](#Compatibility-Issues)
 
 
 # Prerequisites
@@ -53,7 +54,9 @@ In order to pull the data you want you will need to create a **contentful-settin
 Example **contentful-settings.yaml** file (see below for complete configuration options)
 
 ```yaml
-singleTypes: # fetches only the most recently updated entry in a particular content type
+singleTypes: 
+# fetches only the most recently updated entry in a particular content type
+# Generated file will be named after the fileName setting
   - id: homepage
     directory: /content/
     fileName: _index
@@ -64,7 +67,9 @@ singleTypes: # fetches only the most recently updated entry in a particular cont
     fileName: settings
     fileExtension: yaml
 
-repeatableTypes: # feteches all the entrys of a content type and places them in a directory
+repeatableTypes: 
+# feteches all the entries of a content type and places them in a directory. 
+# Generated files will be named after their Entry ID in Contentful.
   - id: posts
     directory: /content/posts/
     fileExtension: md
@@ -93,6 +98,87 @@ repeatableTypes: # feteches all the entrys of a content type and places them in 
 | fileExtension | optional (repeatable types only) | can be "md", "yml", or "yaml" (defaults to "md") |
 | isHeadless | optional (repeated instances only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
 | mainContent | optional | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)
+
+# Expected Output
+
+Files will be generated in the directory specified in the **contentful-settings.yaml** file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
+
+## Default Date and Time Fields
+
+The following fields will always appear in your frontmatter:
+
+```yaml
+updated: # the last time this entry was update in Contentful
+createdAt: # when the entry was created in Contentful
+date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
+```
+
+## Asset Information
+
+Asset like images and videos come with some extra information that makes it easy to implement things like alt text or layouts that rely on knowing the image dimensions. The fields are as follows:
+```yaml
+assetFieldName:
+  assetType: # indicates the asset type such as "image" "video" "audio" ect.
+  url: # url of the asset
+  title: # title of the asset written in Contentful
+  description: # description of the asset written in Contentful
+  width: # width of the asset (images only)
+  height: # height of the asset (images only )
+```
+
+If you're using Hugo you can access the information like below:
+
+```html
+<img src="{{ .Params.assetFieldName.url }}" width="{{ .Params.assetFieldName.width }}">
+```
+
+This same information will also appear in asset arrays like a gallery:
+```yaml
+myGallery:
+  - 
+    assetType: "image/jpg"
+    url: "//link-to-image.jpg"
+    title: "Image 1"
+    description: "Image 1 Description"
+    width: 500
+    height: 500
+  - 
+    assetType: "image/jpg"
+    url: "//link-to-image-2.jpg"
+    title: "Image 2"
+    description: "Image 2 Description"
+    width: 1920
+    height: 1080
+```
+
+## Entries
+
+Linked entries will include fields for it's id and it's content type id.
+
+```yaml
+linkedEntry:
+  id: <contentful-entry-id>
+  typeId: <content-type-ID>
+
+
+#example with array of linked entries
+
+relatedArticles:
+  -
+    id: "41UFfIhszbS1kh95bomMj7"
+    typeId: "articles"
+  -
+    id: "85UFfIhsacS1kh71bpqMj7"
+    typeId: "articles"
+```
+
+All files are named after their entry id in Contentful making it easy to retrieve it using .Site.GetPage in Hugo
+
+```html
+{{ with .Site.GetPage "<path-to-file>.md" }}
+  {{ .Title }}
+{{ end }}
+```
 
 # Compatibility Issues
 
