@@ -56,7 +56,7 @@ singleInstances:
 contentTypes:
   - id: posts # content type ID (required)
     directory: /content/posts/ # destination directory (required)
-    fileExtension: # defaults to "md", "yaml" and "yml" are also available extensions
+    fileExtension: # This can be "md", "yaml", or "yml". It defaults to "md" if not set.
     mainContent: content # field you want to map as main content (optional. Does not work with rich-text fields. See below)
     isHeadless: false # makes content type a headless bundle (see hugo docs)
   
