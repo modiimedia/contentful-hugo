@@ -343,7 +343,7 @@ function richTextNodes(node, frontMatter){
 }
 
 function checkIfFinished(num){
-    if(num + 1 === totalContentTypes){
+    if(num === totalContentTypes){
         console.log(`\n-------------------------------------\n\n`)
     }
 }
