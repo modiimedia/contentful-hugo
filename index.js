@@ -239,11 +239,14 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
             } else { 
                 grammarStuff = "items";
             }
-            console.log(`    ${contentSettings.typeId} - ${itemCount} ${grammarStuff}`)
+            console.log(`   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}\n`)
         }
 
     })
-    .catch(console.error)
+    .catch((error) => {
+        let response = error.response
+        console.log(`   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n`)
+    })
 }
 
 // function to pull a referenced asset
