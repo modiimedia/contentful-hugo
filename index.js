@@ -18,7 +18,7 @@ function initialize(){
     let configFile = 'contentful-settings.yaml'
     // check if configFile exist and throw error if it doesn't
     if(fs.existsSync(configFile)){
-        console.log(`\n\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`)
+        console.log(`\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`)
         try {
             let config = yaml.safeLoad(fs.readFileSync('contentful-settings.yaml'));
             // loop through repeatable content types
@@ -344,6 +344,6 @@ function richTextNodes(node, frontMatter){
 
 function checkIfFinished(num){
     if(num === totalContentTypes){
-        console.log(`\n-------------------------------------\n\n`)
+        console.log(`\n-------------------------------------\n`)
     }
 }
