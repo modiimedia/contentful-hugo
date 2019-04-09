@@ -1,9 +1,11 @@
 const contentful = require('contentful');
 const yaml = require('js-yaml');
-const YAML = require('json2yaml')
+const YAML = require('json-to-pretty-yaml')
 const fs = require('fs');
 const mkdirp = require('mkdirp')
 require('dotenv').config();
+let totalContentTypes = 0;
+let typesExtracted = 0
 
 if (process.env.CONTENTFUL_SPACE && process.env.CONTENTFUL_TOKEN) {
     initialize();  
@@ -16,61 +18,67 @@ function initialize(){
     let configFile = 'contentful-settings.yaml'
     // check if configFile exist and throw error if it doesn't
     if(fs.existsSync(configFile)){
-        console.log(`\n///////////////////////////////////\n///////////////////////////////////\n    Pulling Data from Contentful\n///////////////////////////////////\n///////////////////////////////////\n`)
+        console.log(`\n\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`)
         try {
             let config = yaml.safeLoad(fs.readFileSync('contentful-settings.yaml'));
             // loop through repeatable content types
             let types = config.repeatableTypes
-            for(let i = 0; i < types.length; i++){
-                // object to pass settings into the function
-                let contentSettings = {
-                    typeId: types[i].id,
-                    directory: types[i].directory,
-                    isHeadless: types[i].isHeadless,
-                    fileExtension: types[i].fileExtension,
-                    titleField: types[i].title,
-                    dateField: types[i].dateField,
-                    mainContent: types[i].mainContent
-                }
-                // check file extension settings
-                switch(contentSettings.fileExtension){
-                    case 'md':
-                    case 'yaml':
-                    case 'yml':
-                    case undefined:
-                    case null:
-                        getContentType(1000, 0, contentSettings);
-                        break;
-                    default:
-                        console.log(`ERROR: file extension "${contentSettings.fileExtension}" not supported`);
-                        break;
+            if(types){
+                totalContentTypes += types.length
+                for(let i = 0; i < types.length; i++){
+                    // object to pass settings into the function
+                    let contentSettings = {
+                        typeId: types[i].id,
+                        directory: types[i].directory,
+                        isHeadless: types[i].isHeadless,
+                        fileExtension: types[i].fileExtension,
+                        titleField: types[i].title,
+                        dateField: types[i].dateField,
+                        mainContent: types[i].mainContent
+                    }
+                    // check file extension settings
+                    switch(contentSettings.fileExtension){
+                        case 'md':
+                        case 'yaml':
+                        case 'yml':
+                        case undefined:
+                        case null:
+                            getContentType(1000, 0, contentSettings);
+                            break;
+                        default:
+                            console.log(`ERROR: file extension "${contentSettings.fileExtension}" not supported`);
+                            break;
+                    }
                 }
             }
             // loop through single content types
             let singles = config.singleTypes
-            for (let i = 0; i < singles.length; i++){
-                let single = singles[i]
-                let contentSettings = {
-                    typeId: single.id,
-                    directory: single.directory,
-                    fileExtension: single.fileExtension,
-                    fileName: single.fileName,
-                    titleField: single.title,
-                    dateField: single.dateField,
-                    mainContent: single.mainContent,
-                    isSingle: true
-                }
-                switch(contentSettings.fileExtension){
-                    case 'md':
-                    case 'yaml':
-                    case 'yml':
-                    case null:
-                    case undefined:
-                        getContentType(1, 0, contentSettings);
-                        break;
-                    default:
-                        console.log(`ERROR: file extension "${contentSettings.fileExtension}" not supported`);
-                        break;
+            if (singles){
+                totalContentTypes += singles.length
+                for (let i = 0; i < singles.length; i++){
+                    let single = singles[i]
+                    let contentSettings = {
+                        typeId: single.id,
+                        directory: single.directory,
+                        fileExtension: single.fileExtension,
+                        fileName: single.fileName,
+                        titleField: single.title,
+                        dateField: single.dateField,
+                        mainContent: single.mainContent,
+                        isSingle: true
+                    }
+                    switch(contentSettings.fileExtension){
+                        case 'md':
+                        case 'yaml':
+                        case 'yml':
+                        case null:
+                        case undefined:
+                            getContentType(1, 0, contentSettings);
+                            break;
+                        default:
+                            console.log(`ERROR: file extension "${contentSettings.fileExtension}" not supported`);
+                            break;
+                    }
                 }
             }
         } catch (e) {
@@ -196,8 +204,10 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
             }
             
             // add current item to filecontent
-            fileContent = YAML.stringify(frontMatter)
-            fileContent += `---\n`
+            fileContent += YAML.stringify(frontMatter)
+            if(contentSettings.fileExtension != 'yaml' || contentSettings.fileExtension != 'yml'){
+                fileContent += `---\n`
+            }
 
             // if set add the main content below the front matter
             if (item.fields[contentSettings.mainContent]) {
@@ -239,13 +249,15 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
             } else { 
                 grammarStuff = "items";
             }
-            console.log(`   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}\n`)
+            console.log(`   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}`)
+            typesExtracted++
+            checkIfFinished(typesExtracted);
         }
 
     })
     .catch((error) => {
         let response = error.response
-        console.log(`   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n`)
+        console.log(`   --------------------------\n   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`)
     })
 }
 
@@ -328,4 +340,10 @@ function richTextNodes(node, frontMatter){
         }
     }
     frontMatter.push(object)
+}
+
+function checkIfFinished(num){
+    if(num + 1 === totalContentTypes){
+        console.log(`\n-------------------------------------\n\n`)
+    }
 }
