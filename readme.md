@@ -40,12 +40,26 @@ Failure to complete configuration will return an error in the console
 
 Before using you must first set the following environment variables. CONTENTFUL_SPACE, and CONTENTFUL_TOKEN.
 
-This can be done with a .env file in the root directory of your project.
+This can be done with a **.env** file in the root directory of your project.
 ```
 CONTENTFUL_SPACE = '<your-space-id>`
 CONTENTFUL_TOKEN = '<content-api-access-token>`
 ```
 You can also declare the environment variables in the command line
+
+**Powershell:**
+```
+$env:CONTENTFUL_SPACE="<contentful_space_id>"
+$env:CONTENTFUL_TOKEN="<contentful_acessToken>"
+```
+
+**Bash:**
+
+```
+export spaceId=<contentful_space_id>
+export accessToken=<contentful_acessToken>
+docker-compose up
+```
 
 ## Config File
 
