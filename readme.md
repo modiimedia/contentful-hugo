@@ -17,8 +17,13 @@ This is a simple Node.js CLI tool that pulls data from Contentful and turns it i
 Install [Node.js](https://nodejs.org)
 
 # Installation
+with NPM
 ```
 npm install contentful-hugo
+```
+with Yarn
+```
+yarn add contentful-hugo
 ```
 
 # Usage
