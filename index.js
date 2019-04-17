@@ -85,7 +85,7 @@ function initialize(){
             console.log(e)
         }
     } else {
-    console.log(`\nConfiguration file not found. Create a file called "contentful-settings.yaml" to get started.\n`)
+    console.log(`\nConfiguration file not found. Create a file called "contentful-settings.yaml" to get started.\nVisit https://github.com/ModiiMedia/contentful-hugo for configuration instructions\n`)
     }
 }
 
