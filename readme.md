@@ -61,8 +61,8 @@ $env:CONTENTFUL_TOKEN="<contentful_acessToken>"
 **Bash:**
 
 ```
-export spaceId=<contentful_space_id>
-export accessToken=<contentful_acessToken>
+export CONTENTFUL_SPACE=<contentful_space_id>
+export CONTENTFUL_TOKEN=<contentful_acessToken>
 ```
 
 ## Config File
