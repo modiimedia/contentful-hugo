@@ -63,7 +63,6 @@ $env:CONTENTFUL_TOKEN="<contentful_acessToken>"
 ```
 export spaceId=<contentful_space_id>
 export accessToken=<contentful_acessToken>
-docker-compose up
 ```
 
 ## Config File
