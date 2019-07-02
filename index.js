@@ -2,7 +2,9 @@ const contentful = require('contentful');
 const yaml = require('js-yaml');
 const YAML = require('json-to-pretty-yaml')
 const fs = require('fs');
-const mkdirp = require('mkdirp')
+const mkdirp = require('mkdirp');
+const richTextToPlain = require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
+
 require('dotenv').config();
 let totalContentTypes = 0;
 let typesExtracted = 0
@@ -158,6 +160,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
                         // rich text (see rich text function)
                         else if ('nodeType' in fieldContent) {
                             frontMatter[field] = []
+                            frontMatter[`${field}_plaintext`] = richTextToPlain(fieldContent)
                             let nodes = fieldContent.content
                             for(let i = 0; i < nodes.length; i++){
                                 richTextNodes(nodes[i], frontMatter[field]);

@@ -198,6 +198,55 @@ All files are named after their entry id in Contentful making it easy to retriev
 {{ end }}
 ```
 
+## Rich Text Fields
+
+---
+
+*Contenful Hugo does not work with **"inline-entry"** **"link-to-asset"** and **"link-to-entry"** node types at this time. If you wish to use this tool you will have to disable those in Contentful for the time being*.
+
+---
+
+
+A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depended on the nodeType field.
+
+```yaml
+richTextField:
+  - nodeType: "paragraph"
+    data: {}
+    content:
+      - data: {}
+        marks: []
+        value: "This is a simple paragraph."
+        nodeType: "text"
+ - nodeType: "paragraph"
+    data: {}
+    content:
+      - data: {}
+        marks: []
+        value: "This is a paragraph with "
+        nodeType: "text"
+      - data: {}
+        marks:
+          - type: "italic"
+        value: "italicized text."
+        nodeType: "text"
+ - nodeType: "embedded-asset-block"
+    data:
+      assetType: "image/jpeg"
+      url: "//images.ctfassets.net/some-image-url.jpg"
+      title: "Image title will appear here"
+      description: "Image description will appear here"
+      width: 1920
+      height: 1080
+    content: []
+```
+
+In addition a plaintext version of the field will be generated using the field ID appended with "_plaintext". This allows you to quickly fetch the text by itself without any of the other data. A simple use case would be using the plaintext output to automatically generate a meta description for a webpage.
+
+```yaml
+richTextField_plaintext: "This is a simple paragraph. This is a paragraph with italicized text."
+```
+
 # Compatibility Issues
 
 These are know compatibility issues.
