@@ -193,7 +193,7 @@ relatedArticles:
 All files are named after their entry id in Contentful making it easy to retrieve it using .Site.GetPage in Hugo
 
 ```html
-{{ with .Site.GetPage "<path-to-file>.md" }}
+{{ with .Site.GetPage "<path-to-file>/<entry-id>.md" }}
   {{ .Title }}
 {{ end }}
 ```
