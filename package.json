@@ -30,8 +30,8 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@contentful/rich-text-plain-text-renderer": "^13.1.0",
-    "contentful": "^7.5.0",
+    "@contentful/rich-text-plain-text-renderer": "^13.4.0",
+    "contentful": "^7.9.1",
     "dotenv": "^7.0.0",
     "js-yaml": "^3.13.1",
     "json-to-pretty-yaml": "^1.2.2",
