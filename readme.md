@@ -209,7 +209,7 @@ All files are named after their entry id in Contentful making it easy to retriev
 ---
 
 
-A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depended on the nodeType field.
+A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depending on the nodeType field.
 
 ```yaml
 richTextField:

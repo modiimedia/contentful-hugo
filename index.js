@@ -147,10 +147,10 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
                             frontMatter[field] = {}
                             switch (fieldContent.sys.type){
                                 case 'Asset':
-                                    getAssetFields(fieldContent, frontMatter[field]);
+                                    frontMatter[field] = getAssetFields(fieldContent);
                                     break;
                                 case 'Entry':
-                                    getEntryFields(fieldContent, frontMatter[field]);
+                                    frontMatter[field] = getEntryFields(fieldContent);
                                     break;
                                 default:
                                     frontMatter[field] = fieldContent;
@@ -163,7 +163,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
                             frontMatter[`${field}_plaintext`] = richTextToPlain(fieldContent)
                             let nodes = fieldContent.content
                             for(let i = 0; i < nodes.length; i++){
-                                richTextNodes(nodes[i], frontMatter[field]);
+                                frontMatter[field].push(richTextNodes(nodes[i]));
                             }
 
                         } 
@@ -180,11 +180,11 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
                                             let arrayObject = {}
                                             switch(arrayNode.sys.type){
                                                 case 'Asset':
-                                                    getAssetFields(arrayNode, arrayObject)
+                                                    arrayObject = getAssetFields(arrayNode)
                                                     frontMatter[field].push(arrayObject)
                                                     break;
                                                 case 'Entry':
-                                                    getEntryFields(arrayNode, arrayObject)
+                                                    arrayObject = getEntryFields(arrayNode)
                                                     frontMatter[field].push(arrayObject);
                                                     break;
                                                 default:
@@ -260,13 +260,21 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
     })
     .catch((error) => {
         let response = error.response
-        console.log(`   --------------------------\n   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`)
+        if(response){
+            console.log(`   --------------------------\n   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`)
+        } else {
+            console.log(error)
+        }
     })
 }
 
 // function to pull a referenced asset
-function getAssetFields(contentfulObject, frontMatter){
-    let assetType = contentfulObject.fields.file.contentType
+function getAssetFields(contentfulObject){
+    let frontMatter = {}
+    let assetType = '';
+    if (contentfulObject.fields.file){
+        assetType = contentfulObject.fields.file.contentType
+    }
     frontMatter.assetType = assetType
     frontMatter.url = contentfulObject.fields.file.url
     frontMatter.title = contentfulObject.fields.title
@@ -279,70 +287,65 @@ function getAssetFields(contentfulObject, frontMatter){
         frontMatter.width = details.image.width;
         frontMatter.height = details.image.height;
     }
+    return frontMatter
 }
 
 // function to pull a referenced entry
-function getEntryFields(entry, frontMatter){
-    frontMatter.id = entry.sys.id;
-    frontMatter.contentType = entry.sys.contentType.sys.id;
+function getEntryFields(entry){
+    let obj = {}
+    if (entry.sys) {
+        obj = {
+            id: entry.sys.id,
+            contentType: entry.sys.contentType.sys.id
+        }
+    }
+    return obj
 }
 
-// function for rich text
-// support for asset-hyperlink and entry-hyperlink needs to be added.
-function richTextNodes(node, frontMatter){
-    let object = {}
-    object.nodeType = node.nodeType
+// loop through this function on a rich text field
+function richTextNodes(node){
+    let fieldContent = {}
     for(let field of Object.keys(node)){
         switch(field){
             case 'data':
-                object[field] = {}
-                if (typeof(node[field]) === 'object'){
-                    if(node[field].target){
-                        let t = node[field].target
-                        if (t.sys){
-                            switch(t.sys.type){
-                                case 'Asset':
-                                    getAssetFields(t, object[field]);
-                                    break;
-                                case 'Entry':
-                                    getEntryFields(t, object[field]);
-                                    break;
-                            }
-                        }
+                let t = node[field].target
+                if(t) {
+                    if(t.sys){
+                        switch(t.sys.type){
+                            case "Entry":
+                                fieldContent[field] = getEntryFields(t);
+                                break;
+                            case "Asset":
+                                fieldContent[field] = getAssetFields(t);
+                                break;
+                        }                        
                     } else {
-                        object[field] = node[field]
+                        console.log(node[field])
                     }
-                };
-                break;
-            case 'content':
-                object[field] = []
-                let content = node[field]
-                for(let contentNode of Object.keys(content)){
-                    let nodeType = content[contentNode].nodeType
-                    switch(nodeType){
-                        case "embedded-entry-inline":
-                            let entry = {}
-                            entry.nodeType = nodeType
-                            getEntryFields(content[contentNode].data.target, entry);
-                            object[field].push(entry)
-                            break;
-                        default:
-                            // support for asset-hyperlinks and entry-hyperlinks needs to be asset here
-                            // probably need to create a "richTextContent" function.
-                            // The issue is mainly when an entry references itself or another entry that references it. It will just keep looping and looping.
-                            // Function needs to check for entry or asset and only get the id and content type (url for assets) then otherwise just added nested content to object.
-                            // If the key "content" exists then it needs to run the function again with the nested content object and keep doing it until it gets everything
-                            object[field].push(content[contentNode])
-                            break;  
-                    }
+                } else {
+                    fieldContent[field] = node[field]
                 }
                 break;
+            case 'content':
+                let contentArr = []
+                for(let item of node[field]){
+                    contentArr.push(richTextNodes(item))
+                }
+                fieldContent[field] = contentArr
+                break;
+            case 'marks':
+                let markArr = []
+                for(let item of node[field]){
+                    markArr.push(item.type)
+                }
+                fieldContent[field] = markArr
+                break;
             default:
-                object[field] = node[field];
+                fieldContent[field] = node[field]
                 break;
         }
     }
-    frontMatter.push(object)
+    return fieldContent
 }
 
 function checkIfFinished(num){
