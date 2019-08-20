@@ -202,13 +202,6 @@ All files are named after their entry id in Contentful making it easy to retriev
 
 ## Rich Text Fields
 
----
-
-*Contenful Hugo does not work with **"inline-entry"** **"link-to-asset"** and **"link-to-entry"** node types at this time. If you wish to use this tool you will have to disable those in Contentful for the time being*.
-
----
-
-
 A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depending on the nodeType field.
 
 ```yaml
@@ -254,4 +247,3 @@ richTextField_plaintext: "This is a simple paragraph. This is a paragraph with i
 These are know compatibility issues.
 
 - Hugo cannot parse date field if field is set to "date and time without timezone"
-- Rich Text Fields give errors when using "inline-entry" "link-to-asset" "link-to-entry". Please disable these for the time being.
