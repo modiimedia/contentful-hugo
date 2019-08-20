@@ -1,0 +1,27 @@
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+html {
+    font-size: 18px;
+}
+
+.content-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.node-not-found {
+    padding: 2rem;
+    background: grey;
+    color: white;
+    margin: 2rem 0;
+}

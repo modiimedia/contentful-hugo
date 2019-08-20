@@ -1,0 +1,9 @@
+{{ define "main" }}
+<section>
+    <div class="content-container">
+        {{ range .Params.mainContent }}
+            {{ partial "rich-text.html" (dict "This" . "Site" $.Site) }}
+        {{ end }}
+    </div>
+</section>
+{{ end }}

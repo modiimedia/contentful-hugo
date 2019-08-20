@@ -1,5 +1,6 @@
 node_modules
-content
+/content
 data
 .env
 contentful-settings.yaml
+resources
