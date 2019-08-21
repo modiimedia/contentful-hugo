@@ -155,15 +155,13 @@ If you're using Hugo you can access the information like below:
 This same information will also appear in asset arrays like a gallery:
 ```yaml
 myGallery:
-  - 
-    assetType: "image/jpg"
+  - assetType: "image/jpg"
     url: "//link-to-image.jpg"
     title: "Image 1"
     description: "Image 1 Description"
     width: 500
     height: 500
-  - 
-    assetType: "image/jpg"
+  - assetType: "image/jpg"
     url: "//link-to-image-2.jpg"
     title: "Image 2"
     description: "Image 2 Description"
@@ -213,7 +211,7 @@ richTextField:
         marks: []
         value: "This is a simple paragraph."
         nodeType: "text"
- - nodeType: "paragraph"
+  - nodeType: "paragraph"
     data: {}
     content:
       - data: {}
@@ -225,7 +223,7 @@ richTextField:
           - type: "italic"
         value: "italicized text."
         nodeType: "text"
- - nodeType: "embedded-asset-block"
+  - nodeType: "embedded-asset-block"
     data:
       assetType: "image/jpeg"
       url: "//images.ctfassets.net/some-image-url.jpg"
