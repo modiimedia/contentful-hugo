@@ -1,10 +1,10 @@
-{{- $partial := print "rich-text/" .This.nodeType -}}
+{{- $partial := print "rich-text/text/" .This.nodeType -}}
 {{- $partialCheck := print "layouts/partials/" $partial ".html" -}}
 {{- if fileExists $partialCheck -}}
     <!-- .current will access the current scope in the partial .Site will access sitewide scope -->
     <!-- sitewide scope is needed to access entries with their ID -->
-    {{ $getPartial := print $partial ".html" }}
-    {{ partial $getPartial (dict "This" .This "Site" .Site ) }}
+    {{- $getPartial := print $partial ".html" -}}
+    {{- partial $getPartial (dict "This" .This "Site" .Site ) -}}
 {{- else -}}
     {{ partial "rich-text/node-not-found.html" .This.nodeType }}
 {{- end -}}

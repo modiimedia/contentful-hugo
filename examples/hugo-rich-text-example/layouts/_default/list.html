@@ -1,3 +1,23 @@
 {{ define "main" }}
-
+<section>
+    <div class="content-container">
+        {{ range .Pages }}
+            <article>
+                <a href="{{ .RelPermalink }}">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="media">
+                                <img class="mr-4" src="{{ .Params.featuredImage.url }}?w=100&h=100" alt="Generic placeholder image">
+                                <div class="media-body">
+                                    <h5 class="mt-0">{{ .Title }}</h5>
+                                    {{ .Params.mainContent_plaintext | truncate 200 }}
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                </a>    
+            </article>
+        {{ end }}    
+    </div>
+</section>
 {{ end }}

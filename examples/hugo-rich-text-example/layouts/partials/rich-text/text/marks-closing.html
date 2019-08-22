@@ -1,0 +1,11 @@
+{{- if eq . "bold" -}}
+    </strong>
+{{- else if eq . "italic" -}}
+    </em>
+{{- else if eq . "underline" -}}
+    </u>
+{{- else if eq . "code" -}}
+    </code>
+{{- else -}}
+    <span class="node-not-found">!!!mark "{{ . }}" not found!!! </span>
+{{- end -}}

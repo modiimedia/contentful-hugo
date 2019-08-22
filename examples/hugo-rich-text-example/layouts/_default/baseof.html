@@ -10,6 +10,7 @@
     <title>{{ .Title }}</title>
 </head>
 <body>
+    {{ partial "header.html" . }}
     {{ block "main" . }}
         <!-- main content goes here -->
     {{ end }}

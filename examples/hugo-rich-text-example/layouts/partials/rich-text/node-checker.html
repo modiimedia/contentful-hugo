@@ -1,0 +1,10 @@
+{{- $Site := .Site -}}
+{{- range .This.content -}}
+    {{- $partial := print "rich-text/text/" .nodeType ".html" -}}
+    {{- $partialCheck := print "layouts/partials/" $partial -}}
+    {{- if fileExists $partialCheck -}}
+        {{ partial $partial (dict "This" . "Site" $Site) | safeHTML }}
+    {{- else -}}
+        {{- partial "rich-text/node-not-found" .nodeType -}}
+    {{- end -}}
+{{- end -}}
