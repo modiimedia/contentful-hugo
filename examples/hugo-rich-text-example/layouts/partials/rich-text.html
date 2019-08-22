@@ -1,10 +1,24 @@
-{{- $partial := print "rich-text/text/" .This.nodeType -}}
-{{- $partialCheck := print "layouts/partials/" $partial ".html" -}}
-{{- if fileExists $partialCheck -}}
-    <!-- .current will access the current scope in the partial .Site will access sitewide scope -->
-    <!-- sitewide scope is needed to access entries with their ID -->
-    {{- $getPartial := print $partial ".html" -}}
-    {{- partial $getPartial (dict "This" .This "Site" .Site ) -}}
+<!-- embedded assets -->
+{{- if eq .This.nodeType "embedded-asset-block" -}}
+    {{- $assetType := replace .This.data.assetType "/" "-" -}}
+    {{- $partial := print "rich-text/embedded-asset-blocks/" $assetType ".html" -}}
+    {{- $partialCheck := print "layouts/partials/" $partial -}}
+    {{- if fileExists $partialCheck -}}
+        {{ partial $partial .This }}
+    {{- else -}}
+        {{ partial "rich-text/node-not-found.html" .This.data.assetType }}
+    {{- end -}}
+
+<!-- standard text -->
 {{- else -}}
-    {{ partial "rich-text/node-not-found.html" .This.nodeType }}
+    {{- $partial := print "rich-text/text/" .This.nodeType -}}
+    {{- $partialCheck := print "layouts/partials/" $partial ".html" -}}
+    {{- if fileExists $partialCheck -}}
+        <!-- .current will access the current scope in the partial .Site will access sitewide scope -->
+        <!-- sitewide scope is needed to access entries with their ID -->
+        {{- $getPartial := print $partial ".html" -}}
+        {{- partial $getPartial (dict "This" .This "Site" .Site ) -}}
+    {{- else -}}
+        {{ partial "rich-text/node-not-found.html" .This.nodeType }}
+    {{- end -}}
 {{- end -}}

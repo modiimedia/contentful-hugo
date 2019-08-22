@@ -25,3 +25,11 @@ html {
     color: white;
     margin: 2rem 0;
 }
+
+img {
+    max-width: 100%;
+}
+
+figure {
+    margin: 2rem 0;
+}
