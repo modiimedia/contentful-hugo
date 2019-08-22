@@ -1,6 +1,6 @@
 {{- $Site := .Site -}}
 {{- range .This.content -}}
-    {{- $partial := print "rich-text/text/" .nodeType ".html" -}}
+    {{- $partial := print "rich-text/standard-blocks/" .nodeType ".html" -}}
     {{- $partialCheck := print "layouts/partials/" $partial -}}
     {{- if fileExists $partialCheck -}}
         {{ partial $partial (dict "This" . "Site" $Site) | safeHTML }}

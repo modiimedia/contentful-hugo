@@ -1,6 +1,6 @@
 {{- if .This.marks -}}
     {{- range .This.marks -}}
-        {{- partial "rich-text/text/marks-opening.html" . | safeHTML -}}
+        {{- partial "rich-text/standard-blocks/marks-opening.html" . | safeHTML -}}
     {{- end -}}
 {{- end -}}
 
@@ -8,6 +8,6 @@
 
 {{- if .This.marks -}}
     {{- range .This.marks -}}
-        {{- partial "rich-text/text/marks-closing.html" . | safeHTML -}}
+        {{- partial "rich-text/standard-blocks/marks-closing.html" . | safeHTML -}}
     {{- end -}}
 {{- end -}}
