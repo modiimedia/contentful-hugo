@@ -1,20 +1,18 @@
 ---
-updated: "2019-08-23T11:39:23.283Z"
+updated: "2019-08-23T21:25:58.162Z"
 createdAt: "2019-08-20T15:19:50.678Z"
 date: "2019-08-20T15:19:50.678Z"
 title: "Example With Text Only"
 slug: "text-only"
 featuredImage:
   assetType: "image/jpeg"
-  url: "//images.ctfassets.net/6fc4s4k6v9co/4up9JEFDVOMp1zLOqbAbRN/0054a3bbfc0c5cf4ae172c6957b5b42c/photo-1533227268428-f9ed0900fb3b"
-  title: "Man in Red Shirt"
-  description: "Man in red shirt excited because he was able to use port his rich text fields over to Hugo."
-  width: 1779
-  height: 1539
+  url: "//images.ctfassets.net/6fc4s4k6v9co/5VdF15Q4Gzd3oU5WH2rl8n/447670d645f98d5cfcf42fa49e42c889/photo-1543769657-fcf1236421bc"
+  title: "Handwritten note on paper"
+  width: 1950
+  height: 2600
 tags:
-  - "hugo"
   - "rich text"
-  - "example site"
+  - "text"
 mainContent:
   - data: {}
     content:
