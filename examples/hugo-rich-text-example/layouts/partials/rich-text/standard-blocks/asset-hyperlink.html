@@ -6,4 +6,4 @@
     {{- else -}}
         {{- $url -}}
     {{- end -}}
-    " target="_blank">{{ partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site)}}</a>
+    " target="_blank">{{- partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site) -}}</a>
