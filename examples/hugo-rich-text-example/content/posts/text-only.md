@@ -1,8 +1,8 @@
 ---
-updated: "2019-08-22T10:02:10.367Z"
+updated: "2019-08-23T11:39:23.283Z"
 createdAt: "2019-08-20T15:19:50.678Z"
 date: "2019-08-20T15:19:50.678Z"
-title: "Example with Text"
+title: "Example With Text Only"
 slug: "text-only"
 featuredImage:
   assetType: "image/jpeg"
@@ -20,7 +20,37 @@ mainContent:
     content:
       - data: {}
         marks: []
-        value: "Id quaeris, inquam, in quo, utrum respondero, verses te huc atque illuc necesse est."
+        value: "Id quaeris, "
+        nodeType: "text"
+      - data:
+          uri: "https://www.google.com"
+        content:
+          - data: {}
+            marks: []
+            value: "inquam"
+            nodeType: "text"
+        nodeType: "hyperlink"
+      - data: {}
+        marks: []
+        value: ", in "
+        nodeType: "text"
+      - data: {}
+        marks:
+          - "italic"
+        value: "quo"
+        nodeType: "text"
+      - data: {}
+        marks: []
+        value: ", "
+        nodeType: "text"
+      - data: {}
+        marks:
+          - "bold"
+        value: "utrum"
+        nodeType: "text"
+      - data: {}
+        marks: []
+        value: " respondero, verses te huc atque illuc necesse est."
         nodeType: "text"
     nodeType: "heading-1"
   - data: {}

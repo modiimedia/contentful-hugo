@@ -1,3 +1,4 @@
+<!-- searches ../partials/rich-text/standard-blocks/ for matching templates -->
 {{- $Site := .Site -}}
 {{- range .This.content -}}
     {{- $partial := print "rich-text/standard-blocks/" .nodeType ".html" -}}
@@ -5,6 +6,6 @@
     {{- if fileExists $partialCheck -}}
         {{ partial $partial (dict "This" . "Site" $Site) | safeHTML }}
     {{- else -}}
-        {{- partial "rich-text/node-not-found" .nodeType -}}
+        {{- partial "rich-text/node-not-found" (dict "Template" .nodeType "Directory" "standard-blocks") -}}
     {{- end -}}
 {{- end -}}

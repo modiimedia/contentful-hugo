@@ -1,26 +1,10 @@
 {{- $Site := .Site -}}
-
 {{- range .This -}}
-<!-- embedded assets -->
-    {{- if eq .nodeType "embedded-asset-block" -}}
-        {{- $assetType := replace .data.assetType "/" "-" -}}
-        {{- $partial := print "rich-text/embedded-asset-blocks/" $assetType ".html" -}}
-        {{- $partialCheck := print "layouts/partials/" $partial -}}
-        {{- if fileExists $partialCheck -}}
-            {{- partial $partial . -}}
-        {{- else -}}
-            {{- partial "rich-text/node-not-found.html" .data.assetType -}}
-        {{- end -}}
-
-    <!-- standard text -->
+    {{- $partial := print "rich-text/standard-blocks/" .nodeType ".html" -}}
+    {{- $partialCheck := print "layouts/partials/" $partial -}}
+    {{- if fileExists $partialCheck -}}
+        {{- partial $partial (dict "This" . "Site" $Site ) -}}
     {{- else -}}
-        {{- $partial := print "rich-text/standard-blocks/" .nodeType ".html" -}}
-        {{- $partialCheck := print "layouts/partials/" $partial -}}
-        {{- if fileExists $partialCheck -}}
-            {{- partial $partial (dict "This" . "Site" $Site ) -}}
-        {{- else -}}
-            {{- partial "rich-text/node-not-found.html" .nodeType -}}
-        {{- end -}}
+        {{- partial "rich-text/node-not-found.html" (dict "Template" .nodeType "Directory" "standard-blocks") -}}
     {{- end -}}
-
 {{- end -}}

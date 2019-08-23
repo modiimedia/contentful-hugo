@@ -21,9 +21,17 @@ html {
 
 .node-not-found {
     padding: 2rem;
-    background: grey;
+    background: rgb(168, 0, 0);
     color: white;
     margin: 2rem 0;
+}
+
+.node-not-found .title {
+    /* text-decoration: underline; */
+}
+
+.node-not-found .subtitle {
+    font-size: 0.8rem;
 }
 
 img {
