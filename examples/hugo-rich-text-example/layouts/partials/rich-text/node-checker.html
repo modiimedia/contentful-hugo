@@ -1,11 +1,20 @@
-<!-- searches ../partials/rich-text/standard-blocks/ for matching templates -->
+<!--
+    searches ../partials/rich-text/standard-blocks/ for matching templates 
+    partial template names are based on "assetType" field
+    i.e. {"assetType": "paragraph"} will look for /partials/rich-text/standard-blocks/paragraph.html
+-->
 {{- $Site := .Site -}}
 {{- range .This.content -}}
+    <!-- set which partial we want to call depending on node type 
+    (ex. paragraph, header-1, hyperlink, embedded-entry-block, etc...) -->
     {{- $partial := print "rich-text/standard-blocks/" .nodeType ".html" -}}
+    <!-- check if the partial exists -->
     {{- $partialCheck := print "layouts/partials/" $partial -}}
     {{- if fileExists $partialCheck -}}
+        <!-- call partial if it exists -->
         {{ partial $partial (dict "This" . "Site" $Site) | safeHTML }}
     {{- else -}}
+        <!-- call the node-not-found partial if it doesn't exist -->
         {{- partial "rich-text/node-not-found" (dict "Template" .nodeType "Directory" "standard-blocks") -}}
     {{- end -}}
 {{- end -}}
