@@ -1,0 +1,14 @@
+<!-- 
+    searches ../partials/rich-text/embedded-asset-blocks/ for matching asset templates
+    partial template names are based on "assetType" field
+    i.e. {"assetType": "video"} will look for /partials/rich-text/embedded-asset-blocks/video.html
+-->
+
+{{- $assetType := replace .This.data.assetType "/" "-" -}}
+{{- $partial := print "rich-text/embedded-asset-blocks/" $assetType ".html" -}}
+{{- $partialCheck := print "layouts/partials/" $partial -}}
+{{- if fileExists $partialCheck -}}
+    {{- partial $partial .This -}}
+{{- else -}}
+    {{- partial "rich-text/node-not-found.html" .This.data.assetType -}}
+{{- end -}}

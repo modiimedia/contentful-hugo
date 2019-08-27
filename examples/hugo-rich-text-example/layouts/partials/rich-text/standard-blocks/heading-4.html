@@ -1,0 +1,2 @@
+{{$d := partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site)}}
+<h4 id="{{ $d | plainify | urlize }}">{{ $d }}</h4>
