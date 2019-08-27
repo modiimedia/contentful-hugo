@@ -1,0 +1,10 @@
+{{- $Site := .Site -}}
+<ol>
+    {{- range .This.content -}}
+        {{- if eq .nodeType "list-item" -}}
+            <li>{{- partial "rich-text/node-checker.html" (dict "This" . "Site" $Site) -}}</li>
+        {{- else -}}
+            {{- partial "rich-text/node-not-found.html" .nodeType -}}
+        {{- end -}}
+    {{- end -}}
+</ol>

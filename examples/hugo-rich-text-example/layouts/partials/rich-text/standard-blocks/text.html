@@ -1,0 +1,13 @@
+{{- if .This.marks -}}
+    {{- range .This.marks -}}
+        {{- partial "rich-text/standard-blocks/marks-opening.html" . | safeHTML -}}
+    {{- end -}}
+{{- end -}}
+
+{{- .This.value -}}
+
+{{- if .This.marks -}}
+    {{- range .This.marks -}}
+        {{- partial "rich-text/standard-blocks/marks-closing.html" . | safeHTML -}}
+    {{- end -}}
+{{- end -}}

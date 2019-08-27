@@ -1,0 +1,6 @@
+{{- $Site := .Site -}}
+<a
+    {{- if .This.data.uri -}} href="{{ .This.data.uri }}"{{- end -}}
+>
+    {{- partial "rich-text/node-checker.html" (dict "This" .This "Site" $Site) -}}
+</a>
