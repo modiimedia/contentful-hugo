@@ -1,5 +1,7 @@
 # Contentful Hugo
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/281eacf31e864217953437f66b7e3a72)](https://www.codacy.com/app/joshmossas/contentful-hugo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ModiiMedia/contentful-hugo&amp;utm_campaign=Badge_Grade)
+
 This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
 **Table of Contents**
