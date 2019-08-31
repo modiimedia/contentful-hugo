@@ -28,15 +28,18 @@ yarn add contentful-hugo
 
 # Usage
 
+## Terminal Commands
+
 Complete [configuration](#configuration) then run the following command(s) in the terminal
 
-## When Installed Globally
+### When Installed Globally
 
 ```
 contentful-hugo
 ```
 
-## When Installed Locally
+### When Installed Locally
+
 ```
 npx contentful-hugo
 ```
