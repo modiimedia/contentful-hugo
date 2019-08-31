@@ -36,7 +36,7 @@ Complete [configuration](#configuration) then run the following command(s) in th
 contentful-hugo
 ```
 
-## When Install Locally
+## When Installed Locally
 ```
 npx contentful-hugo
 ```
