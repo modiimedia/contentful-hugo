@@ -10,5 +10,5 @@
 {{- if fileExists $partialCheck -}}
     {{- partial $partial .This -}}
 {{- else -}}
-    {{- partial "rich-text/node-not-found.html" .This.data.assetType -}}
+    {{- partial "rich-text/node-not-found.html" (dict "Template" $assetType "Directory" "embedded-asset-blocks") -}}
 {{- end -}}
