@@ -9,7 +9,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 - [Usage](#Usage)
 - [Configuration](#Configuration)
 - [Expected Output](#Expected-Output)
-- [Compatibility Issues](#Compatibility-Issues)
+- [Known Issues](#Known-Issues)
 
 
 # Prerequisites
@@ -28,12 +28,37 @@ yarn add contentful-hugo
 
 # Usage
 
-Complete [configuration](#configuration) then run the following command in the terminal
+Complete [configuration](#configuration) then run the following command(s) in the terminal
+
+## When Installed Globally
 
 ```
 contentful-hugo
 ```
-Failure to complete configuration will return an error in the console
+
+## When Install Locally
+```
+npx contentful-hugo
+```
+
+## Example Package-JSON
+
+```JSON
+{
+  "name": "my-hugo-project",
+  "scripts": {
+    "prestart": "contentful-hugo",
+    "start": "hugo server",
+    "prebuild": "contentful-hugo",
+    "build": "hugo --minify"
+  }
+}
+```
+In this example when you run `npm start` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
+
+## Error Messages
+
+Trying to use this package before completing configuration will return an error in the console
 
 ![Environment Variables not set](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/environment-variables-missing.jpg)
 
@@ -240,8 +265,9 @@ In addition a plaintext version of the field will be generated using the field I
 richTextField_plaintext: "This is a simple paragraph. This is a paragraph with italicized text."
 ```
 
-# Compatibility Issues
+# Known Issues
 
-These are know compatibility issues.
+These are some known issues.
 
-- Hugo cannot parse date field if field is set to "date and time without timezone"
+- **Date & Time Field w/o Timezone**: Hugo cannot parse date field if field is set to "date and time without timezone"
+- **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue it might be worth it to create a "wait function" just to delay fetching the data by a couple seconds. You could include it in the script you use contentful-hugo by doing something like the following ```"node wait.js && contentful-hugo"```
