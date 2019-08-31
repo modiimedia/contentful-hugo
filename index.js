@@ -5,7 +5,13 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const richTextToPlain = require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
 
+const getAssetFields = require('./src/getAssetFields');
+const getEntryFields = require('./src/getEntryFields');
+const richTextNodes = require('./src/richTextNodes');
+
 require('dotenv').config();
+
+// counter variables
 let totalContentTypes = 0;
 let typesExtracted = 0
 
@@ -266,86 +272,6 @@ function getContentType(limit, skip, contentSettings, itemsPulled){
             console.log(error)
         }
     })
-}
-
-// function to pull a referenced asset
-function getAssetFields(contentfulObject){
-    let frontMatter = {}
-    let assetType = '';
-    if (contentfulObject.fields.file){
-        assetType = contentfulObject.fields.file.contentType
-    }
-    frontMatter.assetType = assetType
-    frontMatter.url = contentfulObject.fields.file.url
-    frontMatter.title = contentfulObject.fields.title
-    frontMatter.description = contentfulObject.fields.description
-    
-    // get specific details depending on the asset type
-    let details = contentfulObject.fields.file.details
-    if (assetType.includes("image")){
-        // image height and width
-        frontMatter.width = details.image.width;
-        frontMatter.height = details.image.height;
-    }
-    return frontMatter
-}
-
-// function to pull a referenced entry
-function getEntryFields(entry){
-    let obj = {}
-    if (entry.sys) {
-        obj = {
-            id: entry.sys.id,
-            contentType: entry.sys.contentType.sys.id
-        }
-    }
-    return obj
-}
-
-// loop through this function on a rich text field
-function richTextNodes(node){
-    let fieldContent = {}
-    for(let field of Object.keys(node)){
-        switch(field){
-            case 'data':
-                let t = node[field].target
-                if(t) {
-                    if(t.sys){
-                        switch(t.sys.type){
-                            case "Entry":
-                                fieldContent[field] = getEntryFields(t);
-                                break;
-                            case "Asset":
-                                fieldContent[field] = getAssetFields(t);
-                                break;
-                        }                        
-                    } else {
-                        console.log(node[field])
-                    }
-                } else {
-                    fieldContent[field] = node[field]
-                }
-                break;
-            case 'content':
-                let contentArr = []
-                for(let item of node[field]){
-                    contentArr.push(richTextNodes(item))
-                }
-                fieldContent[field] = contentArr
-                break;
-            case 'marks':
-                let markArr = []
-                for(let item of node[field]){
-                    markArr.push(item.type)
-                }
-                fieldContent[field] = markArr
-                break;
-            default:
-                fieldContent[field] = node[field]
-                break;
-        }
-    }
-    return fieldContent
 }
 
 function checkIfFinished(num){
