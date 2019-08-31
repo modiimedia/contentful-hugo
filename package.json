@@ -42,8 +42,9 @@
   },
   "files": [
     "cli.js",
-    "./images/*",
+    "images",
     "readme.md",
-    "index.js"
+    "index.js",
+    "src"
   ]
 }
