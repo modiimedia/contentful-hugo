@@ -41,7 +41,7 @@ contentful-hugo
 npx contentful-hugo
 ```
 
-## Example Package-JSON
+## Example Package.json
 
 ```JSON
 {
