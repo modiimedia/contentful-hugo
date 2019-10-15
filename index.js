@@ -50,7 +50,8 @@ function initialize() {
                         titleField: types[i].title,
                         dateField: types[i].dateField,
                         mainContent: types[i].mainContent,
-                        type: types[i].type
+                        type: types[i].type,
+                        resolveEntry: types[i].resolveEntry
                     };
                     // check file extension settings
                     switch (contentSettings.fileExtension) {
@@ -168,6 +169,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                     if (field === contentSettings.mainContent) {
                         continue;
                     }
+                    const shouldResolveEntry = contentSettings.resolveEntry && contentSettings.resolveEntry.target === field ? true : false;
                     let fieldContent = item.fields[field];
                     switch (typeof fieldContent) {
                         case 'object':
@@ -228,7 +230,8 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                                                         break;
                                                     case 'Entry':
                                                         arrayObject = getEntryFields(
-                                                            arrayNode
+                                                            arrayNode,
+                                                            shouldResolveEntry ? contentSettings.resolveEntry : null
                                                         );
                                                         frontMatter[field].push(
                                                             arrayObject

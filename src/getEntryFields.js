@@ -1,5 +1,8 @@
-module.exports = entry => {
+module.exports = (entry, resolve = null) => {
     let obj = {};
+    if (resolve) {
+        return entry.fields[resolve.key];
+    }
     if (entry.sys) {
         obj = {
             id: entry.sys.id,
