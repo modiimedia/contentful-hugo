@@ -172,7 +172,7 @@ date: # defaults to creation date unless you have a field with the id "date" the
 
 ### Asset Information
 
-Asset like images and videos come with some extra information that makes it easy to implement things like alt text or layouts that rely on knowing the image dimensions. The fields are as follows:
+Assets like images and videos come with some extra information that makes it easy to implement things like alt text or layouts that rely on knowing the image dimensions. The fields are as follows:
 
 ```yaml
 assetFieldName:
@@ -231,10 +231,10 @@ relatedArticles:
 
 All files are named after their entry id in Contentful making it easy to retrieve it using .Site.GetPage in Hugo
 
-```html
-{{ with .Site.GetPage "<path-to-file
-    >/<entry-id>.md" }} {{ .Title }} {{ end }}</entry-id></path-to-file
->
+```go
+{{ with .Site.GetPage "<path-to-file>/<entry-id>.md" }}
+    {{ .Title }}
+{{ end }}
 ```
 
 ### Rich Text Fields
