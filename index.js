@@ -9,6 +9,7 @@ const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
 const getAssetFields = require('./src/getAssetFields');
 const getEntryFields = require('./src/getEntryFields');
 const richTextNodes = require('./src/richTextNodes');
+const createFile = require('./src/createFile');
 
 require('dotenv').config();
 
@@ -143,15 +144,8 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 
             for (let i = 0; i < data.items.length; i++) {
                 let item = data.items[i];
-                let fileContent = '';
                 let frontMatter = {};
-                if (
-                    contentSettings.fileExtension === 'md' ||
-                    contentSettings.fileExtension == null ||
-                    contentSettings.fileExtension == undefined
-                ) {
-                    fileContent += `---\n`;
-                }
+
                 if (contentSettings.isHeadless) {
                     frontMatter.headless = true;
                     mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
@@ -251,55 +245,14 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                             break;
                     }
                 }
-
-                // add current item to filecontent
-                fileContent += YAML.stringify(frontMatter);
-                if (
-                    contentSettings.fileExtension != 'yaml' ||
-                    contentSettings.fileExtension != 'yml'
-                ) {
-                    fileContent += `---\n`;
-                }
-
-                // if set add the main content below the front matter
+                let mainContent = null
                 if (item.fields[contentSettings.mainContent]) {
-                    fileContent += `${
+                    mainContent = `${
                         item.fields[contentSettings.mainContent]
                     }`;
                 }
 
-                // create file
-                if (contentSettings.isHeadless) {
-                    fs.writeFile(
-                        `.${contentSettings.directory}${item.sys.id}/index.${contentSettings.fileExtension}`,
-                        fileContent,
-                        error => {
-                            if (error) {
-                                console.log(error);
-                            }
-                        }
-                    );
-                } else if (contentSettings.isSingle) {
-                    fs.writeFile(
-                        `.${contentSettings.directory}/${contentSettings.fileName}.${contentSettings.fileExtension}`,
-                        fileContent,
-                        error => {
-                            if (error) {
-                                console.log(error);
-                            }
-                        }
-                    );
-                } else {
-                    fs.writeFile(
-                        `.${contentSettings.directory}${item.sys.id}.${contentSettings.fileExtension}`,
-                        fileContent,
-                        error => {
-                            if (error) {
-                                console.log(error);
-                            }
-                        }
-                    );
-                }
+                createFile(contentSettings, item.sys.id, frontMatter, mainContent)
                 itemCount++;
             }
 
