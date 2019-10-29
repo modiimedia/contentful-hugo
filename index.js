@@ -161,6 +161,16 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                 frontMatter.date = item.sys.createdAt;
                 for (let field of Object.keys(item.fields)) {
                     if (field === contentSettings.mainContent) {
+                        // skips to prevent duplicating mainContent in frontmatter
+                        continue;
+                    } else if(field === 'date') {
+                        // convert dates with time to ISO String so Hugo can properly Parse
+                        let d = item.fields[field]
+                        if(d.length > 10) {
+                            frontMatter.date = new Date(d).toISOString()
+                        } else {
+                            frontMatter.date = d
+                        }
                         continue;
                     }
                     let fieldContent = item.fields[field];
