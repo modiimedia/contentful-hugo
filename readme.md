@@ -283,5 +283,5 @@ richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with i
 
 These are some known issues.
 
--   **Date & Time Field w/o Timezone**: Hugo cannot parse date field if field is set to "date and time without timezone"
+-   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
 -   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue it might be worth it to create a "wait function" just to delay fetching the data by a couple seconds. You could include it in the script you use contentful-hugo by doing something like the following `"node wait.js && contentful-hugo"`
