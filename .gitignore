@@ -4,3 +4,4 @@ data
 .env
 contentful-settings.yaml
 resources
+.DS_Store
