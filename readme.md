@@ -82,8 +82,8 @@ Before using you must first set the following environment variables. CONTENTFUL_
 This can be done with a **.env** file in the root directory of your project.
 
 ```TOML
-CONTENTFUL_SPACE = '<your-space-id>`
-CONTENTFUL_TOKEN = '<content-api-access-token>`
+CONTENTFUL_SPACE = '<your-space-id>'
+CONTENTFUL_TOKEN = '<content-api-access-token>'
 ```
 
 You can also declare the environment variables in the command line
