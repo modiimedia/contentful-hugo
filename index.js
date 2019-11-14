@@ -52,13 +52,8 @@ function initialize() {
                         dateField: types[i].dateField,
                         mainContent: types[i].mainContent,
                         fileNameField: types[i].fileNameField,
-                        includeFrontMatter: types[i].includeFrontMatter,
                     };
-                    // Include front matter by default
-                    console.log("includeFrontMatter", contentSettings.includeFrontMatter)
-                    if (contentSettings.includeFrontMatter === undefined) {
-                        contentSettings.includeFrontMatter = true;
-                    }
+
                     // check file extension settings
                     switch (contentSettings.fileExtension) {
                         case 'md':
@@ -153,135 +148,135 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                 let item = data.items[i];
                 let fileContent = '';
 
-                if (contentSettings.includeFrontMatter) {
-                    let frontMatter = {};
-                    if (
-                        contentSettings.fileExtension === 'md' ||
-                        contentSettings.fileExtension == null ||
-                        contentSettings.fileExtension == undefined
-                    ) {
-                        fileContent += `---\n`;
-                    }
-                    if (contentSettings.isHeadless) {
-                        frontMatter.headless = true;
-                        mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
-                    }
-                    frontMatter.updated = item.sys.updatedAt;
-                    frontMatter.createdAt = item.sys.createdAt;
-                    frontMatter.date = item.sys.createdAt;
-                    for (let field of Object.keys(item.fields)) {
-                        if (field === contentSettings.mainContent || field === contentSettings.fileNameField) {
-                            // skips to prevent duplicating mainContent or fileNameField in frontmatter
-                            continue;
-                        } else if(field === 'date') {
-                            // convert dates with time to ISO String so Hugo can properly Parse
-                            let d = item.fields[field]
-                            if(d.length > 10) {
-                                frontMatter.date = new Date(d).toISOString()
-                            } else {
-                                frontMatter.date = d
-                            }
-                            continue;
+
+                let frontMatter = {};
+                if (
+                    contentSettings.fileExtension === 'md' ||
+                    contentSettings.fileExtension == null ||
+                    contentSettings.fileExtension == undefined
+                ) {
+                    fileContent += `---\n`;
+                }
+                if (contentSettings.isHeadless) {
+                    frontMatter.headless = true;
+                    mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
+                }
+                frontMatter.updated = item.sys.updatedAt;
+                frontMatter.createdAt = item.sys.createdAt;
+                frontMatter.date = item.sys.createdAt;
+                for (let field of Object.keys(item.fields)) {
+                    if (field === contentSettings.mainContent || field === contentSettings.fileNameField) {
+                        // skips to prevent duplicating mainContent or fileNameField in frontmatter
+                        continue;
+                    } else if(field === 'date') {
+                        // convert dates with time to ISO String so Hugo can properly Parse
+                        let d = item.fields[field]
+                        if(d.length > 10) {
+                            frontMatter.date = new Date(d).toISOString()
+                        } else {
+                            frontMatter.date = d
                         }
-                        let fieldContent = item.fields[field];
-                        switch (typeof fieldContent) {
-                            case 'object':
-                                if ('sys' in fieldContent) {
-                                    frontMatter[field] = {};
-                                    switch (fieldContent.sys.type) {
-                                        case 'Asset':
-                                            frontMatter[field] = getAssetFields(
-                                                fieldContent
-                                            );
-                                            break;
-                                        case 'Entry':
-                                            frontMatter[field] = getEntryFields(
-                                                fieldContent
-                                            );
-                                            break;
-                                        default:
-                                            frontMatter[field] = fieldContent;
-                                            break;
-                                    }
-                                }
-                                // rich text (see rich text function)
-                                else if ('nodeType' in fieldContent) {
-                                    frontMatter[field] = [];
-                                    frontMatter[
-                                        `${field}_plaintext`
-                                    ] = richTextToPlain(fieldContent);
-                                    let nodes = fieldContent.content;
-                                    for (let i = 0; i < nodes.length; i++) {
-                                        frontMatter[field].push(
-                                            richTextNodes(nodes[i])
+                        continue;
+                    }
+                    let fieldContent = item.fields[field];
+                    switch (typeof fieldContent) {
+                        case 'object':
+                            if ('sys' in fieldContent) {
+                                frontMatter[field] = {};
+                                switch (fieldContent.sys.type) {
+                                    case 'Asset':
+                                        frontMatter[field] = getAssetFields(
+                                            fieldContent
                                         );
-                                    }
-                                }
-                                // arrays
-                                else {
-                                    if (!fieldContent.length) {
+                                        break;
+                                    case 'Entry':
+                                        frontMatter[field] = getEntryFields(
+                                            fieldContent
+                                        );
+                                        break;
+                                    default:
                                         frontMatter[field] = fieldContent;
-                                    } else {
-                                        frontMatter[field] = [];
-                                        for (
-                                            let i = 0;
-                                            i < fieldContent.length;
-                                            i++
-                                        ) {
-                                            let arrayNode = fieldContent[i];
-                                            switch (typeof arrayNode) {
-                                                case 'object':
-                                                    let arrayObject = {};
-                                                    switch (arrayNode.sys.type) {
-                                                        case 'Asset':
-                                                            arrayObject = getAssetFields(
-                                                                arrayNode
-                                                            );
-                                                            frontMatter[field].push(
-                                                                arrayObject
-                                                            );
-                                                            break;
-                                                        case 'Entry':
-                                                            arrayObject = getEntryFields(
-                                                                arrayNode
-                                                            );
-                                                            frontMatter[field].push(
-                                                                arrayObject
-                                                            );
-                                                            break;
-                                                        default:
-                                                            frontMatter[field].push(
-                                                                arrayNode
-                                                            );
-                                                            break;
-                                                    }
-                                                    break;
-                                                default:
-                                                    frontMatter[field].push(
-                                                        arrayNode
-                                                    );
-                                                    break;
-                                            }
+                                        break;
+                                }
+                            }
+                            // rich text (see rich text function)
+                            else if ('nodeType' in fieldContent) {
+                                frontMatter[field] = [];
+                                frontMatter[
+                                    `${field}_plaintext`
+                                ] = richTextToPlain(fieldContent);
+                                let nodes = fieldContent.content;
+                                for (let i = 0; i < nodes.length; i++) {
+                                    frontMatter[field].push(
+                                        richTextNodes(nodes[i])
+                                    );
+                                }
+                            }
+                            // arrays
+                            else {
+                                if (!fieldContent.length) {
+                                    frontMatter[field] = fieldContent;
+                                } else {
+                                    frontMatter[field] = [];
+                                    for (
+                                        let i = 0;
+                                        i < fieldContent.length;
+                                        i++
+                                    ) {
+                                        let arrayNode = fieldContent[i];
+                                        switch (typeof arrayNode) {
+                                            case 'object':
+                                                let arrayObject = {};
+                                                switch (arrayNode.sys.type) {
+                                                    case 'Asset':
+                                                        arrayObject = getAssetFields(
+                                                            arrayNode
+                                                        );
+                                                        frontMatter[field].push(
+                                                            arrayObject
+                                                        );
+                                                        break;
+                                                    case 'Entry':
+                                                        arrayObject = getEntryFields(
+                                                            arrayNode
+                                                        );
+                                                        frontMatter[field].push(
+                                                            arrayObject
+                                                        );
+                                                        break;
+                                                    default:
+                                                        frontMatter[field].push(
+                                                            arrayNode
+                                                        );
+                                                        break;
+                                                }
+                                                break;
+                                            default:
+                                                frontMatter[field].push(
+                                                    arrayNode
+                                                );
+                                                break;
                                         }
                                     }
                                 }
-                                break;
-                            default:
-                                frontMatter[field] = item.fields[field];
-                                break;
-                        }
-                    }
-
-
-                    // add current item to filecontent
-                    fileContent += YAML.stringify(frontMatter);
-                    if (
-                        contentSettings.fileExtension != 'yaml' ||
-                        contentSettings.fileExtension != 'yml'
-                    ) {
-                        fileContent += `---\n`;
+                            }
+                            break;
+                        default:
+                            frontMatter[field] = item.fields[field];
+                            break;
                     }
                 }
+
+
+                // add current item to filecontent
+                fileContent += YAML.stringify(frontMatter);
+                if (
+                    contentSettings.fileExtension != 'yaml' ||
+                    contentSettings.fileExtension != 'yml'
+                ) {
+                    fileContent += `---\n`;
+                }
+                
 
                 // if set add the main content below the front matter
                 if (item.fields[contentSettings.mainContent]) {
