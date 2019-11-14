@@ -4,7 +4,7 @@
 
 This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
-**Table of Contents**
+## Table of Contents
 
 -   [Prerequisites](#Prerequisites)
 -   [Installation](#Installation)
@@ -21,13 +21,13 @@ Install [Node.js](https://nodejs.org)
 
 with NPM
 
-```
+```powershell
 npm install contentful-hugo
 ```
 
 with Yarn
 
-```
+```powershell
 yarn add contentful-hugo
 ```
 
@@ -39,13 +39,13 @@ Complete [configuration](#configuration) then run the following command(s) in th
 
 #### When Installed Globally
 
-```
+```powershell
 contentful-hugo
 ```
 
 #### When Installed Locally
 
-```
+```powershell
 npx contentful-hugo
 ```
 
@@ -81,9 +81,9 @@ Before using you must first set the following environment variables. CONTENTFUL_
 
 This can be done with a **.env** file in the root directory of your project.
 
-```
-CONTENTFUL_SPACE = '<your-space-id>`
-CONTENTFUL_TOKEN = '<content-api-access-token>`
+```TOML
+CONTENTFUL_SPACE = '<your-space-id>'
+CONTENTFUL_TOKEN = '<content-api-access-token>'
 ```
 
 You can also declare the environment variables in the command line
@@ -283,5 +283,5 @@ richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with i
 
 These are some known issues.
 
--   **Date & Time Field w/o Timezone**: Hugo cannot parse date field if field is set to "date and time without timezone"
+-   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
 -   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue it might be worth it to create a "wait function" just to delay fetching the data by a couple seconds. You could include it in the script you use contentful-hugo by doing something like the following `"node wait.js && contentful-hugo"`
