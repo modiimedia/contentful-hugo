@@ -10,10 +10,10 @@ function rtListToMarkdown(nodes, listMode) {
     return markdown
 }
 
-function rtArrayToMarkdown(nodes) {
+function rtArrayToMarkdown(nodes, listMode=null, listIndex=0) {
     markdown = ""
     for (node of nodes){
-        markdown += richTextToMarkdown(node)
+        markdown += richTextToMarkdown(node, listMode, listIndex)
     }
     return markdown
 }
@@ -27,36 +27,38 @@ function richTextToMarkdown(node, listMode=null, listIndex=0) {
         marks = marks.map(x => x.type);
     }
     data = node['data'];
-    console.log(nodeType)
     switch (nodeType) {
         case 'text':
             preMarks = "";
             postMarks = "";
             if (marks.indexOf('underline') >= 0) {
-                preMarks = "++" + preMarks;
-                postMarks = postMarks + "++";
+                preMarks = "<u>" + preMarks;
+                postMarks = postMarks + "</u>";
             }
             if (marks.indexOf('bold') >= 0) {
                 preMarks = "**" + preMarks;
-                postMarks = postMarks + "**";
+                postMarks = postMarks + "** ";
             }
             if (marks.indexOf('italic') >= 0) {
                 preMarks = "_" + preMarks;
-                postMarks = postMarks + "_";
+                postMarks = postMarks + "_ ";
             }
             if (marks.indexOf('code') >= 0) {
                 preMarks = "`" + preMarks;
                 postMarks = postMarks + "`";
             }
             if (node['value']) {
-                markdown += preMarks + node['value'] + postMarks;
+                markdown += preMarks + node['value'].trim() + postMarks;
             }
             break;
         case 'paragraph':
-            markdown += rtArrayToMarkdown(content) + "\n";
+            if (listMode === null) {
+                markdown += "\n";
+            }
+            markdown += rtArrayToMarkdown(content, listMode, listIndex) + "\n";
             break;
         case 'blockquote':
-            markdown += "\n > " + rtArrayToMarkdown(content);
+            markdown += "\n> " + rtArrayToMarkdown(content, 'blockquote');
             break;
         case 'heading-1':
             markdown += "\n# " + rtArrayToMarkdown(content) + "\n";
@@ -77,23 +79,24 @@ function richTextToMarkdown(node, listMode=null, listIndex=0) {
             // not yet implemented
             break;
         case 'hyperlink':
-            markdown += "[" + rtArrayToMarkdown(content) + "](" + data.uri + ")";
+            uri = data.uri
+            markdown += "[" + rtArrayToMarkdown(content) + "](" + uri + ") ";
             break;
         case 'hr':
-            markdown += "\n---\n";
+            markdown += "\n---\n\n";
             break;
         case 'list-item':
             if (listMode === 'ordered') {
-                markdown += " " + listIndex + ". " + rtArrayToMarkdown(content);
+                markdown += " " + listIndex + ". " + rtArrayToMarkdown(content, listMode, listIndex);
             } else {
-                markdown += " - " + rtArrayToMarkdown(content);
+                markdown += " - " + rtArrayToMarkdown(content, listMode, listIndex);
             }
             break;
         case 'unordered-list':
-            markdown += rtListToMarkdown(content, 'unordered');
+            markdown += "\n" + rtListToMarkdown(content, 'unordered');
             break;
         case 'ordered-list':
-            markdown += rtListToMarkdown(content, 'ordered');
+            markdown += "\n" + rtListToMarkdown(content, 'ordered');
             break;
         case 'embedded-asset-block':
             // not yet implemented
