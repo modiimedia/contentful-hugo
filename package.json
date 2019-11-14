@@ -1,11 +1,11 @@
 {
-  "name": "contentful-hugo",
-  "version": "1.3.12",
+  "name": "@chris.sears/contentful-hugo",
+  "version": "1.3.13",
   "description": "Node module that pulls data from Contentful and turns it into markdown files for Hugo. Can be used with other Static Site Generators, but has some Hugo specific features.",
   "main": "index.js",
   "repository": {
     "typ": "git",
-    "url": "https://github.com/ModiiMedia/contentful-hugo"
+    "url": "git+https://github.com/ModiiMedia/contentful-hugo.git"
   },
   "keywords": [
     "hugo",
@@ -20,11 +20,7 @@
     "frontmatter",
     "static-site"
   ],
-  "author": {
-    "name": "Joshua Sosso",
-    "email": "josh@modiimedia.com",
-    "url": "https://www.modiimedia.com"
-  },
+  "author": "Joshua Sosso <josh@modiimedia.com> (https://www.modiimedia.com)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -46,5 +42,12 @@
     "readme.md",
     "index.js",
     "src"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/ModiiMedia/contentful-hugo/issues"
+  },
+  "homepage": "https://github.com/ModiiMedia/contentful-hugo#readme",
+  "directories": {
+    "example": "examples"
+  }
 }
