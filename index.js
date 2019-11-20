@@ -1,6 +1,5 @@
 const contentful = require('contentful');
 const yaml = require('js-yaml');
-// const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
@@ -10,6 +9,7 @@ const getAssetFields = require('./src/getAssetFields');
 const getEntryFields = require('./src/getEntryFields');
 const richTextNodes = require('./src/richTextNodes');
 const createFile = require('./src/createFile');
+const checkIfFinished = require('./src/checkIfFinished');
 
 require('dotenv').config();
 
@@ -27,23 +27,23 @@ if (process.env.CONTENTFUL_SPACE && process.env.CONTENTFUL_TOKEN) {
 
 // getting settings from config file
 function initialize() {
-	let configFile = 'contentful-settings.yaml';
+	const configFile = 'contentful-settings.yaml';
 	// check if configFile exist and throw error if it doesn't
 	if (fs.existsSync(configFile)) {
 		console.log(
 			`\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`
 		);
 		try {
-			let config = yaml.safeLoad(
+			const config = yaml.safeLoad(
 				fs.readFileSync('contentful-settings.yaml')
 			);
 			// loop through repeatable content types
-			let types = config.repeatableTypes;
+			const types = config.repeatableTypes;
 			if (types) {
 				totalContentTypes += types.length;
 				for (let i = 0; i < types.length; i++) {
 					// object to pass settings into the function
-					let contentSettings = {
+					const contentSettings = {
 						typeId: types[i].id,
 						directory: types[i].directory,
 						isHeadless: types[i].isHeadless,
@@ -71,12 +71,12 @@ function initialize() {
 				}
 			}
 			// loop through single content types
-			let singles = config.singleTypes;
+			const singles = config.singleTypes;
 			if (singles) {
 				totalContentTypes += singles.length;
 				for (let i = 0; i < singles.length; i++) {
-					let single = singles[i];
-					let contentSettings = {
+					const single = singles[i];
+					const contentSettings = {
 						typeId: single.id,
 						directory: single.directory,
 						fileExtension: single.fileExtension,
@@ -145,8 +145,8 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 			mkdirp.sync(`.${contentSettings.directory}`);
 
 			for (let i = 0; i < data.items.length; i++) {
-				let item = data.items[i];
-				let frontMatter = {};
+				const item = data.items[i];
+				const frontMatter = {};
 				if (contentSettings.isHeadless) {
 					frontMatter.headless = true;
 					mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
@@ -157,13 +157,13 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 				frontMatter.updated = item.sys.updatedAt;
 				frontMatter.createdAt = item.sys.createdAt;
 				frontMatter.date = item.sys.createdAt;
-				for (let field of Object.keys(item.fields)) {
+				for (const field of Object.keys(item.fields)) {
 					if (field === contentSettings.mainContent) {
 						// skips to prevent duplicating mainContent in frontmatter
 						continue;
 					} else if (field === 'date') {
 						// convert dates with time to ISO String so Hugo can properly Parse
-						let d = item.fields[field];
+						const d = item.fields[field];
 						if (d.length > 10) {
 							frontMatter.date = new Date(d).toISOString();
 						} else {
@@ -171,7 +171,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 						}
 						continue;
 					}
-					let fieldContent = item.fields[field];
+					const fieldContent = item.fields[field];
 					switch (typeof fieldContent) {
 						case 'object':
 							if ('sys' in fieldContent) {
@@ -198,7 +198,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 								frontMatter[
 									`${field}_plaintext`
 								] = richTextToPlain(fieldContent);
-								let nodes = fieldContent.content;
+								const nodes = fieldContent.content;
 								for (let i = 0; i < nodes.length; i++) {
 									frontMatter[field].push(
 										richTextNodes(nodes[i])
@@ -216,9 +216,9 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 										i < fieldContent.length;
 										i++
 									) {
-										let arrayNode = fieldContent[i];
+										const arrayNode = fieldContent[i];
 										switch (typeof arrayNode) {
-											case 'object':
+											case 'object': {
 												let arrayObject = {};
 												switch (arrayNode.sys.type) {
 													case 'Asset':
@@ -244,6 +244,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 														break;
 												}
 												break;
+											}
 											default:
 												frontMatter[field].push(
 													arrayNode
@@ -400,7 +401,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 					`   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}`
 				);
 				typesExtracted++;
-				checkIfFinished(typesExtracted);
+				checkIfFinished(typesExtracted, totalContentTypes);
 			}
 		})
 		.catch(error => {
@@ -413,10 +414,4 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 				console.log(error);
 			}
 		});
-}
-
-function checkIfFinished(num) {
-	if (num === totalContentTypes) {
-		console.log(`\n-------------------------------------\n`);
-	}
 }
