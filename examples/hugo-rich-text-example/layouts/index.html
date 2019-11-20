@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section>
     <div class="content-container">
-        {{ range .Pages }}
+        {{ range .Site.RegularPages }}
             <article>
                 <a href="{{ .RelPermalink }}">
                     <div class="card">
