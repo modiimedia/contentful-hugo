@@ -24,39 +24,20 @@ module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
 	// if set add the main content below the front matter
 	if (mainContent) {
 		fileContent += mainContent;
-		console.log(mainContent);
 	}
 
 	// create file
+	let filePath = '';
 	if (contentSettings.isHeadless) {
-		return fs.writeFile(
-			`.${contentSettings.directory}${entryId}/index.${contentSettings.fileExtension}`,
-			fileContent,
-			error => {
-				if (error) {
-					console.log(error);
-				}
-			}
-		);
+		filePath = `.${contentSettings.directory}/${entryId}/index.${contentSettings.fileExtension}`;
 	} else if (contentSettings.isSingle) {
-		return fs.writeFile(
-			`.${contentSettings.directory}/${contentSettings.fileName}.${contentSettings.fileExtension}`,
-			fileContent,
-			error => {
-				if (error) {
-					console.log(error);
-				}
-			}
-		);
+		filePath = `.${contentSettings.directory}/${contentSettings.fileName}.${contentSettings.fileExtension}`;
 	} else {
-		return fs.writeFile(
-			`.${contentSettings.directory}${entryId}.${contentSettings.fileExtension}`,
-			fileContent,
-			error => {
-				if (error) {
-					console.log(error);
-				}
-			}
-		);
+		filePath = `.${contentSettings.directory}${entryId}.${contentSettings.fileExtension}`;
 	}
+	return fs.writeFile(filePath, fileContent, error => {
+		if (error) {
+			console.log(error);
+		}
+	});
 };
