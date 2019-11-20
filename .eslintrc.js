@@ -15,5 +15,6 @@ module.exports = {
 	rules: {
 		'no-console': 0,
 		'prefer-destructuring': 0,
+		semi: [2, 'always'],
 	},
 };
