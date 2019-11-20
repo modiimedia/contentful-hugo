@@ -4,7 +4,7 @@ module.exports = {
 		es6: true,
 		node: true,
 	},
-	extends: ['standard', 'prettier', 'plugin:prettier/recommended'],
+	extends: ['standard', 'prettier'],
 	globals: {
 		Atomics: 'readonly',
 		SharedArrayBuffer: 'readonly',
@@ -12,5 +12,8 @@ module.exports = {
 	parserOptions: {
 		ecmaVersion: 2018,
 	},
-	rules: {},
+	rules: {
+		'no-console': 0,
+		'prefer-destructuring': 0,
+	},
 };
