@@ -50,6 +50,7 @@ function initialize() {
                         titleField: types[i].title,
                         dateField: types[i].dateField,
                         mainContent: types[i].mainContent,
+                        type: types[i].type
                     };
                     // check file extension settings
                     switch (contentSettings.fileExtension) {
@@ -83,6 +84,7 @@ function initialize() {
                         dateField: single.dateField,
                         mainContent: single.mainContent,
                         isSingle: true,
+                        type: single.type
                     };
                     switch (contentSettings.fileExtension) {
                         case 'md':
@@ -155,6 +157,9 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                 if (contentSettings.isHeadless) {
                     frontMatter.headless = true;
                     mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
+                }
+                if (contentSettings.type) {
+                    frontMatter.type = contentSettings.type
                 }
                 frontMatter.updated = item.sys.updatedAt;
                 frontMatter.createdAt = item.sys.createdAt;
