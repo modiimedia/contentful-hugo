@@ -4,7 +4,7 @@
 
 This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
-**Table of Contents**
+## Table of Contents
 
 -   [Prerequisites](#Prerequisites)
 -   [Installation](#Installation)
@@ -13,43 +13,43 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   [Expected Output](#Expected-Output)
 -   [Known Issues](#Known-Issues)
 
-# Prerequisites
+## Prerequisites
 
 Install [Node.js](https://nodejs.org)
 
-# Installation
+## Installation
 
 with NPM
 
-```
+```powershell
 npm install contentful-hugo
 ```
 
 with Yarn
 
-```
+```powershell
 yarn add contentful-hugo
 ```
 
-# Usage
+## Usage
 
-## Terminal Commands
+### Terminal Commands
 
 Complete [configuration](#configuration) then run the following command(s) in the terminal
 
-### When Installed Globally
+#### When Installed Globally
 
-```
+```powershell
 contentful-hugo
 ```
 
-### When Installed Locally
+#### When Installed Locally
 
-```
+```powershell
 npx contentful-hugo
 ```
 
-## Example Package.json
+### Example Package.json
 
 ```JSON
 {
@@ -65,7 +65,7 @@ npx contentful-hugo
 
 In this example when you run `npm start` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
 
-## Error Messages
+### Error Messages
 
 Trying to use this package before completing configuration will return an error in the console
 
@@ -73,36 +73,36 @@ Trying to use this package before completing configuration will return an error 
 
 ![Config file not found](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/config-file-not-found.jpg)
 
-# Configuration
+## Configuration
 
-## Environment Variables
+### Environment Variables
 
 Before using you must first set the following environment variables. CONTENTFUL_SPACE, and CONTENTFUL_TOKEN.
 
 This can be done with a **.env** file in the root directory of your project.
 
-```
-CONTENTFUL_SPACE = '<your-space-id>`
-CONTENTFUL_TOKEN = '<content-api-access-token>`
+```TOML
+CONTENTFUL_SPACE = '<your-space-id>'
+CONTENTFUL_TOKEN = '<content-api-access-token>'
 ```
 
 You can also declare the environment variables in the command line
 
 **Powershell:**
 
-```
+```powershell
 $env:CONTENTFUL_SPACE="<contentful_space_id>"
 $env:CONTENTFUL_TOKEN="<contentful_acessToken>"
 ```
 
 **Bash:**
 
-```
+```bash
 export CONTENTFUL_SPACE=<contentful_space_id>
 export CONTENTFUL_TOKEN=<contentful_acessToken>
 ```
 
-## Config File
+### Config File
 
 In order to pull the data you want you will need to create a **contentful-settings.yaml** file in the root of your repository.
 
@@ -157,11 +157,11 @@ repeatableTypes:
 | mainContent   | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                   |
 | type          | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                        |
 
-# Expected Output
+## Expected Output
 
 Files will be generated in the directory specified in the **contentful-settings.yaml** file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
 
-## Default Date and Time Fields
+### Default Date and Time Fields
 
 The following fields will always appear in your frontmatter:
 
@@ -171,7 +171,7 @@ createdAt: # when the entry was created in Contentful
 date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
 ```
 
-## Asset Information
+### Asset Information
 
 Assets like images and videos come with some extra information that makes it easy to implement things like alt text or layouts that rely on knowing the image dimensions. The fields are as follows:
 
@@ -212,7 +212,7 @@ myGallery:
       height: 1080
 ```
 
-## Entries
+### Entries
 
 Linked entries will include fields for it's id and it's content type id.
 
@@ -238,7 +238,7 @@ All files are named after their entry id in Contentful making it easy to retriev
 {{ end }}
 ```
 
-## Rich Text Fields
+### Rich Text Fields
 
 A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depending on the nodeType field.
 
@@ -280,9 +280,9 @@ In addition a plaintext version of the field will be generated using the field I
 richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with italicized text.'
 ```
 
-# Known Issues
+## Known Issues
 
 These are some known issues.
 
--   **Date & Time Field w/o Timezone**: Hugo cannot parse date field if field is set to "date and time without timezone"
+-   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
 -   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue it might be worth it to create a "wait function" just to delay fetching the data by a couple seconds. You could include it in the script you use contentful-hugo by doing something like the following `"node wait.js && contentful-hugo"`
