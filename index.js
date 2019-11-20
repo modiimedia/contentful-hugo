@@ -146,15 +146,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 
 			for (let i = 0; i < data.items.length; i++) {
 				let item = data.items[i];
-				let fileContent = '';
 				let frontMatter = {};
-				if (
-					contentSettings.fileExtension === 'md' ||
-					contentSettings.fileExtension == null ||
-					contentSettings.fileExtension == undefined
-				) {
-					fileContent += `---\n`;
-				}
 				if (contentSettings.isHeadless) {
 					frontMatter.headless = true;
 					mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
