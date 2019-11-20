@@ -1,7 +1,7 @@
 const getEntryFields = require('./getEntryFields');
 const getAssetFields = require('./getAssetFields');
 
-function richTextNodes(node) {
+const richTextNodes = node => {
 	const fieldContent = {};
 	for (const field of Object.keys(node)) {
 		switch (field) {
@@ -47,6 +47,6 @@ function richTextNodes(node) {
 		}
 	}
 	return fieldContent;
-}
+};
 
 module.exports = richTextNodes;
