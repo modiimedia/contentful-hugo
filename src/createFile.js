@@ -1,6 +1,5 @@
 const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
-// const mkdirp = require('mkdirp');
 
 module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
 	let fileContent = '';
