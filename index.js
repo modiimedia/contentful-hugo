@@ -64,9 +64,8 @@ function initialize() {
 							break;
 						default:
 							console.log(
-								`ERROR: file extension "${contentSettings.fileExtension}" not supported`
+								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
-							break;
 					}
 				}
 			}
@@ -97,9 +96,8 @@ function initialize() {
 							break;
 						default:
 							console.log(
-								`ERROR: file extension "${contentSettings.fileExtension}" not supported`
+								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
-							break;
 					}
 				}
 			}
@@ -401,7 +399,9 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 					`   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}`
 				);
 				typesExtracted++;
-				checkIfFinished(typesExtracted, totalContentTypes);
+				if (checkIfFinished(typesExtracted, totalContentTypes)) {
+					console.log(`\n-------------------------------------\n`);
+				}
 			}
 		})
 		.catch(error => {
