@@ -1,6 +1,6 @@
 # Contentful Hugo
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/281eacf31e864217953437f66b7e3a72)](https://www.codacy.com/app/joshmossas/contentful-hugo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ModiiMedia/contentful-hugo&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/281eacf31e864217953437f66b7e3a72)](https://www.codacy.com/app/joshmossas/contentful-hugo?utm_source=github.com&utm_medium=referral&utm_content=ModiiMedia/contentful-hugo&utm_campaign=Badge_Grade)
 
 This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
@@ -49,6 +49,12 @@ contentful-hugo
 npx contentful-hugo
 ```
 
+### Optional Flags
+
+| flag | description |
+|------|-------------|
+| --preview |  runs in preview mode, which pulls both published and unpublished entries from Contentful |
+
 ### Example Package.json
 
 ```JSON
@@ -77,13 +83,16 @@ Trying to use this package before completing configuration will return an error 
 
 ### Environment Variables
 
-Before using you must first set the following environment variables. CONTENTFUL_SPACE, and CONTENTFUL_TOKEN.
+Before using you must first set the following environment variables. CONTENTFUL_SPACE, and CONTENTFUL_TOKEN. You can also add the CONTENTFUL_PREVIEW_TOKEN variable to use the --preview flag.
 
 This can be done with a **.env** file in the root directory of your project.
 
 ```TOML
-CONTENTFUL_SPACE = '<your-space-id>'
-CONTENTFUL_TOKEN = '<content-api-access-token>'
+CONTENTFUL_SPACE = '<space-id>'
+CONTENTFUL_TOKEN = '<content-accessToken>'
+
+# optional but required for preview mode
+CONTENTFUL_PREVIEW_TOKEN = '<preview-accessToken>'
 ```
 
 You can also declare the environment variables in the command line
@@ -93,13 +102,15 @@ You can also declare the environment variables in the command line
 ```powershell
 $env:CONTENTFUL_SPACE="<contentful_space_id>"
 $env:CONTENTFUL_TOKEN="<contentful_acessToken>"
+$env:CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 ```
 
 **Bash:**
 
 ```bash
-export CONTENTFUL_SPACE=<contentful_space_id>
-export CONTENTFUL_TOKEN=<contentful_acessToken>
+export CONTENTFUL_SPACE="<contentful_space_id>"
+export CONTENTFUL_TOKEN="<contentful_accessToken>"
+export CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 ```
 
 ### Config File
@@ -189,8 +200,8 @@ If you're using Hugo you can access the information like below:
 
 ```html
 <img
-    src="{{ .Params.assetFieldName.url }}"
-    width="{{ .Params.assetFieldName.width }}"
+	src="{{ .Params.assetFieldName.url }}"
+	width="{{ .Params.assetFieldName.width }}"
 />
 ```
 
