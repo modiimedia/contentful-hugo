@@ -37,7 +37,8 @@
 		"dotenv": "^7.0.0",
 		"js-yaml": "^3.13.1",
 		"json-to-pretty-yaml": "^1.2.2",
-		"mkdirp": "^0.5.1"
+		"mkdirp": "^0.5.1",
+		"yargs": "^15.0.2"
 	},
 	"bin": {
 		"contentful-hugo": "./cli.js"
