@@ -2,6 +2,7 @@ const contentful = require('contentful');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const argv = require('yargs').argv;
 const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
 	.documentToPlainTextString;
 
