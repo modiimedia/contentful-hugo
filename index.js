@@ -2,7 +2,11 @@ const contentful = require('contentful');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const argv = require('yargs').argv;
+const yargs = require('yargs');
+yargs.options({
+	preview: { type: 'boolean', default: false, alias: 'P' },
+});
+const argv = yargs.argv;
 const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
 	.documentToPlainTextString;
 
@@ -13,7 +17,6 @@ const createFile = require('./src/createFile');
 const checkIfFinished = require('./src/checkIfFinished');
 
 require('dotenv').config();
-
 // counter variables
 let totalContentTypes = 0;
 let typesExtracted = 0;
@@ -33,9 +36,10 @@ if (
 function initialize() {
 	const configFile = 'contentful-settings.yaml';
 	// check if configFile exist and throw error if it doesn't
+	let deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
 	if (fs.existsSync(configFile)) {
 		console.log(
-			`\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`
+			`\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
 		);
 		try {
 			const config = yaml.safeLoad(
@@ -121,7 +125,7 @@ function initialize() {
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
 function getContentType(limit, skip, contentSettings, itemsPulled) {
 	let previewMode = false;
-	if (argv.preview || argv.P) {
+	if (argv.preview) {
 		previewMode = true;
 	}
 	if (previewMode && !process.env.CONTENTFUL_PREVIEW_TOKEN) {
@@ -421,7 +425,9 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 				);
 				typesExtracted++;
 				if (checkIfFinished(typesExtracted, totalContentTypes)) {
-					console.log(`\n-------------------------------------\n`);
+					console.log(
+						`\n---------------------------------------------\n`
+					);
 				}
 			}
 		})
