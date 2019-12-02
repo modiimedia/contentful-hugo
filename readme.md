@@ -51,9 +51,11 @@ npx contentful-hugo
 
 ### Optional Flags
 
-| flag | description |
-|------|-------------|
-| --preview |  runs in preview mode, which pulls both published and unpublished entries from Contentful |
+```txt
+flags:
+
+  -P,  --preview          runs in preview mode, which pulls both published and unpublished entries from Contentful
+```
 
 ### Example Package.json
 
