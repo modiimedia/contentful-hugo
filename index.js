@@ -70,6 +70,7 @@ function initialize() {
 							console.log(
 								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
+							break;
 					}
 				}
 			}
@@ -102,6 +103,7 @@ function initialize() {
 							console.log(
 								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
+							break;
 					}
 				}
 			}
@@ -118,10 +120,23 @@ function initialize() {
 /// get content for a single content type ///
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
 function getContentType(limit, skip, contentSettings, itemsPulled) {
+	let previewMode = false;
+	if (argv.preview || argv.P) {
+		previewMode = true;
+	}
+	if (previewMode && !process.env.CONTENTFUL_PREVIEW_TOKEN) {
+		throw new Error(
+			'Environment variable CONTENTFUL_PREVIEW_TOKEN not set'
+		);
+	} else if (!previewMode && !process.env.CONTENTFUL_TOKEN) {
+		throw new Error('Environment variable CONTENTFUL_TOKEN not set');
+	}
 	const options = {
 		space: process.env.CONTENTFUL_SPACE,
-		host: argv.preview ? 'preview.contentful.com' : 'cdn.contentful.com',
-		accessToken: argv.preview ? process.env.CONTENTFUL_PREVIEW_TOKEN : process.env.CONTENTFUL_TOKEN
+		host: previewMode ? 'preview.contentful.com' : 'cdn.contentful.com',
+		accessToken: previewMode
+			? process.env.CONTENTFUL_PREVIEW_TOKEN
+			: process.env.CONTENTFUL_TOKEN,
 	};
 	const client = contentful.createClient(options);
 
