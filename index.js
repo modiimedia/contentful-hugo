@@ -2,6 +2,11 @@ const contentful = require('contentful');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const yargs = require('yargs');
+yargs.options({
+	preview: { type: 'boolean', default: false, alias: 'P' },
+});
+const argv = yargs.argv;
 const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
 	.documentToPlainTextString;
 
@@ -12,16 +17,18 @@ const createFile = require('./src/createFile');
 const checkIfFinished = require('./src/checkIfFinished');
 
 require('dotenv').config();
-
 // counter variables
 let totalContentTypes = 0;
 let typesExtracted = 0;
 
-if (process.env.CONTENTFUL_SPACE && process.env.CONTENTFUL_TOKEN) {
+if (
+	process.env.CONTENTFUL_SPACE &&
+	(process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
+) {
 	initialize();
 } else {
 	console.log(
-		`\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN\n\nYou can set them using the command line or place them in a .env file.\n`
+		`\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN, CONTENTFUL_PREVIEW_TOKEN (optional)\n\nYou can set them using the command line or place them in a .env file.\n`
 	);
 }
 
@@ -29,9 +36,10 @@ if (process.env.CONTENTFUL_SPACE && process.env.CONTENTFUL_TOKEN) {
 function initialize() {
 	const configFile = 'contentful-settings.yaml';
 	// check if configFile exist and throw error if it doesn't
+	let deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
 	if (fs.existsSync(configFile)) {
 		console.log(
-			`\n-------------------------------------\n   Pulling Data from Contentful...\n-------------------------------------\n`
+			`\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
 		);
 		try {
 			const config = yaml.safeLoad(
@@ -66,6 +74,7 @@ function initialize() {
 							console.log(
 								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
+							break;
 					}
 				}
 			}
@@ -98,6 +107,7 @@ function initialize() {
 							console.log(
 								`   ERROR: extension "${contentSettings.fileExtension}" not supported`
 							);
+							break;
 					}
 				}
 			}
@@ -114,10 +124,25 @@ function initialize() {
 /// get content for a single content type ///
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
 function getContentType(limit, skip, contentSettings, itemsPulled) {
-	const client = contentful.createClient({
+	let previewMode = false;
+	if (argv.preview) {
+		previewMode = true;
+	}
+	if (previewMode && !process.env.CONTENTFUL_PREVIEW_TOKEN) {
+		throw new Error(
+			'Environment variable CONTENTFUL_PREVIEW_TOKEN not set'
+		);
+	} else if (!previewMode && !process.env.CONTENTFUL_TOKEN) {
+		throw new Error('Environment variable CONTENTFUL_TOKEN not set');
+	}
+	const options = {
 		space: process.env.CONTENTFUL_SPACE,
-		accessToken: process.env.CONTENTFUL_TOKEN,
-	});
+		host: previewMode ? 'preview.contentful.com' : 'cdn.contentful.com',
+		accessToken: previewMode
+			? process.env.CONTENTFUL_PREVIEW_TOKEN
+			: process.env.CONTENTFUL_TOKEN,
+	};
+	const client = contentful.createClient(options);
 
 	// check for file extension default to markdown
 	if (!contentSettings.fileExtension) {
@@ -400,7 +425,9 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 				);
 				typesExtracted++;
 				if (checkIfFinished(typesExtracted, totalContentTypes)) {
-					console.log(`\n-------------------------------------\n`);
+					console.log(
+						`\n---------------------------------------------\n`
+					);
 				}
 			}
 		})
