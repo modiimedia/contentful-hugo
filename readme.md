@@ -51,10 +51,14 @@ npx contentful-hugo
 
 ### Optional Flags
 
-```txt
-flags:
+| flag      | aliases | description                                                                              |
+| --------- | ------- | ---------------------------------------------------------------------------------------- |
+| --preview | -P      | runs in preview mode, which pulls both published and unpublished entries from Contentful |
 
-  -P,  --preview          runs in preview mode, which pulls both published and unpublished entries from Contentful
+#### Preview Mode Example
+
+```powershell
+contentful-hugo --preview
 ```
 
 ### Example Package.json
