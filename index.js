@@ -60,7 +60,7 @@ function initialize() {
 						dateField: types[i].dateField,
 						mainContent: types[i].mainContent,
 						type: types[i].type,
-						resolveEntry: types[i].resolveEntry
+						resolveEntries: types[i].resolveEntries
 					};
 					// check file extension settings
 					switch (contentSettings.fileExtension) {
@@ -95,6 +95,7 @@ function initialize() {
 						mainContent: single.mainContent,
 						isSingle: true,
 						type: single.type,
+						resolveEntries: single.resolveEntries
 					};
 					switch (contentSettings.fileExtension) {
 						case 'md':
@@ -178,10 +179,10 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 				if (contentSettings.type) {
 					frontMatter.type = contentSettings.type;
 				}
-				let hasResolveEntry = false;
+				let hasResolveEntries = false;
 				let shouldResolveEntry = false;
-				if (contentSettings.resolveEntry) {
-					hasResolveEntry = true;
+				if (contentSettings.resolveEntries && contentSettings.resolveEntries.length > 0) {
+					hasResolveEntries = true;
 				}
 				frontMatter.updated = item.sys.updatedAt;
 				frontMatter.createdAt = item.sys.createdAt;
@@ -201,8 +202,12 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 						continue;
 					}
 					// if it has a resolve entry and it's target is equal to our field, then we know we should resolve it
-					if (hasResolveEntry && contentSettings.resolveEntry.target === field) {
-						shouldResolveEntry = true;
+					let fieldPosInEntry = null;
+					if (hasResolveEntries) {
+						fieldPosInEntry = contentSettings.resolveEntries.map(opts => opts.target).indexOf(field);
+						if (fieldPosInEntry !== -1) {
+							shouldResolveEntry = true;
+						}
 					}
 					const fieldContent = item.fields[field];
 					switch (typeof fieldContent) {
@@ -265,7 +270,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 													case 'Entry':
 														arrayObject = getEntryFields(
 															arrayNode,
-															shouldResolveEntry ? contentSettings.resolveEntry : null
+															shouldResolveEntry ? contentSettings.resolveEntries[fieldPosInEntry] : null
 														);
 														frontMatter[field].push(
 															arrayObject
