@@ -173,6 +173,7 @@ repeatableTypes:
 | isHeadless    | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
 | mainContent   | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                   |
 | type          | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                        |
+| resolveEntries| optional                         | Allows you to target entry fields that are references to other content and have them resolve to the given `to` key instead                           |
 
 ## Expected Output
 
@@ -254,6 +255,35 @@ All files are named after their entry id in Contentful making it easy to retriev
     {{ .Title }}
 {{ end }}
 ```
+
+#### Resolve Entries
+
+Sometimes it might be desirable to override the above default behaviour. Instead you might like to be able to have it resolve to just one of the known fields in the entry. This becomes useful if you want to take advantage of Hugo's built in taxonomy features. Since Hugo taxonomies can't be an array of multiple key values. You can use this to get arround it.
+
+You use it by declaring an array of key value pairs suggesting what entry field you want to target in the current content type and what it should resolve to when fetching the related entry.
+
+```yaml
+resolveEntries:
+  -
+    - target: <target-field>
+    - to: <linked-entry-field>
+
+# example in contentful-settings
+resolveEntries:
+  -
+    - target: productCategories
+    - to: slug
+
+# example above as seen in the front matter
+productCategories:
+  - boots
+```
+
+This works well for a page that would be responsible for listing products of one specific category.
+
+Categories could be a content model in Contentful which you can make and manage. 
+
+A Product content model could then have a reference field that links to either number of these Categories. This way all categories are managed through contentful and you can gurantee better consistency and less errors.
 
 ### Rich Text Fields
 
