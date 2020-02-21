@@ -36,7 +36,7 @@ if (
 function initialize() {
 	const configFile = 'contentful-settings.yaml';
 	// check if configFile exist and throw error if it doesn't
-	let deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
+	const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
 	if (fs.existsSync(configFile)) {
 		console.log(
 			`\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
