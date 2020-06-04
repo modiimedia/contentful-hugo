@@ -1,8 +1,10 @@
+require('dotenv').config();
 const contentful = require('contentful');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const yargs = require('yargs');
+
 yargs.options({
 	preview: { type: 'boolean', default: false, alias: 'P' },
 });
@@ -16,7 +18,6 @@ const richTextNodes = require('./src/richTextNodes');
 const createFile = require('./src/createFile');
 const checkIfFinished = require('./src/checkIfFinished');
 
-require('dotenv').config();
 // counter variables
 let totalContentTypes = 0;
 let typesExtracted = 0;
