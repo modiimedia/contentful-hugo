@@ -15,6 +15,7 @@ const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
 const getAssetFields = require('./src/getAssetFields');
 const getEntryFields = require('./src/getEntryFields');
 const richTextNodes = require('./src/richTextNodes');
+const richTextToMarkdown = require('./src/richTextToMarkdown');
 const createFile = require('./src/createFile');
 const checkIfFinished = require('./src/checkIfFinished');
 
@@ -285,8 +286,16 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 					}
 				}
 				let mainContent = null;
-				if (item.fields[contentSettings.mainContent]) {
-					mainContent = `${item.fields[contentSettings.mainContent]}`;
+				const mainContentField =
+					item.fields[contentSettings.mainContent];
+				if (
+					mainContentField &&
+					mainContentField.nodeType &&
+					mainContentField.nodeType === 'document'
+				) {
+					mainContent = richTextToMarkdown(mainContentField);
+				} else if (mainContentField) {
+					mainContent = mainContentField;
 				}
 
 				createFile(
