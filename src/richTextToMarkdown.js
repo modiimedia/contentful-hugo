@@ -1,6 +1,33 @@
 const { BLOCKS, MARKS, INLINES } = require('@contentful/rich-text-types');
 const { documentToHtmlString } = require('@contentful/rich-text-html-renderer');
 
+const mapEntry = target => {
+	return {
+		id: target.sys.id,
+		contentType: target.sys.contentType.sys.id,
+	};
+};
+
+const mapAsset = target => {
+	const { title, description, file } = target.fields;
+	const { url, details, fileName, contentType } = file;
+	const asset = {
+		title,
+		description,
+		url,
+		fileName,
+		assetType: contentType,
+		size: details.size,
+		width: null,
+		height: null,
+	};
+	if (details.image) {
+		asset.width = details.image.width;
+		asset.height = details.image.height;
+	}
+	return asset;
+};
+
 const options = {
 	renderMark: {
 		[MARKS.BOLD]: text => {
@@ -36,11 +63,53 @@ const options = {
 			return `${next(node.content)}\n\n`;
 		},
 		[BLOCKS.QUOTE]: (node, next) => {
-			return `> ${next(node.content)}\n\n`;
+			return `> ${next(node.content)}\n`;
+		},
+		[BLOCKS.OL_LIST]: (node, next) => {
+			let string = ``;
+			for (let i = 0; i < node.content.length; i++) {
+				const item = node.content[i];
+				string += `${i + 1}. ${next(item.content)}`;
+			}
+			return string;
+		},
+		[BLOCKS.UL_LIST]: (node, next) => {
+			let string = ``;
+			for (let i = 0; i < node.content.length; i++) {
+				const item = node.content[i];
+				string += `- ${next(item.content)}`;
+			}
+			return string;
+		},
+		[BLOCKS.HR]: (node, next) => {
+			return `---\n\n`;
 		},
 		[INLINES.HYPERLINK]: (node, next) => {
-			console.log(node, next);
 			return `[${next(node.content)}](${node.data.uri})`;
+		},
+		[INLINES.ENTRY_HYPERLINK]: (node, next) => {
+			const { id, contentType } = mapEntry(node.data.target);
+			return `{{< entryHyperlink id="${id}" contentType="${contentType}" >}}${next(
+				node.content
+			)}{{< /entryHyperlink >}} `;
+		},
+		[BLOCKS.EMBEDDED_ASSET]: (node, next) => {
+			const {
+				title,
+				description,
+				url,
+				fileName,
+				assetType,
+				size,
+				width,
+				height,
+			} = mapAsset(node.data.target);
+			return `{{< embeddedAsset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width ||
+				''}" height="${height || ''}" >}}\n\n`;
+		},
+		[BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
+			const { id, contentType } = mapEntry(node.data.target);
+			return `{{< embeddedEntry id="${id}" contentType="${contentType}" >}}\n\n`;
 		},
 	},
 };
