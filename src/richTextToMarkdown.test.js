@@ -22,6 +22,40 @@ const contentNodeFactory = (nodeType, value, marks = [], data = {}) => {
     };
 };
 
+/**
+ *
+ * @param {String} nodeType - unordered-list || ordered-list
+ * @param {Array} listItems
+ */
+const contentListFactory = (nodeType, listItems = []) => {
+    const node = {
+        nodeType,
+        content: [],
+        data: {},
+    };
+    for (const item of listItems) {
+        const listNode = {
+            nodeType: 'list-item',
+            content: [
+                {
+                    nodeType: 'paragraph',
+                    data: {},
+                    content: [
+                        {
+                            nodeType: 'text',
+                            value: item.value,
+                            marks: item.marks || [],
+                            data: item.data || {},
+                        },
+                    ],
+                },
+            ],
+        };
+        node.content.push(listNode);
+    }
+    return node;
+};
+
 const richTextFactory = (nodes = []) => {
     const document = {
         nodeType: 'document',
@@ -96,7 +130,7 @@ describe('Marks', () => {
             `\n*italic text example*\n\n`
         );
     });
-    test('Code', () => {
+    test('Code (Single-Line)', () => {
         const node = contentNodeFactory(
             'paragraph',
             'const codeTest = "this is a code test"',
@@ -105,6 +139,51 @@ describe('Marks', () => {
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
             `\n\`const codeTest = "this is a code test"\`\n\n`
+        );
+    });
+    test('Code (Multi-Line)', () => {
+        const codeToRender = `const codeTest = "this is a code test"\nconsole.log(codeTest)`;
+        const node = contentNodeFactory('paragraph', codeToRender, [
+            { type: 'code' },
+        ]);
+        const richText = richTextFactory([node]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n\`\`\`\n${codeToRender}\n\`\`\`\n\n`
+        );
+    });
+});
+
+describe('Lists', () => {
+    test('Ordered List', () => {
+        const listItems = [
+            {
+                value: 'List item 1',
+            },
+            { value: 'List item 2' },
+            { value: 'List item 3' },
+        ];
+        const node = contentListFactory('ordered-list', listItems);
+        const richText = richTextFactory([node]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n1. List item 1\n\n2. List item 2\n\n3. List item 3\n\n`
+        );
+    });
+    test('Unordered List', () => {
+        const listItems = [
+            {
+                value: 'List item 1',
+            },
+            {
+                value: 'List item 2',
+            },
+            {
+                value: 'List item 3',
+            },
+        ];
+        const node = contentListFactory('unordered-list', listItems);
+        const richText = richTextFactory([node]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n- List item 1\n\n- List item 2\n\n- List item 3\n\n`
         );
     });
 });

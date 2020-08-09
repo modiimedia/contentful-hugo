@@ -1,6 +1,6 @@
 const { BLOCKS, MARKS, INLINES } = require('@contentful/rich-text-types');
 const { documentToHtmlString } = require('@contentful/rich-text-html-renderer');
-const { replaceSpecialEntities } = require('./specialEntities');
+const { isMultilineString, replaceSpecialEntities } = require('./strings');
 
 const mapEntry = target => {
     return {
@@ -29,94 +29,99 @@ const mapAsset = target => {
     return asset;
 };
 
-const options = {
-    renderMark: {
-        [MARKS.BOLD]: text => {
-            return `**${text}**`;
+const options = parentContentType => {
+    return {
+        renderMark: {
+            [MARKS.BOLD]: text => {
+                return `**${text}**`;
+            },
+            [MARKS.ITALIC]: text => {
+                return `*${text}*`;
+            },
+            [MARKS.CODE]: text => {
+                if (isMultilineString(text)) {
+                    return `\`\`\`\n${text}\n\`\`\``;
+                }
+                return `\`${text}\``;
+            },
         },
-        [MARKS.ITALIC]: text => {
-            return `*${text}*`;
+        renderNode: {
+            [BLOCKS.HEADING_1]: (node, next) => {
+                return `# ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.HEADING_2]: (node, next) => {
+                return `## ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.HEADING_3]: (node, next) => {
+                return `### ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.HEADING_4]: (node, next) => {
+                return `#### ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.HEADING_5]: (node, next) => {
+                return `##### ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.HEADING_6]: (node, next) => {
+                return `###### ${next(node.content)}\n\n`;
+            },
+            [BLOCKS.PARAGRAPH]: (node, next) => {
+                return `${next(node.content)}\n\n`;
+            },
+            [BLOCKS.QUOTE]: (node, next) => {
+                return `> ${next(node.content)}\n`;
+            },
+            [BLOCKS.OL_LIST]: (node, next) => {
+                let string = ``;
+                for (let i = 0; i < node.content.length; i++) {
+                    const item = node.content[i];
+                    string += `${i + 1}. ${next(item.content)}`;
+                }
+                return string;
+            },
+            [BLOCKS.UL_LIST]: (node, next) => {
+                let string = ``;
+                for (let i = 0; i < node.content.length; i++) {
+                    const item = node.content[i];
+                    string += `- ${next(item.content)}`;
+                }
+                return string;
+            },
+            [BLOCKS.HR]: (node, next) => {
+                return `---\n\n`;
+            },
+            [INLINES.HYPERLINK]: (node, next) => {
+                return `[${next(node.content)}](${node.data.uri})`;
+            },
+            [INLINES.ENTRY_HYPERLINK]: (node, next) => {
+                const { id, contentType } = mapEntry(node.data.target);
+                return `{{< entryHyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType}" >}}${next(
+                    node.content
+                )}{{< /entryHyperlink >}} `;
+            },
+            [BLOCKS.EMBEDDED_ASSET]: (node, next) => {
+                const {
+                    title,
+                    description,
+                    url,
+                    fileName,
+                    assetType,
+                    size,
+                    width,
+                    height,
+                } = mapAsset(node.data.target);
+                return `{{< embeddedAsset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width ||
+                    ''}" height="${height || ''}" >}}\n\n`;
+            },
+            [BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
+                const { id, contentType } = mapEntry(node.data.target);
+                return `{{< embeddedEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType}" >}}\n\n`;
+            },
         },
-        [MARKS.CODE]: text => {
-            return `\`${text}\``;
-        },
-    },
-    renderNode: {
-        [BLOCKS.HEADING_1]: (node, next) => {
-            return `# ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.HEADING_2]: (node, next) => {
-            return `## ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.HEADING_3]: (node, next) => {
-            return `### ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.HEADING_4]: (node, next) => {
-            return `#### ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.HEADING_5]: (node, next) => {
-            return `##### ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.HEADING_6]: (node, next) => {
-            return `###### ${next(node.content)}\n\n`;
-        },
-        [BLOCKS.PARAGRAPH]: (node, next) => {
-            return `${next(node.content)}\n\n`;
-        },
-        [BLOCKS.QUOTE]: (node, next) => {
-            return `> ${next(node.content)}\n`;
-        },
-        [BLOCKS.OL_LIST]: (node, next) => {
-            let string = ``;
-            for (let i = 0; i < node.content.length; i++) {
-                const item = node.content[i];
-                string += `${i + 1}. ${next(item.content)}`;
-            }
-            return string;
-        },
-        [BLOCKS.UL_LIST]: (node, next) => {
-            let string = ``;
-            for (let i = 0; i < node.content.length; i++) {
-                const item = node.content[i];
-                string += `- ${next(item.content)}`;
-            }
-            return string;
-        },
-        [BLOCKS.HR]: (node, next) => {
-            return `---\n\n`;
-        },
-        [INLINES.HYPERLINK]: (node, next) => {
-            return `[${next(node.content)}](${node.data.uri})`;
-        },
-        [INLINES.ENTRY_HYPERLINK]: (node, next) => {
-            const { id, contentType } = mapEntry(node.data.target);
-            return `{{< entryHyperlink id="${id}" contentType="${contentType}" >}}${next(
-                node.content
-            )}{{< /entryHyperlink >}} `;
-        },
-        [BLOCKS.EMBEDDED_ASSET]: (node, next) => {
-            const {
-                title,
-                description,
-                url,
-                fileName,
-                assetType,
-                size,
-                width,
-                height,
-            } = mapAsset(node.data.target);
-            return `{{< embeddedAsset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width ||
-                ''}" height="${height || ''}" >}}\n\n`;
-        },
-        [BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
-            const { id, contentType } = mapEntry(node.data.target);
-            return `{{< embeddedEntry id="${id}" contentType="${contentType}" >}}\n\n`;
-        },
-    },
+    };
 };
 
-const richTextToMarkdown = document => {
-    const string = documentToHtmlString(document, options);
+const richTextToMarkdown = (document, contentType) => {
+    const string = documentToHtmlString(document, options(contentType));
     return `\n${replaceSpecialEntities(string)}`;
 };
 

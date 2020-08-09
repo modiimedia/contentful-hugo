@@ -1,4 +1,4 @@
-const { replaceSpecialEntities } = require('./specialEntities');
+const { replaceSpecialEntities } = require('./strings');
 
 describe('Testing HTML Special Entity Replacements', () => {
     test('Quote entitity', () => {
