@@ -1,4 +1,24 @@
-const { replaceSpecialEntities } = require('./strings');
+const { replaceSpecialEntities, isMultilineString } = require('./strings');
+
+describe('Detect Multiline String', () => {
+    test('Unescaped New Line', () => {
+        const string1 = `Multiline
+        String`;
+        expect(isMultilineString(string1)).toBe(true);
+        const string2 = `Three
+        Line
+        String`;
+        expect(isMultilineString(string2)).toBe(true);
+    });
+    test('Escaped New Line', () => {
+        expect(isMultilineString(`Multiline\nString`)).toBe(true);
+        expect(isMultilineString(`\n\n\n\n\n`)).toBe(true);
+        expect(isMultilineString(`Three\nLine\nString`)).toBe(true);
+    });
+    test('Single Line (Should Fail)', () => {
+        expect(isMultilineString(`Single Line String`)).toBe(false);
+    });
+});
 
 describe('Testing HTML Special Entity Replacements', () => {
     test('Quote entitity', () => {
