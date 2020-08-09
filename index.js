@@ -293,7 +293,10 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                     mainContentField.nodeType &&
                     mainContentField.nodeType === 'document'
                 ) {
-                    mainContent = richTextToMarkdown(mainContentField);
+                    mainContent = richTextToMarkdown(
+                        mainContentField,
+                        item.sys.contentType.sys.id
+                    );
                 } else if (mainContentField) {
                     mainContent = mainContentField;
                 }

@@ -1,3 +1,11 @@
+const isMultilineString = string => {
+    const array = string.split(`\n`);
+    if (array.length && array.length > 1) {
+        return true;
+    }
+    return false;
+};
+
 const specialEntities = {
     '&quot;': '"',
     '&apos;': "'",
@@ -20,6 +28,7 @@ const replaceSpecialEntities = string => {
 };
 
 module.exports = {
+    isMultilineString,
     replaceSpecialEntities,
     specialEntities,
 };
