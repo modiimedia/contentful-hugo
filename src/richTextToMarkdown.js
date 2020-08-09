@@ -110,7 +110,8 @@ const options = parentContentType => {
                     height,
                 } = mapAsset(node.data.target);
                 return `{{< embeddedAsset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width ||
-                    ''}" height="${height || ''}" >}}\n\n`;
+                    ''}" height="${height ||
+                    ''}" parentContentType="${parentContentType}" >}}\n\n`;
             },
             [BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
