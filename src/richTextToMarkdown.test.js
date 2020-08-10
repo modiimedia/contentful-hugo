@@ -56,6 +56,30 @@ const contentListFactory = (nodeType, listItems = []) => {
     return node;
 };
 
+const contentParagraph = (contentItems = []) => {
+    const paragraph = {
+        nodeType: 'paragraph',
+        content: [],
+    };
+    for (const item of contentItems) {
+        paragraph.content.push({
+            nodeType: 'text',
+            value: item.value || '',
+            marks: item.marks || [],
+            data: item.data || {},
+        });
+    }
+    return paragraph;
+};
+
+const contentQuoteFactory = (contentItems = []) => {
+    const quoteNote = {
+        nodeType: 'blockquote',
+        content: contentItems,
+    };
+    return quoteNote;
+};
+
 const richTextFactory = (nodes = []) => {
     const document = {
         nodeType: 'document',
@@ -184,6 +208,33 @@ describe('Lists', () => {
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
             `\n- List item 1\n\n- List item 2\n\n- List item 3\n\n`
+        );
+    });
+});
+
+describe('Blockquote', () => {
+    test('Single Line Quote', () => {
+        const paragraph = [
+            contentParagraph([
+                { value: 'This is a single line quote with ' },
+                { value: 'bold text.', marks: [{ type: 'bold' }] },
+            ]),
+        ];
+        const quoteNode = contentQuoteFactory(paragraph);
+        const richText = richTextFactory([quoteNode]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n> This is a single line quote with **bold text.**\n\n`
+        );
+    });
+    test('Multi Line Quote', () => {
+        const paragraphs = [
+            contentParagraph([{ value: 'First line of the quote' }]),
+            contentParagraph([{ value: 'Third line of the quote' }]),
+        ];
+        const quoteNode = contentQuoteFactory(paragraphs);
+        const richText = richTextFactory([quoteNode]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n> First line of the quote\n> \n> Third line of the quote\n\n`
         );
     });
 });
