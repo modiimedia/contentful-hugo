@@ -189,7 +189,7 @@ describe('Lists', () => {
         const node = contentListFactory('ordered-list', listItems);
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
-            `\n1. List item 1\n\n2. List item 2\n\n3. List item 3\n\n`
+            `\n1. List item 1\n2. List item 2\n3. List item 3\n\n`
         );
     });
     test('Unordered List', () => {
@@ -207,7 +207,7 @@ describe('Lists', () => {
         const node = contentListFactory('unordered-list', listItems);
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
-            `\n- List item 1\n\n- List item 2\n\n- List item 3\n\n`
+            `\n- List item 1\n- List item 2\n- List item 3\n\n`
         );
     });
 });

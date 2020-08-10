@@ -28,7 +28,8 @@
     "scripts": {
         "test": "jest",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "lint:fix": "eslint . --fix",
+        "postinstall": "node postinstall.js"
     },
     "license": "ISC",
     "dependencies": {
