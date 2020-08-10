@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>text only on Hugo Rich Text Example</title>
+    <link>/tags/text-only/</link>
+    <description>Recent content in text only on Hugo Rich Text Example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 10 Aug 2020 16:42:13 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/text-only/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Complex Example With Text, Embedded Assets, Inline Assets, Embedded Entries, and Inline Entries</title>
+      <link>/complex-example/</link>
+      <pubDate>Mon, 10 Aug 2020 16:42:13 +0000</pubDate>
+      
+      <guid>/complex-example/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Complex Example With Text, Embedded Assets, Inline Assets, Embedded Entries, and Inline Entries</title>
+      <link>/posts/complex-example/</link>
+      <pubDate>Mon, 10 Aug 2020 16:42:13 +0000</pubDate>
+      
+      <guid>/posts/complex-example/</guid>
+      <description>Hospes Ulixe Impediunt Phoce **Lorem markdownum ****est ante** , formae adest tenet repetita quicquam ebur corpus! Motu manu Abas referre instabilesque Philemon mella nescisse opis glaebis iunctorum gravibus.
+Restituit qui teneo profundum Troia, Hecate atque referam sanguine Cypro temperius ficta concordia palpitat. Quam forma, non et ire adpareat et spectes, unde testor. Texebas arcus flexuque florem pro adhuc, fama generis. Mihi non gerit Celmi quamvis.
+media.bing_active_non = webmasterCleanRead; add(sms(quicktimePeripheral + bitrateExtranetPram), virus_click_webcam, integrated.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,14 @@
+<!--
+    For all entries you have access to the following parameters through .Get
+    "id", "contentType", and "parentContentType"
+
+    For image assets you have also have access to:
+    "width", and "height"
+-->
+
+<div style="background: #f1f1f1; padding: 30px; margin-bottom: 1rem">
+    <div><strong>Basic Embedded Entry</strong></div>
+    <div>id: {{ .Get "id" }}</div>
+    <div>contentType: {{ .Get "contentType" }}</div>
+    <div>parentContentType: {{ .Get "parentContentType" }}</div>
+</div>

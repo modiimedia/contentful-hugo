@@ -87,7 +87,8 @@ const options = parentContentType => {
                     const item = node.content[i];
                     string += `${i + 1}. ${next(item.content)}`;
                 }
-                return string;
+                string = string.replace(/\n\n/g, `\n`);
+                return `${string}\n`;
             },
             [BLOCKS.UL_LIST]: (node, next) => {
                 let string = ``;
@@ -95,7 +96,8 @@ const options = parentContentType => {
                     const item = node.content[i];
                     string += `- ${next(item.content)}`;
                 }
-                return string;
+                string = string.replace(/\n\n/g, `\n`);
+                return `${string}\n`;
             },
             [BLOCKS.HR]: (node, next) => {
                 return `---\n\n`;
@@ -142,7 +144,7 @@ const options = parentContentType => {
                     ''}" assetType="${assetType || ''}" size="${size ||
                     ''}" width="${width || ''}" height="${height ||
                     ''}" parentContentType="${parentContentType ||
-                    ''}" }}${next(node.content)}{{< /assetHyperlink >}}`;
+                    ''}" >}}${next(node.content)}{{< /assetHyperlink >}}`;
             },
             [INLINES.ENTRY_HYPERLINK]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);

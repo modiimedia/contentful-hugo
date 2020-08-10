@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Hugo Rich Text Example</title>
+    <link>/posts/</link>
+    <description>Recent content in Posts on Hugo Rich Text Example</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 10 Aug 2020 16:42:13 +0000</lastBuildDate>
+    
+	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Complex Example With Text, Embedded Assets, Inline Assets, Embedded Entries, and Inline Entries</title>
+      <link>/posts/complex-example/</link>
+      <pubDate>Mon, 10 Aug 2020 16:42:13 +0000</pubDate>
+      
+      <guid>/posts/complex-example/</guid>
+      <description>Hospes Ulixe Impediunt Phoce **Lorem markdownum ****est ante** , formae adest tenet repetita quicquam ebur corpus! Motu manu Abas referre instabilesque Philemon mella nescisse opis glaebis iunctorum gravibus.
+Restituit qui teneo profundum Troia, Hecate atque referam sanguine Cypro temperius ficta concordia palpitat. Quam forma, non et ire adpareat et spectes, unde testor. Texebas arcus flexuque florem pro adhuc, fama generis. Mihi non gerit Celmi quamvis.
+media.bing_active_non = webmasterCleanRead; add(sms(quicktimePeripheral + bitrateExtranetPram), virus_click_webcam, integrated.</description>
+    </item>
+    
+    <item>
+      <title>Example With Text Only</title>
+      <link>/posts/text-only/</link>
+      <pubDate>Mon, 28 Oct 2019 17:50:00 +0000</pubDate>
+      
+      <guid>/posts/text-only/</guid>
+      <description>Heading 1 Heading 2 Heading 3 Heading 4 Heading 5 Heading 6 A simple paragraph with no marks
+A paragraph with bold text, italic text, and underlined text.
+Paragraph with hyperlinked text
+const string = &amp;quot;this is a multi-line code block&amp;quot; const reverseString = (str) =&amp;gt; { const splitString = str.split(&amp;quot;&amp;quot;); const reversedArray = splitString.reverse(); const joinedArray = reverseArray.join(&amp;quot;&amp;quot;) return joinedArray; } console.log(reverseString(string)) // outputs &amp;quot;kcolb edoc enil-itlum a si siht&amp;quot;   Unordered list item Unordered list item with bold text Unordered list item with hyperlink   Example block quote</description>
+    </item>
+    
+    <item>
+      <title>Example With Text, Assets, and Entries</title>
+      <link>/posts/example-with-text-assets-and-entries/</link>
+      <pubDate>Fri, 23 Aug 2019 21:34:33 +0000</pubDate>
+      
+      <guid>/posts/example-with-text-assets-and-entries/</guid>
+      <description>In this example we will see a bit of everything.
+Here I&amp;#39;m linking to a gallery entry, and rendering it with a custom partial
+Here is an entry hyperlink Here is an asset hyperlink Next to me is an inline entry . Pretty neat
+ Here is an **bold entry hyperlink** . Followed by a *italicized asset hyperlink* .
+And we have an inline entry . All inside the quote block.</description>
+    </item>
+    
+    <item>
+      <title>Example With Text And Assets</title>
+      <link>/posts/example-with-text-and-embedded-assets/</link>
+      <pubDate>Thu, 22 Aug 2019 10:40:35 +0000</pubDate>
+      
+      <guid>/posts/example-with-text-and-embedded-assets/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nimis multa. Item de contrariis, a quibus ad genera formasque generum venerunt. Duo Reges: constructio interrete. Quonam, inquit, modo? Nam si beatus umquam fuisset, beatam vitam usque ad illum a Cyro extructum rogum pertulisset. Est enim effectrix multarum et magnarum voluptatum.
+Nobis aliter videtur, recte secusne, postea; *Cur post Tarentum ad Archytam?* Inquit, dasne adolescenti veniam? Quo tandem modo? Illi enim inter se dissentiunt.</description>
+    </item>
+    
+  </channel>
+</rss>
