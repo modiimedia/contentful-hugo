@@ -1,1 +1,9 @@
-{{ .Inner }}
+<!--
+    For all entries you have access to the following parameters through .Get
+    "id", "contentType", and "parentContentType"
+-->
+
+<!-- use contentType and id to determine the href for the link -->
+<a href="">
+    {{ .Inner | markdownify }}
+</a>
