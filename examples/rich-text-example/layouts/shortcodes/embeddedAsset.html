@@ -9,7 +9,7 @@
 {{ $type := .Get "assetType" }}
 {{ $title := .Get "title" }}
 {{ $description := .Get "description" }}
-
+<!-- add templates for the different assetType's -->
 {{ if in $type "image" }}
     <figure>
         <img
@@ -19,10 +19,10 @@
         />
     </figure>
 {{ else }}
-    <div style="padding: 30px; background: #f1f1f1; margin-bottom: 1rem;">
+    <div style="padding: 25px; background: darkred; color: white; border-radius: 5px; margin-bottom: 1rem;">
         <div>
             <strong>
-                Embedded Asset (Unconfigured AssetType)
+                Unconfigured Embedded Asset
             </strong>
         </div>
         <div>
