@@ -68,7 +68,18 @@ const options = parentContentType => {
                 return `${next(node.content)}\n\n`;
             },
             [BLOCKS.QUOTE]: (node, next) => {
-                return `> ${next(node.content)}\n`;
+                const string = next(node.content);
+                const lines = string.split(`\n`);
+                let finalString = '';
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    finalString += `> ${line}\n`;
+                }
+                const removeExtraSpace = finalString.substr(
+                    0,
+                    finalString.length - 6
+                );
+                return `${removeExtraSpace}\n`;
             },
             [BLOCKS.OL_LIST]: (node, next) => {
                 let string = ``;
@@ -89,15 +100,6 @@ const options = parentContentType => {
             [BLOCKS.HR]: (node, next) => {
                 return `---\n\n`;
             },
-            [INLINES.HYPERLINK]: (node, next) => {
-                return `[${next(node.content)}](${node.data.uri})`;
-            },
-            [INLINES.ENTRY_HYPERLINK]: (node, next) => {
-                const { id, contentType } = mapEntry(node.data.target);
-                return `{{< entryHyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType}" >}}${next(
-                    node.content
-                )}{{< /entryHyperlink >}} `;
-            },
             [BLOCKS.EMBEDDED_ASSET]: (node, next) => {
                 const {
                     title,
@@ -109,13 +111,48 @@ const options = parentContentType => {
                     width,
                     height,
                 } = mapAsset(node.data.target);
-                return `{{< embeddedAsset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width ||
-                    ''}" height="${height ||
-                    ''}" parentContentType="${parentContentType}" >}}\n\n`;
+                return `{{< embeddedAsset title="${title}" description="${description ||
+                    ''}" url="${url || ''}" filename="${fileName ||
+                    ''}" assetType="${assetType || ''}" size="${size ||
+                    ''}" width="${width || ''}" height="${height ||
+                    ''}" parentContentType="${parentContentType ||
+                    ''}" >}}\n\n`;
             },
             [BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
-                return `{{< embeddedEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType}" >}}\n\n`;
+                return `{{< embeddedEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                    ''}" >}}\n\n`;
+            },
+            [INLINES.HYPERLINK]: (node, next) => {
+                return `[${next(node.content)}](${node.data.uri})`;
+            },
+            [INLINES.ASSET_HYPERLINK]: (node, next) => {
+                const {
+                    title,
+                    description,
+                    url,
+                    fileName,
+                    assetType,
+                    size,
+                    width,
+                    height,
+                } = mapAsset(node.data.target);
+                return `{{< assetHyperlink title="${title}" description="${description ||
+                    ''}" url="${url || ''}" filename="${fileName ||
+                    ''}" assetType="${assetType || ''}" size="${size ||
+                    ''}" width="${width || ''}" height="${height ||
+                    ''}" parentContentType="${parentContentType ||
+                    ''}" }}${next(node.content)}{{< /assetHyperlink >}}`;
+            },
+            [INLINES.ENTRY_HYPERLINK]: (node, next) => {
+                const { id, contentType } = mapEntry(node.data.target);
+                return `{{< entryHyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                    ''}" >}}${next(node.content)}{{< /entryHyperlink >}} `;
+            },
+            [INLINES.EMBEDDED_ENTRY]: (node, next) => {
+                const { id, contentType } = mapEntry(node.data.target);
+                return `{{< inlineEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                    ''}" >}}`;
             },
         },
     };
