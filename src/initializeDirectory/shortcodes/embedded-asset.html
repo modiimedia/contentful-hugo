@@ -1,0 +1,39 @@
+<!--
+    For all assets you have access to the following parameters through .Get
+    "url", "assetType", "title", "description", "filename", "size", and "parentContentType"
+
+    For image assets you have also have access to:
+    "width", and "height"
+-->
+
+{{- $assetType := .Get "assetType" -}}
+{{- $title := .Get "title" -}}
+{{- $description := .Get "description" -}}
+
+{{- if in $assetType "image" -}}
+    <!-- default block for images -->
+    <figure>
+        <img
+            src='{{ .Get "url" }}?w=700&q=80'
+            alt='{{ if $description }}{{ $description }}{{ else }}{{ $title }}{{ end }}'
+            width="700"
+        />
+    </figure>
+{{- else -}}
+    <!-- fallback block -->
+    <div style="padding: 25px; background: darkred; color: white; border-radius: 5px; margin-bottom: 1rem;">
+        <div>
+            <strong>
+                Unconfigured Embedded Asset
+            </strong>
+        </div>
+        <div>
+            <div>title: {{ $title }}</div>
+            <div>description: {{ $description }}</div>
+            <div>assetType: {{ $type }}</div>
+            <div>parentContentType: {{ .Get "parentContentType" }}</div>
+            <div>size: {{ .Get "size" }} b</div>
+            <div>filename: {{ .Get "filename" }}</div>
+        </div>
+    </div>
+{{- end -}}

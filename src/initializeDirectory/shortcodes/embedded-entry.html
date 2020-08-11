@@ -1,0 +1,23 @@
+<!--
+    For all entries you have access to the following parameters through .Get
+    "id", "contentType", and "parentContentType"
+-->
+
+{{- $entryId := .Get "id" -}}
+{{- $contentType := .Get "contentType" -}}
+
+{{- if eq $contentType "__custom-content-type__" -}}
+    <!-- render custom block or call partial -->
+{{- else -}}
+    <!-- fallback -->
+    <div style="
+        background: darkred;
+        color: white;
+        border-radius: 5px;
+        padding: 25px; margin-bottom: 1rem">
+        <div><strong>Unconfigured Embedded Entry</strong></div>
+        <div>id: {{ .Get "id" }}</div>
+        <div>contentType: {{ .Get "contentType" }}</div>
+        <div>parentContentType: {{ .Get "parentContentType" }}</div>
+    </div>
+{{- end -}}
