@@ -1,7 +1,9 @@
 node_modules
 /content
 data
+/layouts
 .env
-./contentful-settings.yaml
+contentful-settings.yaml
 resources
 public
+!examples/**/contentful-settings.yaml

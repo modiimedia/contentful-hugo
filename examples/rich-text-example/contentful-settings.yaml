@@ -1,10 +1,8 @@
 singleTypes:
-    - id: post
-      directory: /content/
-      fileName: home
 repeatableTypes:
     - id: gallery
-      directory: /content/
+      directory: /content/galleries/
+      isHeadless: true
     - id: post
       directory: /content/posts/
       type: blog

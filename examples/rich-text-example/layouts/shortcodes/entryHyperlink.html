@@ -3,7 +3,20 @@
     "id", "contentType", and "parentContentType"
 -->
 
+{{ $contentType := .Get "contentType" }}
+{{ $entryId := .Get "id" }}
+{{ $linkText := .Inner | markdownify }}
+
 <!-- use contentType and id to determine the href for the link -->
-<a href="">
-    {{ .Inner | markdownify }}
-</a>
+{{ if eq $contentType "post" }}
+    {{ $path := print "posts/" $entryId ".md" }}
+    {{ $path }}
+    {{ with $.Site.GetPage $path }}
+        <a href="{{ .RelPermalink }}">{{ $linkText }}</a>
+    {{ else }}
+        <a href="">[[Error rendering entry hyperlink]] {{ $linkText }}</a>
+    {{ end }}
+{{ else }}
+    <!-- leave an error message for contentTypes not caught -->
+    <a href="">[[This entry hyperlink is not configured]] {{ $linkText }}</a>
+{{ end }}
