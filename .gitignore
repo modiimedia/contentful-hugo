@@ -3,7 +3,8 @@ node_modules
 data
 /layouts
 .env
-contentful-settings.yaml
 resources
 public
+contentful-settings.yaml
 !examples/**/contentful-settings.yaml
+coverage
