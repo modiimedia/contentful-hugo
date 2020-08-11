@@ -4,13 +4,15 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const yargs = require('yargs');
+const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
+    .documentToPlainTextString;
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
+    init: { type: 'boolean', default: false },
+    wait: { type: 'number', default: 0 },
 });
 const argv = yargs.argv;
-const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
-    .documentToPlainTextString;
 
 const getAssetFields = require('./src/getAssetFields');
 const getEntryFields = require('./src/getEntryFields');
@@ -18,12 +20,15 @@ const richTextNodes = require('./src/richTextNodes');
 const richTextToMarkdown = require('./src/richTextToMarkdown');
 const createFile = require('./src/createFile');
 const checkIfFinished = require('./src/checkIfFinished');
+const initializeDirectory = require('./src/initializeDirectory');
 
 // counter variables
 let totalContentTypes = 0;
 let typesExtracted = 0;
 
-if (
+if (argv.init) {
+    initializeDirectory();
+} else if (
     process.env.CONTENTFUL_SPACE &&
     (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
 ) {
@@ -35,18 +40,27 @@ if (
 }
 
 // getting settings from config file
-function initialize() {
+async function initialize() {
     const configFile = 'contentful-settings.yaml';
     // check if configFile exist and throw error if it doesn't
     const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
     if (fs.existsSync(configFile)) {
+        const config = yaml.safeLoad(
+            fs.readFileSync('contentful-settings.yaml')
+        );
+        const waitTime = argv.wait;
+        if (waitTime && typeof waitTime === 'number') {
+            console.log(`waiting ${waitTime}ms...`);
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, waitTime);
+            });
+        }
         console.log(
             `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
         );
         try {
-            const config = yaml.safeLoad(
-                fs.readFileSync('contentful-settings.yaml')
-            );
             // loop through repeatable content types
             const types = config.repeatableTypes;
             if (types) {
