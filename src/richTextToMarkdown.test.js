@@ -1,5 +1,14 @@
 const richTextToMarkdown = require('./richTextToMarkdown');
 
+const nodeText = (value, marks = []) => {
+    return {
+        nodeType: 'text',
+        value,
+        marks,
+        data: {},
+    };
+};
+
 /**
  *
  * @param {String} nodeType
@@ -236,5 +245,227 @@ describe('Blockquote', () => {
         expect(richTextToMarkdown(richText)).toBe(
             `\n> First line of the quote\n> \n> Third line of the quote\n\n`
         );
+    });
+});
+
+const entryDataFactory = (entryId, contentType) => {
+    const data = {
+        target: {
+            sys: {
+                id: entryId,
+                type: 'Entry',
+                contentType: {
+                    sys: {
+                        id: contentType,
+                    },
+                },
+            },
+        },
+    };
+    return data;
+};
+
+/**
+ *
+ * @param {String} nodeType - embedded-entry-block || embedded-entry-inline
+ * @param {*} entryId
+ * @param {*} contentType
+ * @param {*} parentContentType
+ */
+const entryFactory = (
+    nodeType,
+    entryId,
+    contentType,
+    parentContentType,
+    content = []
+) => {
+    const node = {
+        nodeType,
+        content,
+        data: entryDataFactory(entryId, contentType),
+    };
+    const richText = richTextFactory([node]);
+    const result = richTextToMarkdown(richText, parentContentType);
+    return result;
+};
+
+describe('Entries', () => {
+    test('Entry Block', () => {
+        const entryId = '12345';
+        const contentType = 'gallery';
+        const parentContentType = 'post';
+        const result = entryFactory(
+            'embedded-entry-block',
+            entryId,
+            contentType,
+            parentContentType
+        );
+        const expectedResult = `\n{{< contentful-hugo/embedded-entry id="${entryId}" contentType="${contentType}" parentContentType="${parentContentType}" >}}\n\n`;
+        expect(result).toBe(expectedResult);
+    });
+    test('Entry Inline', () => {
+        const entryId = '12345';
+        const contentType = 'gallery';
+        const parentContentType = 'post';
+        const result = entryFactory(
+            'embedded-entry-inline',
+            entryId,
+            contentType,
+            parentContentType
+        );
+        const expectedResult = `\n{{< contentful-hugo/inline-entry id="${entryId}" contentType="${contentType}" parentContentType="${parentContentType}" >}}`;
+        expect(result).toBe(expectedResult);
+    });
+    test('Entry Hyperlink', () => {
+        const entryId = '12345';
+        const contentType = 'gallery';
+        const parentContentType = 'post';
+        const content = [
+            nodeText('my '),
+            nodeText('hyperlink text', [{ type: 'bold' }]),
+        ];
+        const result = entryFactory(
+            'entry-hyperlink',
+            entryId,
+            contentType,
+            parentContentType,
+            content
+        );
+        const expectedResult = `\n{{< contentful-hugo/entry-hyperlink id="${entryId}" contentType="${contentType}" parentContentType="${parentContentType}" >}}my **hyperlink text**{{< /contentful-hugo/entry-hyperlink >}}`;
+        expect(result).toBe(expectedResult);
+    });
+});
+
+/**
+ *
+ * @param {String} nodeType - 'embedded-asset-block' ||
+ */
+const assetFactory = (
+    nodeType,
+    title,
+    description,
+    url,
+    fileName,
+    assetType,
+    size,
+    width = null,
+    height = null,
+    parentContentType,
+    content = []
+) => {
+    const node = {
+        nodeType,
+        content,
+        data: {
+            target: {
+                sys: {
+                    id: '12345',
+                    type: 'Asset',
+                },
+                fields: {
+                    title,
+                    description,
+                    file: {
+                        url,
+                        fileName,
+                        contentType: assetType,
+                        details: {
+                            size,
+                            image: assetType.includes('image')
+                                ? {
+                                      width,
+                                      height,
+                                  }
+                                : null,
+                        },
+                    },
+                },
+            },
+        },
+    };
+    const richText = richTextFactory([node]);
+    return richTextToMarkdown(richText, parentContentType);
+};
+
+describe('Assets', () => {
+    test('Asset Block', () => {
+        const title = 'My Photo';
+        const description = 'Description of my photo';
+        const url = 'https://source.unsplash.com/random';
+        const fileName = 'myphoto.jpg';
+        const assetType = 'image/jpeg';
+        const size = 1000;
+        const width = 1920;
+        const height = 1080;
+        const parentContentType = 'post';
+        const result = assetFactory(
+            'embedded-asset-block',
+            title,
+            description,
+            url,
+            fileName,
+            assetType,
+            size,
+            width,
+            height,
+            parentContentType
+        );
+        const expectedResult = `\n{{< contentful-hugo/embedded-asset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width}" height="${height}" parentContentType="${parentContentType}" >}}\n\n`;
+        expect(result).toBe(expectedResult);
+    });
+    test('Asset Block (Non Image)', () => {
+        const title = 'My Video';
+        const description = 'Description of my video';
+        const url = 'https://www.youtube.com';
+        const fileName = 'video.mp4';
+        const assetType = 'video/mp4';
+        const size = 1000;
+        const width = 1920;
+        const height = 1080;
+        const parentContentType = 'post';
+        const result = assetFactory(
+            'embedded-asset-block',
+            title,
+            description,
+            url,
+            fileName,
+            assetType,
+            size,
+            width,
+            height,
+            parentContentType
+        );
+        const expectedResult = `\n{{< contentful-hugo/embedded-asset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="" height="" parentContentType="${parentContentType}" >}}\n\n`;
+        expect(result).toBe(expectedResult);
+    });
+    test('Asset Hyperlink', () => {
+        const title = 'My Photo';
+        const description = 'Description of my photo';
+        const url = 'https://source.unsplash.com/random';
+        const fileName = 'myphoto.jpg';
+        const assetType = 'image/jpeg';
+        const size = 1000;
+        const width = 1920;
+        const height = 1080;
+        const parentContentType = 'post';
+        const content = [
+            nodeText('my '),
+            nodeText('hyperlink text', [{ type: 'bold' }]),
+        ];
+        const result = assetFactory(
+            'asset-hyperlink',
+            title,
+            description,
+            url,
+            fileName,
+            assetType,
+            size,
+            width,
+            height,
+            parentContentType,
+            content
+        );
+        const expectedResult = `\n{{< contentful-hugo/asset-hyperlink title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width}" height="${height}" parentContentType="${parentContentType}" >}}my **hyperlink text**{{< /contentful-hugo/asset-hyperlink >}}`;
+        expect(result).toBe(expectedResult);
     });
 });
