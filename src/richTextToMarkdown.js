@@ -113,7 +113,7 @@ const options = parentContentType => {
                     width,
                     height,
                 } = mapAsset(node.data.target);
-                return `{{< embeddedAsset title="${title}" description="${description ||
+                return `{{< contentful-hugo/embedded-asset title="${title}" description="${description ||
                     ''}" url="${url || ''}" filename="${fileName ||
                     ''}" assetType="${assetType || ''}" size="${size ||
                     ''}" width="${width || ''}" height="${height ||
@@ -122,7 +122,7 @@ const options = parentContentType => {
             },
             [BLOCKS.EMBEDDED_ENTRY]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
-                return `{{< embeddedEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                return `{{< contentful-hugo/embedded-entry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
                     ''}" >}}\n\n`;
             },
             [INLINES.HYPERLINK]: (node, next) => {
@@ -139,21 +139,21 @@ const options = parentContentType => {
                     width,
                     height,
                 } = mapAsset(node.data.target);
-                return `{{< assetHyperlink title="${title}" description="${description ||
+                return `{{< contentful-hugo/asset-hyperlink title="${title}" description="${description ||
                     ''}" url="${url || ''}" filename="${fileName ||
                     ''}" assetType="${assetType || ''}" size="${size ||
                     ''}" width="${width || ''}" height="${height ||
                     ''}" parentContentType="${parentContentType ||
-                    ''}" >}}${next(node.content)}{{< /assetHyperlink >}}`;
+                    ''}" >}}${next(node.content)}{{< /asset-hyperlink >}}`;
             },
             [INLINES.ENTRY_HYPERLINK]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
-                return `{{< entryHyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
-                    ''}" >}}${next(node.content)}{{< /entryHyperlink >}} `;
+                return `{{< contentful-hugo/entry-hyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                    ''}" >}}${next(node.content)}{{< /entry-hyperlink >}} `;
             },
             [INLINES.EMBEDDED_ENTRY]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
-                return `{{< inlineEntry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
+                return `{{< contentful-hugo/inline-entry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
                     ''}" >}}`;
             },
         },

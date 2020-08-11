@@ -1,0 +1,11 @@
+<!--
+    For all assets you have access to the following parameters through .Get
+    "url", "assetType", "title", "description", "filename", "size", and "parentContentType"
+
+    For image assets you have also have access to:
+    "width", and "height"
+-->
+
+<a href='{{ .Get "url" }}' title='{{ .Get "title" }}'
+    >{{ .Inner | markdownify }}</a
+>
