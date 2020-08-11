@@ -3,14 +3,13 @@
     "id", "contentType", and "parentContentType"
 -->
 
-{{ $entryId := .Get "id" }}
-{{ $contentType := .Get "contentType" }}
+{{- $entryId := .Get "id" -}}
+{{- $contentType := .Get "contentType" -}}
 
-{{ if eq $contentType "gallery" }}
-    <!-- render gallery partial if contentType === "gallery" -->
-    {{ partial "embedded-gallery-block.html" (dict "id" $entryId "Site" $.Site) }}
-{{ else }}
-    <!-- else render fallback message -->
+{{- if eq $contentType "__custom-content-type__" -}}
+    <!-- render custom block or call partial -->
+{{- else -}}
+    <!-- fallback -->
     <div style="
         background: darkred;
         color: white;
@@ -21,4 +20,4 @@
         <div>contentType: {{ .Get "contentType" }}</div>
         <div>parentContentType: {{ .Get "parentContentType" }}</div>
     </div>
-{{ end }}
+{{- end -}}

@@ -8,15 +8,14 @@
 {{ $linkText := .Inner | markdownify }}
 
 <!-- use contentType and id to determine the href for the link -->
-{{ if eq $contentType "post" }}
-    {{ $path := print "posts/" $entryId ".md" }}
-    {{ $path }}
+{{ if eq $contentType "__custom-content-type__" }}
+    {{ $path := print "__path-to-content-type__/" $entryId ".md" }}
     {{ with $.Site.GetPage $path }}
         <a href="{{ .RelPermalink }}">{{ $linkText }}</a>
     {{ else }}
         <a href="">[[Error rendering entry hyperlink]] {{ $linkText }}</a>
     {{ end }}
 {{ else }}
-    <!-- leave an error message for contentTypes not caught -->
+    <!-- fallback message -->
     <a href="">[[This entry hyperlink is not configured]] {{ $linkText }}</a>
 {{ end }}

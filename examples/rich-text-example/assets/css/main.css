@@ -19,21 +19,6 @@ html {
     margin: 0 auto;
 }
 
-.node-not-found {
-    padding: 2rem;
-    background: rgb(168, 0, 0);
-    color: white;
-    margin: 2rem 0;
-}
-
-.node-not-found .title {
-    /* text-decoration: underline; */
-}
-
-.node-not-found .subtitle {
-    font-size: 0.8rem;
-}
-
 img {
     max-width: 100%;
 }
@@ -130,5 +115,5 @@ article a:hover .media-title {
 }
 
 hr {
-    color: inherit
+    color: inherit;
 }

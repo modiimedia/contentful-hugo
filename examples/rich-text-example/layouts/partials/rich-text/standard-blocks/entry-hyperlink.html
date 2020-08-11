@@ -1,0 +1,21 @@
+{{- $type := .This.data.contentType -}}
+{{- $id := .This.data.id -}}
+
+{{ if .Site.GetPage $id }}
+    <a href="
+        {{- with .Site.GetPage $id -}}
+            {{- .RelPermalink -}}
+        {{- end -}}
+    ">{{- partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site) -}}</a>
+{{ else }}
+    <div class="node-missing-block">
+        <div class="err-title">Unable To Create Hyperlink:</div>
+        <div class="err-subtitle"><strong>{{ $id }}.md</strong> not found</div>
+        <br>
+        <hr>
+        <br>
+        <div>linked entry: {{ $id }}</div>
+        <div>content type: {{ $type }}</div>
+        <div>link text: "{{- partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site) -}}"</div>
+    </div>
+{{ end }}

@@ -6,12 +6,12 @@
     "width", and "height"
 -->
 
-{{ $type := .Get "assetType" }}
-{{ $title := .Get "title" }}
-{{ $description := .Get "description" }}
+{{- $assetType := .Get "assetType" -}}
+{{- $title := .Get "title" -}}
+{{- $description := .Get "description" -}}
 
-<!-- add templates for the different assetType's -->
-{{ if in $type "image" }}
+{{- if in $assetType "image" -}}
+    <!-- default block for images -->
     <figure>
         <img
             src='{{ .Get "url" }}?w=700&q=80'
@@ -19,7 +19,8 @@
             width="700"
         />
     </figure>
-{{ else }}
+{{- else -}}
+    <!-- fallback block -->
     <div style="padding: 25px; background: darkred; color: white; border-radius: 5px; margin-bottom: 1rem;">
         <div>
             <strong>
@@ -35,4 +36,4 @@
             <div>filename: {{ .Get "filename" }}</div>
         </div>
     </div>
-{{ end }}
+{{- end -}}
