@@ -144,12 +144,16 @@ const options = parentContentType => {
                     ''}" assetType="${assetType || ''}" size="${size ||
                     ''}" width="${width || ''}" height="${height ||
                     ''}" parentContentType="${parentContentType ||
-                    ''}" >}}${next(node.content)}{{< /asset-hyperlink >}}`;
+                    ''}" >}}${next(
+                    node.content
+                )}{{< /contentful-hugo/asset-hyperlink >}}`;
             },
             [INLINES.ENTRY_HYPERLINK]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
                 return `{{< contentful-hugo/entry-hyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
-                    ''}" >}}${next(node.content)}{{< /entry-hyperlink >}} `;
+                    ''}" >}}${next(
+                    node.content
+                )}{{< /contentful-hugo/entry-hyperlink >}}`;
             },
             [INLINES.EMBEDDED_ENTRY]: (node, next) => {
                 const { id, contentType } = mapEntry(node.data.target);
