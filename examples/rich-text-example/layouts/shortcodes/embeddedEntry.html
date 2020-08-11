@@ -3,14 +3,22 @@
     "id", "contentType", and "parentContentType"
 -->
 
-<!-- replace with your own custom modules -->
-<div style="
-    background: darkred;
-    color: white;
-    border-radius: 5px;
-    padding: 25px; margin-bottom: 1rem">
-    <div><strong>Unconfigured Embedded Entry</strong></div>
-    <div>id: {{ .Get "id" }}</div>
-    <div>contentType: {{ .Get "contentType" }}</div>
-    <div>parentContentType: {{ .Get "parentContentType" }}</div>
-</div>
+{{ $entryId := .Get "id" }}
+{{ $contentType := .Get "contentType" }}
+
+{{ if eq $contentType "gallery" }}
+    <!-- render gallery partial if contentType === "gallery" -->
+    {{ partial "embedded-gallery-block.html" (dict "id" $entryId "Site" $.Site) }}
+{{ else }}
+    <!-- else render fallback message -->
+    <div style="
+        background: darkred;
+        color: white;
+        border-radius: 5px;
+        padding: 25px; margin-bottom: 1rem">
+        <div><strong>Unconfigured Embedded Entry</strong></div>
+        <div>id: {{ .Get "id" }}</div>
+        <div>contentType: {{ .Get "contentType" }}</div>
+        <div>parentContentType: {{ .Get "parentContentType" }}</div>
+    </div>
+{{ end }}
