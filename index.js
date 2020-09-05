@@ -4,8 +4,6 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const yargs = require('yargs');
-const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
-    .documentToPlainTextString;
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
@@ -14,11 +12,7 @@ yargs.options({
 });
 const argv = yargs.argv;
 
-const getAssetFields = require('./src/getAssetFields');
-const getEntryFields = require('./src/getEntryFields');
-const richTextNodes = require('./src/richTextNodes');
-const richTextToMarkdown = require('./src/richTextToMarkdown');
-const createFile = require('./src/createFile');
+const processEntry = require('./src/processEntry');
 const checkIfFinished = require('./src/checkIfFinished');
 const initializeDirectory = require('./src/initializeDirectory');
 
@@ -185,142 +179,7 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
 
             for (let i = 0; i < data.items.length; i++) {
                 const item = data.items[i];
-                const frontMatter = {};
-                if (contentSettings.isHeadless) {
-                    frontMatter.headless = true;
-                    mkdirp.sync(`.${contentSettings.directory + item.sys.id}`);
-                }
-                if (contentSettings.type) {
-                    frontMatter.type = contentSettings.type;
-                }
-                frontMatter.updated = item.sys.updatedAt;
-                frontMatter.createdAt = item.sys.createdAt;
-                frontMatter.date = item.sys.createdAt;
-                for (const field of Object.keys(item.fields)) {
-                    if (field === contentSettings.mainContent) {
-                        // skips to prevent duplicating mainContent in frontmatter
-                        continue;
-                    } else if (field === 'date') {
-                        // convert dates with time to ISO String so Hugo can properly Parse
-                        const d = item.fields[field];
-                        if (d.length > 10) {
-                            frontMatter.date = new Date(d).toISOString();
-                        } else {
-                            frontMatter.date = d;
-                        }
-                        continue;
-                    }
-                    const fieldContent = item.fields[field];
-                    switch (typeof fieldContent) {
-                        case 'object':
-                            if ('sys' in fieldContent) {
-                                frontMatter[field] = {};
-                                switch (fieldContent.sys.type) {
-                                    case 'Asset':
-                                        frontMatter[field] = getAssetFields(
-                                            fieldContent
-                                        );
-                                        break;
-                                    case 'Entry':
-                                        frontMatter[field] = getEntryFields(
-                                            fieldContent
-                                        );
-                                        break;
-                                    default:
-                                        frontMatter[field] = fieldContent;
-                                        break;
-                                }
-                            }
-                            // rich text (see rich text function)
-                            else if ('nodeType' in fieldContent) {
-                                frontMatter[field] = [];
-                                frontMatter[
-                                    `${field}_plaintext`
-                                ] = richTextToPlain(fieldContent);
-                                const nodes = fieldContent.content;
-                                for (let i = 0; i < nodes.length; i++) {
-                                    frontMatter[field].push(
-                                        richTextNodes(nodes[i])
-                                    );
-                                }
-                            }
-                            // arrays
-                            else {
-                                if (!fieldContent.length) {
-                                    frontMatter[field] = fieldContent;
-                                } else {
-                                    frontMatter[field] = [];
-                                    for (
-                                        let i = 0;
-                                        i < fieldContent.length;
-                                        i++
-                                    ) {
-                                        const arrayNode = fieldContent[i];
-                                        switch (typeof arrayNode) {
-                                            case 'object': {
-                                                let arrayObject = {};
-                                                switch (arrayNode.sys.type) {
-                                                    case 'Asset':
-                                                        arrayObject = getAssetFields(
-                                                            arrayNode
-                                                        );
-                                                        frontMatter[field].push(
-                                                            arrayObject
-                                                        );
-                                                        break;
-                                                    case 'Entry':
-                                                        arrayObject = getEntryFields(
-                                                            arrayNode
-                                                        );
-                                                        frontMatter[field].push(
-                                                            arrayObject
-                                                        );
-                                                        break;
-                                                    default:
-                                                        frontMatter[field].push(
-                                                            arrayNode
-                                                        );
-                                                        break;
-                                                }
-                                                break;
-                                            }
-                                            default:
-                                                frontMatter[field].push(
-                                                    arrayNode
-                                                );
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            frontMatter[field] = item.fields[field];
-                            break;
-                    }
-                }
-                let mainContent = null;
-                const mainContentField =
-                    item.fields[contentSettings.mainContent];
-                if (
-                    mainContentField &&
-                    mainContentField.nodeType &&
-                    mainContentField.nodeType === 'document'
-                ) {
-                    mainContent = richTextToMarkdown(
-                        mainContentField,
-                        item.sys.contentType.sys.id
-                    );
-                } else if (mainContentField) {
-                    mainContent = mainContentField;
-                }
-
-                createFile(
-                    contentSettings,
-                    item.sys.id,
-                    frontMatter,
-                    mainContent
-                );
+                processEntry(item, contentSettings);
                 itemCount++;
             }
 
