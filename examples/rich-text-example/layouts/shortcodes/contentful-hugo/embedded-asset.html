@@ -1,0 +1,65 @@
+<!--
+    For all assets you have access to the following parameters through .Get
+    "url", "assetType", "title", "description", "filename", "size", and "parentContentType"
+
+    For image assets you have also have access to:
+    "width", and "height"
+-->
+
+
+{{- $assetType := .Get "assetType" -}}
+{{- $title := .Get "title" -}}
+{{- $description := .Get "description" -}}
+
+
+<!-- default image block -->
+{{- if in $assetType "image" -}}
+    <figure>
+        <img
+            src='{{ .Get "url" }}?w=700&q=80'
+            alt='{{ if $description }}{{ $description }}{{ else }}{{ $title }}{{ end }}'
+            width="700"
+        />
+    </figure>
+
+
+<!-- default video block -->
+{{- else if in $assetType "video" -}}
+    <video width="100%" controls>
+        <source src='{{ .Get "url" }}' type='{{ $assetType }}'/>
+        Your browser doesn't support the video tag
+    </video>
+
+
+<!-- default audio block -->
+{{- else if in $assetType "audio" -}}
+    <audio controls>
+        <source src='{{ .Get "url" }}' type='{{ $assetType }}'/>
+        Your browser doesn't support the audio tag
+    </audio>
+
+
+<!-- fallback block -->
+{{- else -}}
+    <div
+        style="padding: 25px;
+        background: rgb(255, 231, 231);
+        color: red;
+        border-radius: 5px;
+        border: 1px solid red;
+        margin-bottom: 1rem;">
+        <div>
+            <strong>
+                Unconfigured Embedded Asset
+            </strong>
+        </div>
+        <div>
+            <div>title: {{ $title }}</div>
+            <div>description: {{ $description }}</div>
+            <div>assetType: {{ $assetType }}</div>
+            <div>parentContentType: {{ .Get "parentContentType" }}</div>
+            <div>size: {{ .Get "size" }} b</div>
+            <div>filename: {{ .Get "filename" }}</div>
+        </div>
+    </div>
+{{- end -}}

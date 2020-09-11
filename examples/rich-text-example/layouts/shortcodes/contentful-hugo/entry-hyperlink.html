@@ -1,0 +1,39 @@
+<!--
+    For all entries you have access to the following parameters through .Get
+    "id", "contentType", and "parentContentType"
+-->
+
+
+{{- $contentType := .Get "contentType" -}}
+{{- $entryId := .Get "id" -}}
+{{- $linkText := .Inner | markdownify -}}
+
+
+<!-- use contentType and id to determine the href for the link -->
+{{- if eq $contentType "__custom-content-type__" -}}
+    {{- $path := print "__path-to-content-type__/" $entryId ".md" -}}
+    {{- with $.Site.GetPage $path -}}
+        <a href="{{ .RelPermalink }}">{{ $linkText }}</a>
+    {{- else -}}
+        <a href="">[[Error rendering entry hyperlink]] {{ $linkText }}</a>
+    {{- end -}}
+
+
+<!-- hugo does a page find with entryId (Above method is probably more consistent and performant on large sites) -->
+{{- else if $.Site.GetPage $entryId -}}
+    <!--
+        this will throw an error if your entryId appears in more than one place in the /content director
+        (this can happen if the same contentType is listed twice in the config file for example)
+
+        if this happens you will need to add custom logic for that specific contentType before
+        this code block to prevent the error
+    -->
+    <a href="{{ with $.Site.GetPage }}{{ .RelPermalink }}{{ end }}">{{ $linkText }}</a>
+
+
+<!-- fallback message -->
+{{- else -}}
+    <a href="">[[This entry hyperlink is not configured]] {{ $linkText }}</a>
+
+
+{{- end -}}

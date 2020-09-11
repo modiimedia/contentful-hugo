@@ -1,0 +1,28 @@
+<!--
+    For all entries you have access to the following parameters through .Get
+    "id", "contentType", and "parentContentType"
+-->
+
+{{- $contentType := .Get "contentType" -}}
+
+<!-- render custom block or call partial depending on the contentType and/or parentContentType -->
+{{- if eq $contentType "__custom-content-type__" -}}
+
+
+<!-- fallback message -->
+{{- else -}}
+    <span
+        style="
+            background: rgb(255, 231, 231);
+            color: red;
+            border: 1px solid red;
+            padding: 0px 5px;
+            border-radius: 5px;"
+        >
+        <span><strong>Unconfigured Inline Entry</strong></span>
+        (<span>id: {{ .Get "id" }},</span>
+        <span>contentType: {{ .Get "contentType" }},</span>
+        <span>parentContentType: {{ .Get "parentContentType" }}</span>)
+    </span>
+{{- end -}}
+
