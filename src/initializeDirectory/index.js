@@ -44,6 +44,29 @@ const checkForConfig = async (override = false) => {
     return generateConfig(filepath);
 };
 
+const regex = /<<([^%>]+)?>>/g;
+
+const getVariablesFromTemplate = template => {
+    const params = template.match(regex);
+    return params;
+};
+
+const replaceVariablesWithValues = template => {
+    const values = {
+        '<<BACKGROUND_COLOR>>': 'rgb(255, 231, 231)',
+        '<<TEXT_COLOR>>': 'red',
+        '<<BORDER_COLOR>>': 'red',
+    };
+    const params = getVariablesFromTemplate(template);
+    let newTemplate = template;
+    if (params && params.length) {
+        for (const param of params) {
+            newTemplate = newTemplate.replace(param, values[param]);
+        }
+    }
+    return newTemplate;
+};
+
 const addShortcodes = async (override = false) => {
     console.log('adding shortcodes for rich text...');
     await wait(1000);
@@ -51,12 +74,12 @@ const addShortcodes = async (override = false) => {
     mkdirp.sync(directory);
     Object.keys(shortcodes).forEach(key => {
         const { filename, template } = shortcodes[key];
+        const finalTemplate = replaceVariablesWithValues(template);
         const filepath = `${directory}/${filename}`;
-
         if (fs.existsSync(filepath) && !override) {
             console.log(`${filepath} already exists`);
         } else {
-            fs.writeFileSync(filepath, template);
+            fs.writeFileSync(filepath, finalTemplate);
             console.log(`created ${filepath}`);
         }
     });
