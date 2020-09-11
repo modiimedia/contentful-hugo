@@ -41,7 +41,13 @@
 
 <!-- fallback block -->
 {{- else -}}
-    <div style="padding: 25px; background: red; color: white; border-radius: 5px; margin-bottom: 1rem;">
+    <div
+        style="padding: 25px;
+        background: <<BACKGROUND_COLOR>>;
+        color: <<TEXT_COLOR>>;
+        border-radius: 5px;
+        border: 1px solid <<BORDER_COLOR>>;
+        margin-bottom: 1rem;">
         <div>
             <strong>
                 Unconfigured Embedded Asset
