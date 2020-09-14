@@ -1,4 +1,8 @@
-const { replaceSpecialEntities, isMultilineString } = require('./strings');
+const {
+    replaceSpecialEntities,
+    isMultilineString,
+    removeLeadingAndTrailingSlashes,
+} = require('./strings');
 
 describe('Detect Multiline String', () => {
     test('Unescaped New Line', () => {
@@ -44,5 +48,38 @@ describe('Testing HTML Special Entity Replacements', () => {
         const input = `John &amp; Joseph are &gt; Mary &amp; Rachel concerning &quot;fitness&quot;. However, John &amp; Joseph are &lt; Mary &amp; Rachel concerning &quot;music&quot;.`;
         const expectedResult = `John & Joseph are > Mary & Rachel concerning "fitness". However, John & Joseph are < Mary & Rachel concerning "music".`;
         expect(replaceSpecialEntities(input)).toBe(expectedResult);
+    });
+});
+
+describe('file path', () => {
+    test('single leading slash', () => {
+        expect(removeLeadingAndTrailingSlashes('/content/posts/12345.md')).toBe(
+            'content/posts/12345.md'
+        );
+    });
+    test('double leading slashes', () => {
+        expect(
+            removeLeadingAndTrailingSlashes('//content/posts/12345.md')
+        ).toBe('content/posts/12345.md');
+    });
+    test('single trailing slash', () => {
+        expect(removeLeadingAndTrailingSlashes('content/posts/')).toBe(
+            'content/posts'
+        );
+    });
+    test('double trailing slashes', () => {
+        expect(removeLeadingAndTrailingSlashes('content/posts//')).toBe(
+            'content/posts'
+        );
+    });
+    test('single leading and trailing slash', () => {
+        expect(removeLeadingAndTrailingSlashes('/content/posts/')).toBe(
+            'content/posts'
+        );
+    });
+    test('double leading and trailing slashes', () => {
+        expect(
+            removeLeadingAndTrailingSlashes('//content/posts/something//')
+        ).toBe('content/posts/something');
     });
 });
