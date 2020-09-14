@@ -5,6 +5,10 @@ data
 .env
 resources
 public
+contentful-settings.**.yaml
 contentful-settings.yaml
+contentful-hugo.config.js
+contentful-hugo.config**.js
+contentful-hugo.yaml
 !examples/**/contentful-settings.yaml
 coverage
