@@ -53,6 +53,7 @@ const loadConfig = async (rootDir = '.', fileName = null) => {
     }
     const defaultConfigs = [
         'contentful-hugo.config.js',
+        'contentful-hugo.config.yaml',
         'contentful-hugo.yaml',
         'contentful-settings.yaml',
     ];
