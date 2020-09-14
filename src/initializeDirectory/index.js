@@ -1,8 +1,7 @@
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const shortcodes = require('./shortcodes');
-const yaml = require('js-yaml');
-const jsonToYaml = require('json-to-pretty-yaml');
+const { loadConfig } = require('../config');
 
 const wait = (milli = 1000) => {
     return new Promise((resolve, reject) => {
@@ -13,31 +12,26 @@ const wait = (milli = 1000) => {
 };
 
 const generateConfig = filepath => {
-    console.log('creating contentful-settings.yaml');
-    const settings = {
-        activationDelay: 0,
-        singleTypes: [
-            {
-                id: 'some-id',
-                directory: '/content/some-directory/',
-            },
-        ],
-        repeatableTypes: [],
-    };
-    const fileContent = jsonToYaml.stringify(settings);
-    fs.writeFileSync(filepath, fileContent);
+    console.log('creating contentful-hugo.config.js');
+    const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo for configuration instructions\n
+module.exports = {
+    singleTypes: [],
+    repeatableTypes: []
+};`;
+    fs.writeFileSync(filepath, configContent);
     console.log('config file created\n');
 };
 
 const checkForConfig = async (override = false) => {
     console.log('checking for config...');
     await wait(1000);
-    const filepath = './contentful-settings.yaml';
-    if (!fs.existsSync(filepath) || override) {
+    const config = await loadConfig();
+    const filepath = './contentful-hugo.config.js';
+    if (!config) {
         return generateConfig(filepath);
     }
-    const fileContent = yaml.safeLoad(fs.readFileSync(filepath));
-    if (fileContent.singleTypes || fileContent.repeatableTypes) {
+    const { singleTypes, repeatableTypes } = config;
+    if ((singleTypes, repeatableTypes)) {
         console.log('config already exists\n');
         return null;
     }
