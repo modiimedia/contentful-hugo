@@ -1,14 +1,14 @@
 require('dotenv').config();
 const contentful = require('contentful');
-const yaml = require('js-yaml');
-const fs = require('fs');
 const mkdirp = require('mkdirp');
 const yargs = require('yargs');
+const { loadConfig } = require('./src/config');
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
     init: { type: 'boolean', default: false },
-    wait: { type: 'number', default: 0 },
+    wait: { type: 'number', default: 0, alias: 'W' },
+    config: { type: 'string', default: null, alias: 'C' },
 });
 const argv = yargs.argv;
 
@@ -26,7 +26,9 @@ if (argv.init) {
     process.env.CONTENTFUL_SPACE &&
     (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
 ) {
-    initialize();
+    loadConfig('.', argv.config).then(config => {
+        initialize(config);
+    });
 } else {
     console.log(
         `\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN, CONTENTFUL_PREVIEW_TOKEN (optional)\n\nYou can set them using the command line or place them in a .env file.\n`
@@ -34,14 +36,10 @@ if (argv.init) {
 }
 
 // getting settings from config file
-async function initialize() {
-    const configFile = 'contentful-settings.yaml';
+async function initialize(config = null) {
     // check if configFile exist and throw error if it doesn't
     const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
-    if (fs.existsSync(configFile)) {
-        const config = yaml.safeLoad(
-            fs.readFileSync('contentful-settings.yaml')
-        );
+    if (config) {
         const waitTime = argv.wait;
         if (waitTime && typeof waitTime === 'number') {
             console.log(`waiting ${waitTime}ms...`);
@@ -54,79 +52,75 @@ async function initialize() {
         console.log(
             `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
         );
-        try {
-            // loop through repeatable content types
-            const types = config.repeatableTypes;
-            if (types) {
-                totalContentTypes += types.length;
-                for (let i = 0; i < types.length; i++) {
-                    // object to pass settings into the function
-                    const contentSettings = {
-                        typeId: types[i].id,
-                        directory: types[i].directory,
-                        isHeadless: types[i].isHeadless,
-                        fileExtension: types[i].fileExtension,
-                        titleField: types[i].title,
-                        dateField: types[i].dateField,
-                        mainContent: types[i].mainContent,
-                        type: types[i].type,
-                    };
-                    // check file extension settings
-                    switch (contentSettings.fileExtension) {
-                        case 'md':
-                        case 'yaml':
-                        case 'yml':
-                        case undefined:
-                        case null:
-                            getContentType(1000, 0, contentSettings);
-                            break;
-                        default:
-                            console.log(
-                                `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                            );
-                            break;
-                    }
+        // loop through repeatable content types
+        const types = config.repeatableTypes;
+        if (types) {
+            totalContentTypes += types.length;
+            for (let i = 0; i < types.length; i++) {
+                // object to pass settings into the function
+                const contentSettings = {
+                    typeId: types[i].id,
+                    directory: types[i].directory,
+                    isHeadless: types[i].isHeadless,
+                    fileExtension: types[i].fileExtension,
+                    titleField: types[i].title,
+                    dateField: types[i].dateField,
+                    mainContent: types[i].mainContent,
+                    type: types[i].type,
+                };
+                // check file extension settings
+                switch (contentSettings.fileExtension) {
+                    case 'md':
+                    case 'yaml':
+                    case 'yml':
+                    case undefined:
+                    case null:
+                        getContentType(1000, 0, contentSettings);
+                        break;
+                    default:
+                        console.log(
+                            `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                        );
+                        break;
                 }
             }
-            // loop through single content types
-            const singles = config.singleTypes;
-            if (singles) {
-                totalContentTypes += singles.length;
-                for (let i = 0; i < singles.length; i++) {
-                    const single = singles[i];
-                    const contentSettings = {
-                        typeId: single.id,
-                        directory: single.directory,
-                        fileExtension: single.fileExtension,
-                        fileName: single.fileName,
-                        titleField: single.title,
-                        dateField: single.dateField,
-                        mainContent: single.mainContent,
-                        isSingle: true,
-                        type: single.type,
-                    };
-                    switch (contentSettings.fileExtension) {
-                        case 'md':
-                        case 'yaml':
-                        case 'yml':
-                        case null:
-                        case undefined:
-                            getContentType(1, 0, contentSettings);
-                            break;
-                        default:
-                            console.log(
-                                `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                            );
-                            break;
-                    }
+        }
+        // loop through single content types
+        const singles = config.singleTypes;
+        if (singles) {
+            totalContentTypes += singles.length;
+            for (let i = 0; i < singles.length; i++) {
+                const single = singles[i];
+                const contentSettings = {
+                    typeId: single.id,
+                    directory: single.directory,
+                    fileExtension: single.fileExtension,
+                    fileName: single.fileName,
+                    titleField: single.title,
+                    dateField: single.dateField,
+                    mainContent: single.mainContent,
+                    isSingle: true,
+                    type: single.type,
+                };
+                switch (contentSettings.fileExtension) {
+                    case 'md':
+                    case 'yaml':
+                    case 'yml':
+                    case null:
+                    case undefined:
+                        getContentType(1, 0, contentSettings);
+                        break;
+                    default:
+                        console.log(
+                            `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                        );
+                        break;
                 }
             }
-        } catch (e) {
-            console.log(e);
         }
     } else {
         console.log(
-            `\nConfiguration file not found. Create a file called "contentful-settings.yaml" to get started.\nVisit https://github.com/ModiiMedia/contentful-hugo for configuration instructions\n`
+            `\nConfiguration file not found. Run "contentful-hugo --init" to get started.\nFor more detailed instructions visit https://github.com/ModiiMedia/contentful-hugo\n`
         );
     }
 }
