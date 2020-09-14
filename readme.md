@@ -153,13 +153,13 @@ module.exports = {
     singleTypes: [
         {
             id: 'homepage',
-            directory: '/content/',
+            directory: 'content',
             fileName: '_index',
             fileExtension: 'md',
         },
         {
             id: 'siteSettings',
-            directory: '/data/',
+            directory: 'data',
             fileName: 'settings',
             fileExtension: 'yaml',
         },
@@ -167,18 +167,18 @@ module.exports = {
     repeatableTypes: [
         {
             id: 'posts',
-            directory: '/content/posts/',
+            directory: 'content/posts',
             fileExtension: 'md',
             mainContent: 'content',
         },
         {
             id: 'seoFields',
             isHeadless: true,
-            directory: '/content/seo-fields/',
+            directory: 'content/seo-fields',
         },
         {
             id: 'reviews',
-            directory: '/content/reviews/',
+            directory: 'content/reviews',
             mainContent: 'reviewBody',
         },
     ],
@@ -194,13 +194,13 @@ singleTypes:
     # fetches only the most recently updated entry in a particular content type
     # Generated file will be named after the fileName setting
     - id: homepage
-      directory: /content/
+      directory: content
       fileName: _index
       fileExtension: md
 
       # this will generate a file named "_index.md" in the "content" directory
     - id: siteSettings
-      directory: /data/
+      directory: data
       fileName: settings
       fileExtension: yaml
       # this will generate a file named settings.yaml in the "data" directory
@@ -209,21 +209,21 @@ repeatableTypes:
     # fetches all the entries of a content type and places them in a directory.
     # Generated files will be named after their Entry ID in Contentful.
     - id: posts
-      directory: /content/posts/
+      directory: content/posts
       fileExtension: md
       mainContent: content
 
     - id: seoFields
       isHeadless: true
-      directory: /content/seo-fields/
+      directory: content/seo-fields
 
     - id: reviews
-      directory: /content/reviews/
+      directory: content/reviews
       mainContent: reviewBody
 
     - id: staff
       isHeadless: true
-      directory: /content/staff/
+      directory: content/staff
 ```
 
 #### **Config File Options**
@@ -231,7 +231,7 @@ repeatableTypes:
 | field         | required                         | description                                                                                                                                          |
 | ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | id            | required                         | contentful content type ID goes here                                                                                                                 |
-| directory     | required                         | directory where you want the file(s) to be generated (leading and trailing slashes required for the time being)                                      |
+| directory     | required                         | directory where you want the file(s) to be generated                                                                                                 |
 | fileName      | required (single types only)     | name of the file generated                                                                                                                           |
 | fileExtension | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                     |
 | isHeadless    | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
