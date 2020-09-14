@@ -49,11 +49,12 @@ contentful-hugo
 npx contentful-hugo
 ```
 
-### Optional Flags
+### Flags
 
-| flag      | aliases | description                                                                              |
-| --------- | ------- | ---------------------------------------------------------------------------------------- |
-| --preview | -P      | runs in preview mode, which pulls both published and unpublished entries from Contentful |
+| flag      | aliases | description                                                                                              |
+| --------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| --init    |         | Initialize the directory. Generates a config file and default shortcodes for contentful rich text fields |
+| --preview | -P      | runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 
 #### Preview Mode Example
 
@@ -206,8 +207,8 @@ If you're using Hugo you can access the information like below:
 
 ```html
 <img
-	src="{{ .Params.assetFieldName.url }}"
-	width="{{ .Params.assetFieldName.width }}"
+    src="{{ .Params.assetFieldName.url }}"
+    width="{{ .Params.assetFieldName.width }}"
 />
 ```
 
