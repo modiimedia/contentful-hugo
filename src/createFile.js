@@ -1,7 +1,14 @@
 const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
 
-module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
+/**
+ *
+ * @param {Object} contentSettings - Content settings object
+ * @param {String} entryId - The id of the Contentful entry
+ * @param {Object} frontMatter - Object containing all the data for frontmatter
+ * @param {String} mainContent - String data for the main content that will appear below the frontmatter
+ */
+const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
     let fileContent = '';
     if (
         contentSettings.fileExtension === 'md' ||
@@ -40,3 +47,5 @@ module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
         }
     });
 };
+
+module.exports = createFile;
