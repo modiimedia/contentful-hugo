@@ -3,6 +3,7 @@ const contentful = require('contentful');
 const mkdirp = require('mkdirp');
 const yargs = require('yargs');
 const { loadConfig } = require('./src/config');
+const { removeLeadingAndTrailingSlashes } = require('./src/strings');
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
@@ -169,7 +170,11 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
                 itemCount = 0;
             }
             // create directory for file
-            mkdirp.sync(`.${contentSettings.directory}`);
+            mkdirp.sync(
+                `./${removeLeadingAndTrailingSlashes(
+                    contentSettings.directory
+                )}`
+            );
 
             for (let i = 0; i < data.items.length; i++) {
                 const item = data.items[i];

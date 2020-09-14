@@ -1,5 +1,6 @@
 const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
+const { removeLeadingAndTrailingSlashes } = require('./strings');
 
 /**
  *
@@ -34,12 +35,16 @@ const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
 
     // create file
     let filePath = '';
-    if (contentSettings.isHeadless) {
-        filePath = `.${contentSettings.directory}/${entryId}/index.${contentSettings.fileExtension}`;
-    } else if (contentSettings.isSingle) {
-        filePath = `.${contentSettings.directory}/${contentSettings.fileName}.${contentSettings.fileExtension}`;
+    const directory = removeLeadingAndTrailingSlashes(
+        contentSettings.directory
+    );
+    const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
+    if (isHeadless) {
+        filePath = `./${directory}/${entryId}/index.${fileExtension}`;
+    } else if (isSingle) {
+        filePath = `./${directory}/${fileName}.${fileExtension}`;
     } else {
-        filePath = `.${contentSettings.directory}${entryId}.${contentSettings.fileExtension}`;
+        filePath = `./${directory}/${entryId}.${fileExtension}`;
     }
     return fs.writeFile(filePath, fileContent, error => {
         if (error) {
