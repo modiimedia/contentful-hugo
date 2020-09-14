@@ -11,6 +11,8 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   [Usage](#Usage)
 -   [Configuration](#Configuration)
 -   [Expected Output](#Expected-Output)
+    -   [Standard Fields](#Default-Date-and-Time-Fields)
+    -   [Richtext Fields](#Rich-Text-As-Main-Content)
 -   [Known Issues](#Known-Issues)
 
 ## Prerequisites
@@ -323,7 +325,7 @@ All files are named after their entry id in Contentful making it easy to retriev
 
 A rich text field that is set as the "mainContent" for a content type will be rendered as markdown for Hugo.
 
-Dynamic content such as embedded-entry-blocks are rendered as shortcodes with parameters included that can be used to fetch the necessary data.
+Dynamic content such as `embedded-entry-blocks` are rendered as shortcodes with parameters included that can be used to fetch the necessary data.
 
 ```md
 <!-- example embedded entry -->
@@ -341,6 +343,12 @@ The list of rich text short codes includes:
 -   contentful-hugo/embedded-entry.html
 -   contentful-hugo/entry-hyperlink.html
 -   contentful-hugo/inline-entry.html
+
+By default the richtext short codes will show a notification for an unconfigured item.
+
+![](images/unconfigured-embedded-entry.PNG)
+
+You can customize them by navigating to `layouts/shortcodes/contentful-hugo/{shortcode-name}.html`
 
 ### Rich Text In FrontMatter
 
