@@ -50,6 +50,7 @@ const loadConfig = async (rootDir = '.', fileName = null) => {
         if (result) {
             return result;
         }
+        throw new Error(`${fileName} does not exist or it is empty.`);
     }
     const defaultConfigs = [
         'contentful-hugo.config.js',
