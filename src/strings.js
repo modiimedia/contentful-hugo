@@ -1,3 +1,7 @@
+const removeLeadingAndTrailingSlashes = string => {
+    return string.replace(/^\/+|\/+$/g, '');
+};
+
 const isMultilineString = string => {
     const array = string.split(`\n`);
     if (array.length && array.length > 1) {
@@ -31,4 +35,5 @@ module.exports = {
     isMultilineString,
     replaceSpecialEntities,
     specialEntities,
+    removeLeadingAndTrailingSlashes,
 };
