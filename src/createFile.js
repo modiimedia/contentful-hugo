@@ -1,6 +1,7 @@
 const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
 const { removeLeadingAndTrailingSlashes } = require('./strings');
+const mkdirp = require('mkdirp');
 
 /**
  *
@@ -40,6 +41,7 @@ const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
     );
     const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
     if (isHeadless) {
+        mkdirp.sync(`./${directory}/${entryId}`);
         filePath = `./${directory}/${entryId}/index.${fileExtension}`;
     } else if (isSingle) {
         filePath = `./${directory}/${fileName}.${fileExtension}`;
