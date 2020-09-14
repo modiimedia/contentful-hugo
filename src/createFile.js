@@ -1,7 +1,16 @@
 const YAML = require('json-to-pretty-yaml');
 const fs = require('fs');
+const { removeLeadingAndTrailingSlashes } = require('./strings');
+const mkdirp = require('mkdirp');
 
-module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
+/**
+ *
+ * @param {Object} contentSettings - Content settings object
+ * @param {String} entryId - The id of the Contentful entry
+ * @param {Object} frontMatter - Object containing all the data for frontmatter
+ * @param {String} mainContent - String data for the main content that will appear below the frontmatter
+ */
+const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
     let fileContent = '';
     if (
         contentSettings.fileExtension === 'md' ||
@@ -27,12 +36,17 @@ module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
 
     // create file
     let filePath = '';
-    if (contentSettings.isHeadless) {
-        filePath = `.${contentSettings.directory}/${entryId}/index.${contentSettings.fileExtension}`;
-    } else if (contentSettings.isSingle) {
-        filePath = `.${contentSettings.directory}/${contentSettings.fileName}.${contentSettings.fileExtension}`;
+    const directory = removeLeadingAndTrailingSlashes(
+        contentSettings.directory
+    );
+    const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
+    if (isHeadless) {
+        mkdirp.sync(`./${directory}/${entryId}`);
+        filePath = `./${directory}/${entryId}/index.${fileExtension}`;
+    } else if (isSingle) {
+        filePath = `./${directory}/${fileName}.${fileExtension}`;
     } else {
-        filePath = `.${contentSettings.directory}${entryId}.${contentSettings.fileExtension}`;
+        filePath = `./${directory}/${entryId}.${fileExtension}`;
     }
     return fs.writeFile(filePath, fileContent, error => {
         if (error) {
@@ -40,3 +54,5 @@ module.exports = (contentSettings, entryId, frontMatter, mainContent) => {
         }
     });
 };
+
+module.exports = createFile;

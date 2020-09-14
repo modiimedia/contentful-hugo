@@ -1,0 +1,8 @@
+{{ $galleryFile := print "galleries/" .id "/index.md" }}
+{{ with $.Site.GetPage $galleryFile }}
+    <div style="margin-bottom: 1rem;">
+        {{ range .Params.photos }}
+            <img src="{{ .url }}?w=120&h=200&fit=fill" alt="{{ .title }}">
+        {{ end }}
+    </div>
+{{ end }}

@@ -1,44 +1,54 @@
 const getEntryFields = require('./getEntryFields');
 const getAssetFields = require('./getAssetFields');
 
+const mapDataNode = node => {
+    const { target } = node;
+    if (target) {
+        if (target.sys) {
+            switch (target.sys.type) {
+                case 'Entry':
+                    return getEntryFields(target);
+                case 'Asset':
+                    return getAssetFields(target);
+            }
+        } else {
+            console.log(node);
+        }
+    }
+    return node;
+};
+
+const mapContentNode = node => {
+    const contentArr = [];
+    for (const item of node) {
+        contentArr.push(richTextNodes(item));
+    }
+    return contentArr;
+};
+
+const mapMarks = node => {
+    const markArr = [];
+    for (const item of node) {
+        markArr.push(item.type);
+    }
+    return markArr;
+};
+
 const richTextNodes = node => {
     const fieldContent = {};
     for (const field of Object.keys(node)) {
+        const subNode = node[field];
         switch (field) {
             case 'data': {
-                const t = node[field].target;
-                if (t) {
-                    if (t.sys) {
-                        switch (t.sys.type) {
-                            case 'Entry':
-                                fieldContent[field] = getEntryFields(t);
-                                break;
-                            case 'Asset':
-                                fieldContent[field] = getAssetFields(t);
-                                break;
-                        }
-                    } else {
-                        console.log(node[field]);
-                    }
-                } else {
-                    fieldContent[field] = node[field];
-                }
+                fieldContent[field] = mapDataNode(subNode);
                 break;
             }
             case 'content': {
-                const contentArr = [];
-                for (const item of node[field]) {
-                    contentArr.push(richTextNodes(item));
-                }
-                fieldContent[field] = contentArr;
+                fieldContent[field] = mapContentNode(subNode);
                 break;
             }
             case 'marks': {
-                const markArr = [];
-                for (const item of node[field]) {
-                    markArr.push(item.type);
-                }
-                fieldContent[field] = markArr;
+                fieldContent[field] = mapMarks(subNode);
                 break;
             }
             default:

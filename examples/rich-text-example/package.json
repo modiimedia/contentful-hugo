@@ -1,0 +1,16 @@
+{
+    "name": "rich-text-example",
+    "version": "1.0.0",
+    "description": "In this repo I've created a couple posts with a field that mimicks the markup created by a rich text field in Contentful. You can use this as a reference when building a site that uses Rich Text.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prestart": "contentful-hugo",
+        "start": "hugo server"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "contentful-hugo": "file:../.."
+    }
+}

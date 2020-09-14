@@ -1,0 +1,9 @@
+{{- $type := .This.data.assetType -}}
+{{- $url := .This.data.url -}}
+<a href="
+    {{- if eq $type "image/jpeg" }}
+        {{- $url -}}?w=1920&q=80
+    {{- else -}}
+        {{- $url -}}
+    {{- end -}}
+    " target="_blank">{{- partial "rich-text/node-checker.html" (dict "This" .This "Site" .Site) -}}</a>

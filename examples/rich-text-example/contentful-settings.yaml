@@ -1,0 +1,10 @@
+singleTypes:
+repeatableTypes:
+    - id: gallery
+      directory: /content/galleries/
+      isHeadless: true
+    - id: post
+      directory: /content/posts/
+      type: blog
+      isHeadless: false
+      mainContent: 'mainContent'

@@ -26,13 +26,16 @@
         "url": "https://www.modiimedia.com"
     },
     "scripts": {
-        "test": "jest",
+        "test": "jest --coverage",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "lint:fix": "eslint . --fix",
+        "postinstall": "node postinstall.js"
     },
     "license": "ISC",
     "dependencies": {
+        "@contentful/rich-text-html-renderer": "^13.4.0",
         "@contentful/rich-text-plain-text-renderer": "^13.4.0",
+        "@contentful/rich-text-types": "^14.1.0",
         "contentful": "^7.14.6",
         "dotenv": "^7.0.0",
         "js-yaml": "^3.14.0",

@@ -1,4 +1,10 @@
-module.exports = contentfulObject => {
+/**
+ *
+ * @param {Object} contentfulObject
+ * @param {Object} contentfulObject.sys
+ * @param {Object} contentfulObject.fields
+ */
+const getAssetFields = contentfulObject => {
     const frontMatter = {};
     let assetType = '';
     if (contentfulObject.fields.file) {
@@ -18,3 +24,5 @@ module.exports = contentfulObject => {
     }
     return frontMatter;
 };
+
+module.exports = getAssetFields;

@@ -1,0 +1,10 @@
+
+{{ $contentType := .This.data.contentType }}
+{{- $partial := print "rich-text/inline-entry-blocks/" $contentType ".html" -}}
+
+{{- $partialCheck := print "layouts/partials/" $partial -}}
+{{- if fileExists $partialCheck -}}
+    {{- partial $partial .This -}}
+{{- else -}}
+    {{- partial "rich-text/node-not-found.html" (dict "Template" $contentType "Directory" "embedded-asset-blocks") -}}
+{{- end -}}
