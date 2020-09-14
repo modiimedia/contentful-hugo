@@ -40,12 +40,17 @@ Complete [configuration](#configuration) then run the following command(s) in th
 #### When Installed Globally
 
 ```powershell
+## initialize the directory
+contentful-hugo --init
+
+## fetch from contentful
 contentful-hugo
 ```
 
 #### When Installed Locally
 
 ```powershell
+npx contentful-hugo --init
 npx contentful-hugo
 ```
 
@@ -53,13 +58,21 @@ npx contentful-hugo
 
 | flag      | aliases | description                                                                                              |
 | --------- | ------- | -------------------------------------------------------------------------------------------------------- |
-| --init    |         | Initialize the directory. Generates a config file and default shortcodes for contentful rich text fields |
-| --preview | -P      | runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
+| --init    |         | Initialize the directory. Generates a config file and default shortcodes for Contentful rich text fields |
+| --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
+| --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
+| --config  | -C      | Specific the path to a config file.                                                                      |
 
 #### Preview Mode Example
 
 ```powershell
 contentful-hugo --preview
+```
+
+#### Multiple Flags Example
+
+```powershell
+contentful-hugo --wait=2000 --preview --config="my_custom_config.js"
 ```
 
 ### Example Package.json
@@ -122,11 +135,61 @@ export CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 
 ### Config File
 
-In order to pull the data you want you will need to create a **contentful-settings.yaml** file in the root of your repository.
+In order to pull the data you want you will need to create a config file in the root of your repository. Contentful-hugo by default will search for the following files as a config.
 
-Example **contentful-settings.yaml** file (see below for complete configuration options)
+-   `contentful-hugo.config.js`
+-   `contentful-hugo.config.yaml`
+-   `contentful-hugo.yaml`
+-   `contentful-settings.yaml`
+
+You can also specify a custom config file using the `--config` flag. (Javascript or YAML config files are the only currently accepted filetypes)
+
+#### Example Javascript Config
+
+```javascript
+// contentful-hugo.config.js
+
+module.exports = {
+    singleTypes: [
+        {
+            id: 'homepage',
+            directory: '/content/',
+            fileName: '_index',
+            fileExtension: 'md',
+        },
+        {
+            id: 'siteSettings',
+            directory: '/data/',
+            fileName: 'settings',
+            fileExtension: 'yaml',
+        },
+    ],
+    repeatableTypes: [
+        {
+            id: 'posts',
+            directory: '/content/posts/',
+            fileExtension: 'md',
+            mainContent: 'content',
+        },
+        {
+            id: 'seoFields',
+            isHeadless: true,
+            directory: '/content/seo-fields/',
+        },
+        {
+            id: 'reviews',
+            directory: '/content/reviews/',
+            mainContent: 'reviewBody',
+        },
+    ],
+};
+```
+
+#### Example YAML Config
 
 ```yaml
+# contentful-hugo.config.yaml
+
 singleTypes:
     # fetches only the most recently updated entry in a particular content type
     # Generated file will be named after the fileName setting
@@ -163,7 +226,7 @@ repeatableTypes:
       directory: /content/staff/
 ```
 
-**Configuration Options**
+#### **Config File Options**
 
 | field         | required                         | description                                                                                                                                          |
 | ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -256,7 +319,30 @@ All files are named after their entry id in Contentful making it easy to retriev
 {{ end }}
 ```
 
-### Rich Text Fields
+### Rich Text As Main Content
+
+A rich text field that is set as the "mainContent" for a content type will be rendered as markdown for Hugo.
+
+Dynamic content such as embedded-entry-blocks are rendered as shortcodes with parameters included that can be used to fetch the necessary data.
+
+```md
+<!-- example embedded entry -->
+<!-- you can use the id, contentType, and parentContentType parameters to fetch the desired data -->
+
+{{< contentful-hugo/embedded-entry id="nTLo2ffSJJp5QrnrO5IU9" contentType="gallery" parentContentType="post" >}}
+```
+
+Before fetching rich text data make sure you have run `contentful-hugo --init` so that you will have all the rich text shortcodes. Once you have these shortcodes you can extend and modify them to suit your needs.
+
+The list of rich text short codes includes:
+
+-   contentful-hugo/asset-hyperlink.html
+-   contentful-hugo/embedded-asset.html
+-   contentful-hugo/embedded-entry.html
+-   contentful-hugo/entry-hyperlink.html
+-   contentful-hugo/inline-entry.html
+
+### Rich Text In FrontMatter
 
 A Rich text field will produce nested arrays mirroring the JSON structure that they have in the API. Each node will need to be looped through and produce HTML depending on the nodeType field.
 
@@ -303,4 +389,8 @@ richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with i
 These are some known issues.
 
 -   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
--   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue it might be worth it to create a "wait function" just to delay fetching the data by a couple seconds. You could include it in the script you use contentful-hugo by doing something like the following `"node wait.js && contentful-hugo"`
+-   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue add teh the `--wait` flag to your script. Here's an example where we wait an additional 6 seconds `contentful-hugo --wait=6000`.
+
+```
+
+```
