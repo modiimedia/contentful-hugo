@@ -1,2 +1,4 @@
 #!/usr/bin/env node
-require('./index.js');
+const contentfulHugo = require('./index.js');
+
+contentfulHugo();

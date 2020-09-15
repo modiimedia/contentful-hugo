@@ -21,24 +21,24 @@ const initializeDirectory = require('./src/initializeDirectory');
 let totalContentTypes = 0;
 let typesExtracted = 0;
 
-if (argv.init) {
-    initializeDirectory();
-} else if (
-    process.env.CONTENTFUL_SPACE &&
-    (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
-) {
-    loadConfig('.', argv.config).then(config => {
-        initialize(config);
-    });
-} else {
-    console.log(
+const initialize = () => {
+    if (argv.init) {
+        return initializeDirectory();
+    }
+    if (
+        process.env.CONTENTFUL_SPACE &&
+        (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
+    ) {
+        return loadConfig('.', argv.config).then(config => {
+            fetchDataFromContentful(config);
+        });
+    }
+    return console.error(
         `\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN, CONTENTFUL_PREVIEW_TOKEN (optional)\n\nYou can set them using the command line or place them in a .env file.\n`
     );
-}
+};
 
-// getting settings from config file
-async function initialize(config = null) {
-    // check if configFile exist and throw error if it doesn't
+async function fetchDataFromContentful(config = null) {
     const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
     if (config) {
         const waitTime = argv.wait;
@@ -216,3 +216,5 @@ function getContentType(limit, skip, contentSettings, itemsPulled) {
             }
         });
 }
+
+module.exports = initialize;
