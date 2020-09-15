@@ -182,6 +182,10 @@ module.exports = {
                     field: 'author',
                     resolveTo: 'fields.name',
                 },
+                {
+                    field: 'relatedPosts',
+                    resolveTo: 'sys.id',
+                },
             ],
         },
         {
@@ -230,6 +234,8 @@ repeatableTypes:
             resolveTo: fields.slug
           - field: author
             resolveTo: fields.name
+          - field: relatedPosts
+            resolveTo: sys.id
 
     - id: seoFields
       isHeadless: true
