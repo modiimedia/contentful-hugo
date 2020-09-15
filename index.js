@@ -59,18 +59,30 @@ async function fetchDataFromContentful(config = null) {
             totalContentTypes += types.length;
             for (let i = 0; i < types.length; i++) {
                 // object to pass settings into the function
+                const {
+                    id,
+                    directory,
+                    isHeadless,
+                    fileExtension,
+                    title,
+                    dateField,
+                    mainContent,
+                    type,
+                    resolveEntries,
+                } = types[i];
                 const contentSettings = {
-                    typeId: types[i].id,
-                    directory: types[i].directory,
-                    isHeadless: types[i].isHeadless,
-                    fileExtension: types[i].fileExtension,
-                    titleField: types[i].title,
-                    dateField: types[i].dateField,
-                    mainContent: types[i].mainContent,
-                    type: types[i].type,
+                    typeId: id,
+                    directory: directory,
+                    isHeadless: isHeadless,
+                    fileExtension: fileExtension,
+                    titleField: title,
+                    dateField: dateField,
+                    mainContent: mainContent,
+                    type: type,
+                    resolveEntries,
                 };
                 // check file extension settings
-                switch (contentSettings.fileExtension) {
+                switch (fileExtension) {
                     case 'md':
                     case 'yaml':
                     case 'yml':
@@ -92,16 +104,28 @@ async function fetchDataFromContentful(config = null) {
             totalContentTypes += singles.length;
             for (let i = 0; i < singles.length; i++) {
                 const single = singles[i];
+                const {
+                    id,
+                    directory,
+                    fileExtension,
+                    fileName,
+                    title,
+                    dateField,
+                    mainContent,
+                    resolveEntries,
+                    type,
+                } = single;
                 const contentSettings = {
-                    typeId: single.id,
-                    directory: single.directory,
-                    fileExtension: single.fileExtension,
-                    fileName: single.fileName,
-                    titleField: single.title,
-                    dateField: single.dateField,
-                    mainContent: single.mainContent,
+                    typeId: id,
+                    directory: directory,
+                    fileExtension: fileExtension,
+                    fileName: fileName,
+                    titleField: title,
+                    dateField: dateField,
+                    mainContent: mainContent,
                     isSingle: true,
-                    type: single.type,
+                    type: type,
+                    resolveEntries,
                 };
                 switch (contentSettings.fileExtension) {
                     case 'md':
@@ -128,6 +152,13 @@ async function fetchDataFromContentful(config = null) {
 
 /// get content for a single content type ///
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
+/**
+ *
+ * @param {Number} limit
+ * @param {Number} skip
+ * @param {Object} contentSettings
+ * @param {Number} itemsPulled
+ */
 function getContentType(limit, skip, contentSettings, itemsPulled) {
     let previewMode = false;
     if (argv.preview) {
