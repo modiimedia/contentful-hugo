@@ -64,7 +64,7 @@ npx contentful-hugo
 | --init    |         | Initialize the directory. Generates a config file and default shortcodes for Contentful rich text fields |
 | --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 | --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
-| --config  | -C      | Specific the path to a config file.                                                                      |
+| --config  | -C      | Specify the path to a config file.                                                                       |
 
 #### Preview Mode Example
 
