@@ -1,4 +1,4 @@
-const { mapArrayField } = require('./mapper');
+const { mapArrayField, resolveField } = require('./mapper');
 
 const assetFactory = (
     title,
@@ -69,5 +69,56 @@ describe('Array Fields', () => {
         expect(fieldValue[0].width).toBe(1200);
         expect(fieldValue[1].assetType).toBe('image/jpeg');
         expect(fieldValue[1].width).toBe(100);
+    });
+});
+
+describe('resolveable entries', () => {
+    test('single entry', () => {
+        const entry = {
+            sys: {
+                id: 'my-id',
+            },
+            fields: {
+                title: 'My Awesome Title',
+                slug: 'my-awesome-title',
+                content: 'content goes here',
+            },
+        };
+        const result = resolveField(entry, 'fields.slug');
+        expect(result).toBe('my-awesome-title');
+    });
+    test('array of entries', () => {
+        const entries = [
+            {
+                sys: {
+                    id: 'entry-1',
+                },
+                fields: {
+                    title: 'My Entry 1',
+                },
+            },
+            {
+                sys: {
+                    id: 'entry-2',
+                },
+                fields: {
+                    title: 'My Entry 2',
+                },
+            },
+        ];
+        const result = resolveField(entries, 'sys.id');
+        expect(result[0]).toBe('entry-1');
+        expect(result[1]).toBe('entry-2');
+    });
+    test('single asset', () => {
+        const asset = assetFactory(
+            'my asset',
+            'my asset description',
+            'https://source.unsplash.com/200x200',
+            'my-image.jpg',
+            'image/jpeg'
+        );
+        const result = resolveField(asset, 'fields.file.url');
+        expect(result).toBe('https://source.unsplash.com/200x200');
     });
 });

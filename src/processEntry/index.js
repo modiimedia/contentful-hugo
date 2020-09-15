@@ -19,8 +19,21 @@ const processEntry = (
         mainContent: null,
     }
 ) => {
-    const { directory, headless, type, mainContent } = contentSettings;
-    const frontMatter = mapFields(item, directory, headless, type, mainContent);
+    const {
+        directory,
+        headless,
+        type,
+        mainContent,
+        resolveEntries,
+    } = contentSettings;
+    const frontMatter = mapFields(
+        item,
+        directory,
+        headless,
+        type,
+        mainContent,
+        resolveEntries
+    );
     const content = getMainContent(item, contentSettings.mainContent);
     createFile(contentSettings, item.sys.id, frontMatter, content);
 };

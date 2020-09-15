@@ -67,12 +67,56 @@ const mapRichTextField = fieldContent => {
     };
 };
 
+const shouldResolve = (fieldName, resolve = []) => {
+    for (const item of resolve) {
+        if (fieldName === item.field) {
+            console.log(item);
+            return item;
+        }
+    }
+    return false;
+};
+
+/**
+ *
+ * @param {Object} entry - contentful entry or array of contentful entries
+ * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
+ */
+const resolveEntry = (entry, resolvesToString = null) => {
+    const props = resolvesToString.split('.');
+    let value = entry;
+    for (const prop of props) {
+        value = value[prop];
+    }
+    return value;
+};
+
+/**
+ *
+ * @param {Object} fieldContent - contentful entry or array of contentful entries
+ * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
+ */
+const resolveField = (fieldContent = {}, resolvesToString = null) => {
+    if (!resolvesToString || typeof fieldContent !== 'object') {
+        return null;
+    }
+    if (Array.isArray(fieldContent)) {
+        const fieldValue = [];
+        for (const entry of fieldContent) {
+            fieldValue.push(resolveEntry(entry, resolvesToString));
+        }
+        return fieldValue;
+    }
+    return resolveEntry(fieldContent, resolvesToString);
+};
+
 const mapFields = (
     entry,
     dirName = null,
     isHeadless = false,
     type = null,
-    mainContentField = null
+    mainContentField = null,
+    resolveList = []
 ) => {
     const frontMatter = {};
     if (isHeadless) {
@@ -87,6 +131,14 @@ const mapFields = (
     frontMatter.date = entry.sys.createdAt;
     for (const field of Object.keys(entry.fields)) {
         const fieldContent = entry.fields[field];
+        const fieldResolver = shouldResolve(field, resolveList);
+        if (fieldResolver) {
+            frontMatter[field] = resolveField(
+                fieldContent,
+                fieldResolver.resolveTo
+            );
+            continue;
+        }
         if (field === mainContentField) {
             // skips to prevent duplicating mainContent in frontmatter
             continue;
@@ -156,4 +208,6 @@ module.exports = {
     mapReferenceField,
     mapRichTextField,
     getMainContent,
+    resolveEntry,
+    resolveField,
 };
