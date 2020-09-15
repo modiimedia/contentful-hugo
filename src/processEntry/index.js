@@ -21,7 +21,7 @@ const processEntry = (
 ) => {
     const {
         directory,
-        headless,
+        isHeadless,
         type,
         mainContent,
         resolveEntries,
@@ -29,7 +29,7 @@ const processEntry = (
     const frontMatter = mapFields(
         item,
         directory,
-        headless,
+        isHeadless,
         type,
         mainContent,
         resolveEntries
