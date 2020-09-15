@@ -13,6 +13,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   [Expected Output](#Expected-Output)
     -   [Standard Fields](#Default-Date-and-Time-Fields)
     -   [Richtext Fields](#Rich-Text-As-Main-Content)
+    -   [Resolving Reference Fields](#The-Resolve-Entries-Parameter)
 -   [Known Issues](#Known-Issues)
 
 ## Prerequisites
@@ -172,6 +173,16 @@ module.exports = {
             directory: 'content/posts',
             fileExtension: 'md',
             mainContent: 'content',
+            resolveEntries: [
+                {
+                    field: 'categories',
+                    resolveTo: 'fields.slug',
+                },
+                {
+                    field: 'author',
+                    resolveTo: 'fields.name',
+                },
+            ],
         },
         {
             id: 'seoFields',
@@ -214,6 +225,11 @@ repeatableTypes:
       directory: content/posts
       fileExtension: md
       mainContent: content
+      resolveEntries: # resolves a reference or asset field to a specific property
+          - field: categories
+            resolveTo: fields.slug
+          - field: author
+            resolveTo: fields.name
 
     - id: seoFields
       isHeadless: true
@@ -230,15 +246,16 @@ repeatableTypes:
 
 #### **Config File Options**
 
-| field         | required                         | description                                                                                                                                          |
-| ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id            | required                         | contentful content type ID goes here                                                                                                                 |
-| directory     | required                         | directory where you want the file(s) to be generated                                                                                                 |
-| fileName      | required (single types only)     | name of the file generated                                                                                                                           |
-| fileExtension | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                     |
-| isHeadless    | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
-| mainContent   | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                   |
-| type          | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                        |
+| field          | required                         | description                                                                                                                                          |
+| -------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id             | required                         | contentful content type ID goes here                                                                                                                 |
+| directory      | required                         | directory where you want the file(s) to be generated                                                                                                 |
+| fileName       | required (single types only)     | name of the file generated                                                                                                                           |
+| fileExtension  | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                     |
+| isHeadless     | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
+| mainContent    | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                   |
+| type           | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                        |
+| resolveEntries | optional                         | resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                        |
 
 ## Expected Output
 
@@ -391,6 +408,44 @@ In addition a plaintext version of the field will be generated using the field I
 ```yaml
 richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with italicized text.'
 ```
+
+### The Resolve Entries Parameter
+
+The resolve entries option let's you specify a field from a referenced entry or asset to resolve that field value you. For example say you have a `category` content type that is referenced in `posts`. Normally contentful-hugo will give the following result
+
+```yaml
+category:
+    id: some-entry-id
+    contentType: category
+```
+
+While this makes it easy to find the category, this format does not allow you to use Hugo's built in taxonomy features. With the `resolveEntries` parameter you can remedy this.
+
+```js
+// from the config file
+module.exports = {
+    repeatableTypes: [
+        {
+            id: 'post',
+            directory: 'content/posts',
+            resolveEntries: [
+                {
+                    field: 'category',
+                    resolveTo: 'fields.slug',
+                },
+            ],
+        },
+    ],
+};
+```
+
+Now the category field will only display the slug as the value.
+
+```yaml
+category: my-category-slug
+```
+
+The resolve entries feature works with both reference fields and asset fields. (As well as multiple reference and multiple asset fields)
 
 ## Known Issues
 
