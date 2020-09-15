@@ -70,7 +70,6 @@ const mapRichTextField = fieldContent => {
 const shouldResolve = (fieldName, resolve = []) => {
     for (const item of resolve) {
         if (fieldName === item.field) {
-            console.log(item);
             return item;
         }
     }
