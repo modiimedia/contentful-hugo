@@ -164,6 +164,11 @@ const options = parentContentType => {
     };
 };
 
+/**
+ * Convert a contentful richtext field to markdown
+ * @param {Object} document - Contentful richtext field
+ * @param {String} contentType - Content type id
+ */
 const richTextToMarkdown = (document, contentType) => {
     const string = documentToHtmlString(document, options(contentType));
     return `\n${replaceSpecialEntities(string)}`;

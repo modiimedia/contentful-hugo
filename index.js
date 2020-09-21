@@ -1,9 +1,8 @@
 require('dotenv').config();
-const contentful = require('contentful');
-const mkdirp = require('mkdirp');
 const yargs = require('yargs');
 const { loadConfig } = require('./src/config');
-const { removeLeadingAndTrailingSlashes } = require('./src/strings');
+const getContentType = require('./src/getContentType');
+const getContentTypeResultMessage = require('./src/getContentTypeResultMessage');
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
@@ -13,13 +12,7 @@ yargs.options({
 });
 const argv = yargs.argv;
 
-const processEntry = require('./src/processEntry');
-const checkIfFinished = require('./src/checkIfFinished');
 const initializeDirectory = require('./src/initializeDirectory');
-
-// counter variables
-let totalContentTypes = 0;
-let typesExtracted = 0;
 
 const initialize = () => {
     if (argv.init) {
@@ -38,214 +31,142 @@ const initialize = () => {
     );
 };
 
-async function fetchDataFromContentful(config = null) {
-    const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
-    if (config) {
-        const waitTime = argv.wait;
-        if (waitTime && typeof waitTime === 'number') {
-            console.log(`waiting ${waitTime}ms...`);
-            await new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve();
-                }, waitTime);
-            });
-        }
-        console.log(
-            `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
-        );
-        // loop through repeatable content types
-        const types = config.repeatableTypes;
-        if (types) {
-            totalContentTypes += types.length;
-            for (let i = 0; i < types.length; i++) {
-                // object to pass settings into the function
-                const {
-                    id,
-                    directory,
-                    isHeadless,
-                    fileExtension,
-                    title,
-                    dateField,
-                    mainContent,
-                    type,
-                    resolveEntries,
-                } = types[i];
-                const contentSettings = {
-                    typeId: id,
-                    directory: directory,
-                    isHeadless: isHeadless,
-                    fileExtension: fileExtension,
-                    titleField: title,
-                    dateField: dateField,
-                    mainContent: mainContent,
-                    type: type,
-                    resolveEntries,
-                };
-                // check file extension settings
-                switch (fileExtension) {
-                    case 'md':
-                    case 'yaml':
-                    case 'yml':
-                    case undefined:
-                    case null:
-                        getContentType(1000, 0, contentSettings);
-                        break;
-                    default:
-                        console.log(
-                            `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                        );
-                        break;
-                }
-            }
-        }
-        // loop through single content types
-        const singles = config.singleTypes;
-        if (singles) {
-            totalContentTypes += singles.length;
-            for (let i = 0; i < singles.length; i++) {
-                const single = singles[i];
-                const {
-                    id,
-                    directory,
-                    fileExtension,
-                    fileName,
-                    title,
-                    dateField,
-                    mainContent,
-                    resolveEntries,
-                    type,
-                } = single;
-                const contentSettings = {
-                    typeId: id,
-                    directory: directory,
-                    fileExtension: fileExtension,
-                    fileName: fileName,
-                    titleField: title,
-                    dateField: dateField,
-                    mainContent: mainContent,
-                    isSingle: true,
-                    type: type,
-                    resolveEntries,
-                };
-                switch (contentSettings.fileExtension) {
-                    case 'md':
-                    case 'yaml':
-                    case 'yml':
-                    case null:
-                    case undefined:
-                        getContentType(1, 0, contentSettings);
-                        break;
-                    default:
-                        console.log(
-                            `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                        );
-                        break;
-                }
-            }
-        }
-    } else {
-        console.log(
-            `\nConfiguration file not found. Run "contentful-hugo --init" to get started.\nFor more detailed instructions visit https://github.com/ModiiMedia/contentful-hugo\n`
-        );
-    }
-}
-
-/// get content for a single content type ///
-// itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
-/**
- *
- * @param {Number} limit
- * @param {Number} skip
- * @param {Object} contentSettings
- * @param {Number} itemsPulled
- */
-function getContentType(limit, skip, contentSettings, itemsPulled) {
-    let previewMode = false;
-    if (argv.preview) {
-        previewMode = true;
-    }
-    if (previewMode && !process.env.CONTENTFUL_PREVIEW_TOKEN) {
-        throw new Error(
-            'Environment variable CONTENTFUL_PREVIEW_TOKEN not set'
-        );
-    } else if (!previewMode && !process.env.CONTENTFUL_TOKEN) {
-        throw new Error('Environment variable CONTENTFUL_TOKEN not set');
-    }
-    const options = {
-        space: process.env.CONTENTFUL_SPACE,
-        host: previewMode ? 'preview.contentful.com' : 'cdn.contentful.com',
-        accessToken: previewMode
-            ? process.env.CONTENTFUL_PREVIEW_TOKEN
-            : process.env.CONTENTFUL_TOKEN,
-    };
-    const client = contentful.createClient(options);
-
-    // check for file extension default to markdown
-    if (!contentSettings.fileExtension) {
-        contentSettings.fileExtension = 'md';
-    }
-
-    client
-        .getEntries({
-            content_type: contentSettings.typeId,
-            limit: limit,
-            skip: skip,
-            order: 'sys.updatedAt',
-        })
-        .then(data => {
-            // variable for counting number of items pulled
-            let itemCount;
-            if (itemsPulled) {
-                itemCount = itemsPulled;
-            } else {
-                itemCount = 0;
-            }
-            // create directory for file
-            mkdirp.sync(
-                `./${removeLeadingAndTrailingSlashes(
-                    contentSettings.directory
-                )}`
+const fetchType = (limit, skip, settings, preview = false) => {
+    return getContentType(limit, skip, settings, preview)
+        .then(result => {
+            console.log(
+                getContentTypeResultMessage(result.typeId, result.totalItems)
             );
-
-            for (let i = 0; i < data.items.length; i++) {
-                const item = data.items[i];
-                processEntry(item, contentSettings);
-                itemCount++;
-            }
-
-            // check total number of items against number of items pulled in API
-            if (data.total > data.limit) {
-                // run function again if there are still more items to get
-                const newSkip = skip + limit;
-                getContentType(limit, newSkip, contentSettings, itemCount);
-            } else {
-                let grammarStuff;
-                if (Number(data.total) === 1) {
-                    grammarStuff = 'item';
-                } else {
-                    grammarStuff = 'items';
-                }
-                console.log(
-                    `   ${contentSettings.typeId} - ${itemCount} ${grammarStuff}`
-                );
-                typesExtracted++;
-                if (checkIfFinished(typesExtracted, totalContentTypes)) {
-                    console.log(
-                        `\n---------------------------------------------\n`
-                    );
-                }
-            }
         })
         .catch(error => {
             const response = error.response;
             if (response) {
                 console.log(
-                    `   --------------------------\n   ${contentSettings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`
+                    `   --------------------------\n   ${settings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`
                 );
             } else {
                 console.log(error);
             }
         });
+};
+
+async function fetchDataFromContentful(config = null) {
+    const isPreview = argv.preview;
+    const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
+    if (!config) {
+        return console.log(
+            `\nConfiguration file not found. Run "contentful-hugo --init" to get started.\nFor more detailed instructions visit https://github.com/ModiiMedia/contentful-hugo\n`
+        );
+    }
+
+    const waitTime = argv.wait;
+    if (waitTime && typeof waitTime === 'number') {
+        console.log(`waiting ${waitTime}ms...`);
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, waitTime);
+        });
+    }
+    console.log(
+        `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
+    );
+    // loop through repeatable content types
+    const types = config.repeatableTypes;
+    const asyncTasks = [];
+    if (types) {
+        for (let i = 0; i < types.length; i++) {
+            // object to pass settings into the function
+            const {
+                id,
+                directory,
+                isHeadless,
+                fileExtension,
+                title,
+                dateField,
+                mainContent,
+                type,
+                resolveEntries,
+            } = types[i];
+            const contentSettings = {
+                typeId: id,
+                directory: directory,
+                isHeadless: isHeadless,
+                fileExtension: fileExtension,
+                titleField: title,
+                dateField: dateField,
+                mainContent: mainContent,
+                type: type,
+                resolveEntries,
+            };
+            // check file extension settings
+            switch (fileExtension) {
+                case 'md':
+                case 'yaml':
+                case 'yml':
+                case undefined:
+                case null:
+                    asyncTasks.push(
+                        fetchType(1000, 0, contentSettings, isPreview)
+                    );
+                    break;
+                default:
+                    console.log(
+                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                    );
+                    break;
+            }
+        }
+    }
+    // loop through single content types
+    const singles = config.singleTypes;
+    if (singles) {
+        for (let i = 0; i < singles.length; i++) {
+            const single = singles[i];
+            const {
+                id,
+                directory,
+                fileExtension,
+                fileName,
+                title,
+                dateField,
+                mainContent,
+                resolveEntries,
+                type,
+            } = single;
+            const contentSettings = {
+                typeId: id,
+                directory: directory,
+                fileExtension: fileExtension,
+                fileName: fileName,
+                titleField: title,
+                dateField: dateField,
+                mainContent: mainContent,
+                isSingle: true,
+                type: type,
+                resolveEntries,
+            };
+            switch (contentSettings.fileExtension) {
+                case 'md':
+                case 'yaml':
+                case 'yml':
+                case null:
+                case undefined:
+                    asyncTasks.push(
+                        fetchType(1, 0, contentSettings, isPreview)
+                    );
+                    break;
+                default:
+                    console.log(
+                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                    );
+                    break;
+            }
+        }
+    }
+    return Promise.all(asyncTasks).then(() => {
+        console.log(`\n---------------------------------------------\n`);
+    });
 }
 
 module.exports = initialize;
