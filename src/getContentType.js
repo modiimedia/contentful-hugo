@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fs = require('fs');
 const mkdirp = require('mkdirp');
 const contentful = require('contentful');
 const { removeLeadingAndTrailingSlashes } = require('./strings');
@@ -60,11 +61,14 @@ const getContentType = async (
                 itemCount = 0;
             }
             // create directory for file
-            mkdirp.sync(
-                `./${removeLeadingAndTrailingSlashes(
-                    contentSettings.directory
-                )}`
-            );
+            const newDir = `./${removeLeadingAndTrailingSlashes(
+                contentSettings.directory
+            )}`;
+            mkdirp.sync(newDir);
+            if (contentSettings.isHeadless && !contentSettings.isSingle) {
+                const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
+                fs.writeFileSync(`${newDir}/_index.md`, listPageFrontMatter);
+            }
 
             for (let i = 0; i < data.items.length; i++) {
                 const item = data.items[i];
