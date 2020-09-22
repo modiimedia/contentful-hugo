@@ -40,7 +40,7 @@ const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
         contentSettings.directory
     );
     const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
-    if (isHeadless) {
+    if (isHeadless && !isSingle) {
         mkdirp.sync(`./${directory}/${entryId}`);
         filePath = `./${directory}/${entryId}/index.${fileExtension}`;
     } else if (isSingle) {
