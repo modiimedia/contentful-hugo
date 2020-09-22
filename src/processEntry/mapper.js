@@ -120,7 +120,6 @@ const mapFields = (
     const frontMatter = {};
     if (isHeadless) {
         frontMatter.headless = true;
-        mkdirp.sync(`./${dirName}/${entry.sys.id}`);
     }
     if (type) {
         frontMatter.type = type;
