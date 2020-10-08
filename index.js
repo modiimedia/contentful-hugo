@@ -169,4 +169,4 @@ async function fetchDataFromContentful(config = null) {
     });
 }
 
-module.exports = initialize;
+module.exports = { initialize, fetchDataFromContentful, fetchType };

@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-const contentfulHugo = require('./index.js');
+const { initialize } = require('./index.js');
 
-contentfulHugo();
+initialize();
