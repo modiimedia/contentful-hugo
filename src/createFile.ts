@@ -1,7 +1,10 @@
+import fs from 'fs';
+import { ContentSettings } from '../index';
+import mkdirp from 'mkdirp';
+import { removeLeadingAndTrailingSlashes } from './strings';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
-const fs = require('fs');
-const { removeLeadingAndTrailingSlashes } = require('./strings');
-const mkdirp = require('mkdirp');
 
 /**
  *
@@ -10,22 +13,25 @@ const mkdirp = require('mkdirp');
  * @param {Object} frontMatter - Object containing all the data for frontmatter
  * @param {String} mainContent - String data for the main content that will appear below the frontmatter
  */
-const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
+const createFile = (
+    contentSettings: ContentSettings,
+    entryId: string,
+    frontMatter: unknown = {},
+    mainContent: string | null
+): void => {
     let fileContent = '';
+    const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
     if (
-        contentSettings.fileExtension === 'md' ||
-        contentSettings.fileExtension === null ||
-        contentSettings.fileExtension === undefined
+        fileExtension === 'md' ||
+        fileExtension === null ||
+        fileExtension === undefined
     ) {
         fileContent += `---\n`;
     }
 
     // add current item to filecontent
     fileContent += YAML.stringify(frontMatter);
-    if (
-        contentSettings.fileExtension !== 'yaml' ||
-        contentSettings.fileExtension !== 'yml'
-    ) {
+    if (fileExtension !== 'yaml' && fileExtension !== 'yml') {
         fileContent += `---\n`;
     }
 
@@ -39,7 +45,6 @@ const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
     const directory = removeLeadingAndTrailingSlashes(
         contentSettings.directory
     );
-    const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
     if (isHeadless && !isSingle) {
         mkdirp.sync(`./${directory}/${entryId}`);
         filePath = `./${directory}/${entryId}/index.${fileExtension}`;
@@ -55,4 +60,4 @@ const createFile = (contentSettings, entryId, frontMatter, mainContent) => {
     });
 };
 
-module.exports = createFile;
+export default createFile;

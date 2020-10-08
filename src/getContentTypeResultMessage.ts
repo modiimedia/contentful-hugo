@@ -1,4 +1,4 @@
-const resultMessage = (typeId, totalItems) => {
+const resultMessage = (typeId: string, totalItems: number): string => {
     let grammarStuff;
     if (Number(totalItems) === 1) {
         grammarStuff = 'item';
@@ -8,4 +8,4 @@ const resultMessage = (typeId, totalItems) => {
     return `   ${typeId} - ${totalItems} ${grammarStuff}`;
 };
 
-module.exports = resultMessage;
+export default resultMessage;

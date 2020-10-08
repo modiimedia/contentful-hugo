@@ -2,7 +2,7 @@
     "name": "contentful-hugo",
     "version": "1.7.2",
     "description": "Node module that pulls data from Contentful and turns it into markdown files for Hugo. Can be used with other Static Site Generators, but has some Hugo specific features.",
-    "main": "index.js",
+    "main": "./dist/index.js",
     "repository": {
         "typ": "git",
         "url": "https://github.com/ModiiMedia/contentful-hugo"
@@ -27,15 +27,21 @@
     },
     "scripts": {
         "test": "jest --coverage",
-        "lint": "eslint .",
+        "lint": "eslint --ext .js,.ts .",
         "lint:fix": "eslint . --fix",
-        "postinstall": "node postInstall.js"
+        "postinstall": "node postInstall.js",
+        "prebuild": "npm run lint",
+        "build": "tsc",
+        "postbuild": "node copyAssets",
+        "prepublish": "npm run build",
+        "publish": "npm publish"
     },
     "license": "ISC",
     "dependencies": {
         "@contentful/rich-text-html-renderer": "^13.4.0",
         "@contentful/rich-text-plain-text-renderer": "^13.4.0",
         "@contentful/rich-text-types": "^14.1.0",
+        "@types/mkdirp": "^1.0.1",
         "contentful": "^7.14.6",
         "dotenv": "^7.0.0",
         "js-yaml": "^3.14.0",
@@ -44,17 +50,18 @@
         "yargs": "^15.4.1"
     },
     "bin": {
-        "contentful-hugo": "./cli.js"
+        "contentful-hugo": "./dist/cli.js"
     },
     "files": [
-        "cli.js",
+        "dist",
         "images",
         "readme.md",
-        "index.js",
-        "src",
         "postInstall.js"
     ],
     "devDependencies": {
+        "@types/js-yaml": "^3.12.5",
+        "@typescript-eslint/eslint-plugin": "^4.4.0",
+        "@typescript-eslint/parser": "^4.4.0",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.11.0",
         "eslint-config-standard": "^14.1.1",
@@ -63,6 +70,8 @@
         "eslint-plugin-promise": "^4.2.1",
         "eslint-plugin-standard": "^4.0.1",
         "jest": "^26.2.2",
-        "prettier": "^1.19.1"
+        "ncp": "^2.0.0",
+        "prettier": "^1.19.1",
+        "typescript": "^4.0.3"
     }
 }

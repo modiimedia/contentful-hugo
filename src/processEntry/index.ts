@@ -1,5 +1,6 @@
-const { mapFields, getMainContent } = require('./mapper');
-const createFile = require('../createFile');
+import { Entry } from 'contentful';
+import { mapFields, getMainContent } from './mapper';
+import createFile from '../createFile';
 
 /**
  *
@@ -11,13 +12,8 @@ const createFile = require('../createFile');
  * @param {String} contentSettings.mainContent
  */
 const processEntry = (
-    item,
-    contentSettings = {
-        headless: false,
-        directory: null,
-        type: null,
-        mainContent: null,
-    }
+    item: Entry<any>,
+    contentSettings: import('index').ContentSettings
 ) => {
     const {
         directory,
@@ -34,8 +30,10 @@ const processEntry = (
         mainContent,
         resolveEntries
     );
-    const content = getMainContent(item, contentSettings.mainContent);
+    const content = contentSettings.mainContent
+        ? getMainContent(item, contentSettings.mainContent)
+        : '';
     createFile(contentSettings, item.sys.id, frontMatter, content);
 };
 
-module.exports = processEntry;
+export default processEntry;

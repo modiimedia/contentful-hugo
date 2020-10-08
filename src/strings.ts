@@ -1,8 +1,8 @@
-const removeLeadingAndTrailingSlashes = string => {
+const removeLeadingAndTrailingSlashes = (string: string): string => {
     return string.replace(/^\/+|\/+$/g, '');
 };
 
-const isMultilineString = string => {
+const isMultilineString = (string: string): boolean => {
     const array = string.split(`\n`);
     if (array.length && array.length > 1) {
         return true;
@@ -10,7 +10,7 @@ const isMultilineString = string => {
     return false;
 };
 
-const specialEntities = {
+const specialEntities: any = {
     '&quot;': '"',
     '&apos;': "'",
     '&amp;': '&',
@@ -20,18 +20,20 @@ const specialEntities = {
     '&nbsp;': ' ',
 };
 
-const replaceSpecialEntities = string => {
+const replaceSpecialEntities = (string: string): string => {
     const checks = Object.keys(specialEntities);
     let finalString = string;
     for (const check of checks) {
         const regex = new RegExp(`${check}`, 'g');
         const replacementValue = specialEntities[check];
-        finalString = finalString.replace(regex, replacementValue);
+        if (typeof replacementValue === 'string') {
+            finalString = finalString.replace(regex, replacementValue);
+        }
     }
     return finalString;
 };
 
-module.exports = {
+export {
     isMultilineString,
     replaceSpecialEntities,
     specialEntities,

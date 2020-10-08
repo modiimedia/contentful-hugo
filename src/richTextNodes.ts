@@ -1,7 +1,8 @@
-const getEntryFields = require('./getEntryFields');
-const getAssetFields = require('./getAssetFields');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import getEntryFields from './getEntryFields';
+import getAssetFields from './getAssetFields';
 
-const mapDataNode = node => {
+const mapDataNode = (node: any = {}) => {
     const { target } = node;
     if (target) {
         if (target.sys) {
@@ -18,7 +19,7 @@ const mapDataNode = node => {
     return node;
 };
 
-const mapContentNode = node => {
+const mapContentNode = (node = []) => {
     const contentArr = [];
     for (const item of node) {
         contentArr.push(richTextNodes(item));
@@ -26,7 +27,7 @@ const mapContentNode = node => {
     return contentArr;
 };
 
-const mapMarks = node => {
+const mapMarks = (node: { type: string }[] = []): string[] => {
     const markArr = [];
     for (const item of node) {
         markArr.push(item.type);
@@ -34,10 +35,10 @@ const mapMarks = node => {
     return markArr;
 };
 
-const richTextNodes = node => {
-    const fieldContent = {};
+const richTextNodes = (node: any = {}): any => {
+    const fieldContent: any = {};
     for (const field of Object.keys(node)) {
-        const subNode = node[field];
+        const subNode: any = node[field];
         switch (field) {
             case 'data': {
                 fieldContent[field] = mapDataNode(subNode);
@@ -59,4 +60,4 @@ const richTextNodes = node => {
     return fieldContent;
 };
 
-module.exports = richTextNodes;
+export default richTextNodes;

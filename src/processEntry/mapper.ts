@@ -1,12 +1,14 @@
-const mkdirp = require('mkdirp');
-const richTextToPlain = require('@contentful/rich-text-plain-text-renderer')
-    .documentToPlainTextString;
-const getEntryFields = require('../getEntryFields');
-const getAssetFields = require('../getAssetFields');
-const richTextToMarkdown = require('../richTextToMarkdown');
-const richTextNodes = require('../richTextNodes');
+import { documentToPlainTextString as richTextToPlain } from '@contentful/rich-text-plain-text-renderer';
+import { Asset, Entry } from 'contentful';
+import getEntryFields from '../getEntryFields';
+import getAssetFields from '../getAssetFields';
+import richTextToMarkdown from '../richTextToMarkdown';
+import richTextNodes from '../richTextNodes';
+import { ResolveEntryConfig } from '../config';
 
-const mapArrayField = fieldContent => {
+const mapArrayField = (
+    fieldContent: Entry<any>[] | Asset[] | string[]
+): any[] => {
     if (!fieldContent.length) {
         return fieldContent;
     }
@@ -39,7 +41,7 @@ const mapArrayField = fieldContent => {
     return array;
 };
 
-const mapReferenceField = fieldContent => {
+const mapReferenceField = (fieldContent: Entry<any> | Asset): any => {
     switch (fieldContent.sys.type) {
         case 'Asset':
             return getAssetFields(fieldContent);
@@ -50,16 +52,14 @@ const mapReferenceField = fieldContent => {
     }
 };
 
-/**
- *
- * @param {Object} fieldContent
- */
-const mapRichTextField = fieldContent => {
+const mapRichTextField = (fieldContent: any) => {
     const richText = [];
     const fieldPlainText = richTextToPlain(fieldContent);
     const nodes = fieldContent.content;
-    for (let i = 0; i < nodes.length; i++) {
-        richText.push(richTextNodes(nodes[i]));
+    if (nodes && nodes.length) {
+        for (let i = 0; i < nodes.length; i++) {
+            richText.push(richTextNodes(nodes[i]));
+        }
     }
     return {
         richText,
@@ -67,7 +67,10 @@ const mapRichTextField = fieldContent => {
     };
 };
 
-const shouldResolve = (fieldName, resolve = []) => {
+const shouldResolve = (
+    fieldName: string,
+    resolve: ResolveEntryConfig[] = []
+) => {
     for (const item of resolve) {
         if (fieldName === item.field) {
             return item;
@@ -76,12 +79,7 @@ const shouldResolve = (fieldName, resolve = []) => {
     return false;
 };
 
-/**
- *
- * @param {Object} entry - contentful entry or array of contentful entries
- * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
- */
-const resolveEntry = (entry, resolvesToString = null) => {
+const resolveEntry = (entry: any = {}, resolvesToString = '') => {
     const props = resolvesToString.split('.');
     let value = entry;
     for (const prop of props) {
@@ -95,7 +93,7 @@ const resolveEntry = (entry, resolvesToString = null) => {
  * @param {Object} fieldContent - contentful entry or array of contentful entries
  * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
  */
-const resolveField = (fieldContent = {}, resolvesToString = null) => {
+const resolveField = (fieldContent: any, resolvesToString = '') => {
     if (!resolvesToString || typeof fieldContent !== 'object') {
         return null;
     }
@@ -110,14 +108,14 @@ const resolveField = (fieldContent = {}, resolvesToString = null) => {
 };
 
 const mapFields = (
-    entry,
-    dirName = null,
-    isHeadless = false,
-    type = null,
-    mainContentField = null,
-    resolveList = []
-) => {
-    const frontMatter = {};
+    entry: Entry<any>,
+    dirName: string,
+    isHeadless?: boolean,
+    type?: string,
+    mainContentField?: string,
+    resolveList?: ResolveEntryConfig[]
+): any => {
+    const frontMatter: any = {};
     if (isHeadless) {
         frontMatter.headless = true;
     }
@@ -182,7 +180,10 @@ const mapFields = (
  * @param {Object} entry
  * @param {String} fieldName
  */
-const getMainContent = (entry, fieldName = null) => {
+const getMainContent = (
+    entry: Entry<any>,
+    fieldName: string
+): string | null => {
     const mainContentField = entry.fields[fieldName];
     if (
         mainContentField &&
@@ -200,7 +201,7 @@ const getMainContent = (entry, fieldName = null) => {
     return null;
 };
 
-module.exports = {
+export {
     mapFields,
     mapArrayField,
     mapReferenceField,

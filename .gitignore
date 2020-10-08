@@ -12,3 +12,4 @@ contentful-hugo.config**.js
 contentful-hugo.yaml
 !examples/**/contentful-settings.yaml
 coverage
+dist

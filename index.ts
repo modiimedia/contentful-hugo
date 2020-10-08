@@ -1,8 +1,12 @@
+import yargs from 'yargs';
+import { loadConfig } from './src/config';
+import getContentType from './src/getContentType';
+import getContentTypeResultMessage from './src/getContentTypeResultMessage';
+import initializeDirectory from './src/initializeDirectory';
+import { ContentfulConfig } from './src/config/index';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
-const yargs = require('yargs');
-const { loadConfig } = require('./src/config');
-const getContentType = require('./src/getContentType');
-const getContentTypeResultMessage = require('./src/getContentTypeResultMessage');
 
 yargs.options({
     preview: { type: 'boolean', default: false, alias: 'P' },
@@ -10,11 +14,23 @@ yargs.options({
     wait: { type: 'number', default: 0, alias: 'W' },
     config: { type: 'string', default: null, alias: 'C' },
 });
-const argv = yargs.argv;
+const argv: any = yargs.argv;
 
-const initializeDirectory = require('./src/initializeDirectory');
+export interface ContentSettings {
+    typeId: string;
+    directory: string;
+    fileExtension?: string;
+    fileName?: string;
+    titleField?: string;
+    dateField?: string;
+    mainContent?: string;
+    isSingle?: boolean;
+    isHeadless?: boolean;
+    type?: string;
+    resolveEntries?: { field: string; resolveTo: string }[];
+}
 
-const initialize = () => {
+const initialize = (): Promise<any> | any => {
     if (argv.init) {
         return initializeDirectory();
     }
@@ -23,6 +39,11 @@ const initialize = () => {
         (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
     ) {
         return loadConfig('.', argv.config).then(config => {
+            if (config === false) {
+                throw new Error(
+                    'error fetching config. Please runing "contentful-hugo --init"'
+                );
+            }
             fetchDataFromContentful(config);
         });
     }
@@ -31,7 +52,12 @@ const initialize = () => {
     );
 };
 
-const fetchType = (limit, skip, settings, preview = false) => {
+const fetchType = (
+    limit: number,
+    skip: number,
+    settings: ContentSettings,
+    preview = false
+): Promise<void> => {
     return getContentType(limit, skip, settings, preview)
         .then(result => {
             console.log(
@@ -50,7 +76,9 @@ const fetchType = (limit, skip, settings, preview = false) => {
         });
 };
 
-async function fetchDataFromContentful(config = null) {
+async function fetchDataFromContentful(
+    config: ContentfulConfig
+): Promise<void> {
     const isPreview = argv.preview;
     const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
     if (!config) {
@@ -88,7 +116,7 @@ async function fetchDataFromContentful(config = null) {
                 type,
                 resolveEntries,
             } = types[i];
-            const contentSettings = {
+            const contentSettings: ContentSettings = {
                 typeId: id,
                 directory: directory,
                 isHeadless: isHeadless,
@@ -134,7 +162,7 @@ async function fetchDataFromContentful(config = null) {
                 resolveEntries,
                 type,
             } = single;
-            const contentSettings = {
+            const contentSettings: ContentSettings = {
                 typeId: id,
                 directory: directory,
                 fileExtension: fileExtension,
@@ -169,4 +197,4 @@ async function fetchDataFromContentful(config = null) {
     });
 }
 
-module.exports = { initialize, fetchDataFromContentful, fetchType };
+export { initialize, fetchDataFromContentful, fetchType };

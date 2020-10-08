@@ -1,7 +1,7 @@
-const fs = require('fs');
-const mkdirp = require('mkdirp');
-const shortcodes = require('./shortcodes');
-const { loadConfig } = require('../config');
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import shortcodes from './shortcodes';
+import { loadConfig } from '../config';
 
 const wait = (milli = 1000) => {
     return new Promise((resolve, reject) => {
@@ -86,4 +86,4 @@ const initializeDirectory = async override => {
     await addShortcodes(override);
 };
 
-module.exports = initializeDirectory;
+export default initializeDirectory;

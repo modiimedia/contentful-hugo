@@ -1,11 +1,24 @@
+import { Asset } from 'contentful';
+
+export interface AssetObject {
+    assetType: string;
+    url: string;
+    title: string;
+    description?: string;
+    fileName?: string;
+    size?: number | null;
+    width?: number | null;
+    height?: number | null;
+}
+
 /**
  *
  * @param {Object} contentfulObject
  * @param {Object} contentfulObject.sys
  * @param {Object} contentfulObject.fields
  */
-const getAssetFields = contentfulObject => {
-    const frontMatter = {};
+const getAssetFields = (contentfulObject: Asset): AssetObject => {
+    const frontMatter: any = {};
     let assetType = '';
     if (contentfulObject.fields.file) {
         assetType = contentfulObject.fields.file.contentType;
@@ -17,7 +30,7 @@ const getAssetFields = contentfulObject => {
 
     // get specific details depending on the asset type
     const details = contentfulObject.fields.file.details;
-    if (assetType.includes('image')) {
+    if (assetType.includes('image') && details.image) {
         // image height and width
         frontMatter.width = details.image.width;
         frontMatter.height = details.image.height;
@@ -25,4 +38,4 @@ const getAssetFields = contentfulObject => {
     return frontMatter;
 };
 
-module.exports = getAssetFields;
+export default getAssetFields;

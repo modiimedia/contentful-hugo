@@ -1,6 +1,6 @@
 ---
 type: "blog"
-updated: "2020-08-11T01:56:23.528Z"
+updated: "2020-09-15T02:04:03.953Z"
 createdAt: "2019-08-23T21:34:33.719Z"
 date: "2019-08-23T21:34:33.719Z"
 title: "Example With Text, Assets, and Entries"
@@ -12,6 +12,11 @@ featuredImage:
   description: "Man in red shirt excited because he was able to use port his rich text fields over to Hugo."
   width: 1779
   height: 1539
+categories:
+  - id: "743Y9PAirb8FodggmzLdVn"
+    contentType: "categories"
+  - id: "5j2RToR48qqMzL7XBCnMVe"
+    contentType: "categories"
 tags:
   - "rich text"
   - "text"

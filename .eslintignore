@@ -3,3 +3,5 @@ examples
 images
 content
 *.test.js
+dist
+coverage
