@@ -52,7 +52,7 @@ const mapAsset = (target: Asset) => {
     return asset;
 };
 
-const optionsRenderNode = (parentContentType: string): any => {
+const optionsRenderNode = (parentContentType = ''): any => {
     return {
         [BLOCKS.HEADING_1]: (node: Heading1, next: Next) => {
             return `# ${next(node.content)}\n\n`;
@@ -173,7 +173,7 @@ const optionsRenderNode = (parentContentType: string): any => {
     };
 };
 
-const options = (parentContentType: string) => {
+const options = (parentContentType = '') => {
     return {
         renderMark: {
             [MARKS.BOLD]: (text: string) => {
@@ -200,7 +200,7 @@ const options = (parentContentType: string) => {
  */
 const richTextToMarkdown = (
     document: Document,
-    contentType: string
+    contentType?: string
 ): string => {
     const string = documentToHtmlString(document, options(contentType));
     return `\n${replaceSpecialEntities(string)}`;

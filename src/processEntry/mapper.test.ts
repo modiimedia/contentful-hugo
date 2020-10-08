@@ -1,14 +1,14 @@
-const { mapArrayField, resolveField } = require('./mapper');
+import { mapArrayField, resolveField } from './mapper';
 
 const assetFactory = (
-    title,
-    description,
-    url,
-    fileName,
-    assetType,
-    width,
-    height,
-    size
+    title: string,
+    description: string,
+    url: string,
+    fileName: string,
+    assetType: string,
+    width?: number,
+    height?: number,
+    size?: number
 ) => {
     const asset = {
         sys: {
@@ -63,7 +63,7 @@ describe('Array Fields', () => {
             100,
             100
         );
-        const array = [asset1, asset2];
+        const array: any[] = [asset1, asset2];
         const fieldValue = mapArrayField(array);
         expect(fieldValue[0].assetType).toBe('image/png');
         expect(fieldValue[0].width).toBe(1200);

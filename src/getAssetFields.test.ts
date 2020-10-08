@@ -1,6 +1,6 @@
-const getAssetFields = require('./getAssetFields');
+import getAssetFields from './getAssetFields';
 
-const imageAsset = {
+const imageAsset: any = {
     fields: {
         title: 'My Example Image',
         description: 'This is a example image for testing purposes',

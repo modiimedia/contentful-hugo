@@ -1,6 +1,6 @@
-const richTextToMarkdown = require('./richTextToMarkdown');
+import richTextToMarkdown from './richTextToMarkdown';
 
-const nodeText = (value, marks = []) => {
+const nodeText = (value: any, marks: any[] = []) => {
     return {
         nodeType: 'text',
         value,
@@ -16,7 +16,12 @@ const nodeText = (value, marks = []) => {
  * @param {Array} marks
  * @param {Object} data
  */
-const contentNodeFactory = (nodeType, value, marks = [], data = {}) => {
+const contentNodeFactory = (
+    nodeType: string,
+    value: any,
+    marks: any[] = [],
+    data: any = {}
+) => {
     return {
         nodeType,
         content: [
@@ -36,8 +41,8 @@ const contentNodeFactory = (nodeType, value, marks = [], data = {}) => {
  * @param {String} nodeType - unordered-list || ordered-list
  * @param {Array} listItems
  */
-const contentListFactory = (nodeType, listItems = []) => {
-    const node = {
+const contentListFactory = (nodeType: string, listItems: any[] = []) => {
+    const node: any = {
         nodeType,
         content: [],
         data: {},
@@ -65,8 +70,8 @@ const contentListFactory = (nodeType, listItems = []) => {
     return node;
 };
 
-const contentParagraph = (contentItems = []) => {
-    const paragraph = {
+const contentParagraph = (contentItems: any[] = []) => {
+    const paragraph: any = {
         nodeType: 'paragraph',
         content: [],
     };
@@ -81,7 +86,7 @@ const contentParagraph = (contentItems = []) => {
     return paragraph;
 };
 
-const contentQuoteFactory = (contentItems = []) => {
+const contentQuoteFactory = (contentItems: any[] = []) => {
     const quoteNote = {
         nodeType: 'blockquote',
         content: contentItems,
@@ -89,7 +94,7 @@ const contentQuoteFactory = (contentItems = []) => {
     return quoteNote;
 };
 
-const richTextFactory = (nodes = []) => {
+const richTextFactory = (nodes: any[] = []): any => {
     const document = {
         nodeType: 'document',
         data: {},
@@ -248,7 +253,7 @@ describe('Blockquote', () => {
     });
 });
 
-const entryDataFactory = (entryId, contentType) => {
+const entryDataFactory = (entryId: string, contentType: string) => {
     const data = {
         target: {
             sys: {
@@ -273,11 +278,11 @@ const entryDataFactory = (entryId, contentType) => {
  * @param {*} parentContentType
  */
 const entryFactory = (
-    nodeType,
-    entryId,
-    contentType,
-    parentContentType,
-    content = []
+    nodeType: string,
+    entryId: string,
+    contentType: string,
+    parentContentType?: string,
+    content: any[] = []
 ) => {
     const node = {
         nodeType,
@@ -341,17 +346,17 @@ describe('Entries', () => {
  * @param {String} nodeType - 'embedded-asset-block' ||
  */
 const assetFactory = (
-    nodeType,
-    title,
-    description,
-    url,
-    fileName,
-    assetType,
-    size,
-    width = null,
-    height = null,
-    parentContentType,
-    content = []
+    nodeType: string,
+    title?: string,
+    description?: string,
+    url?: string,
+    fileName?: string,
+    assetType?: string,
+    size?: number,
+    width?: number,
+    height?: number,
+    parentContentType?: string,
+    content: any[] = []
 ) => {
     const node = {
         nodeType,
@@ -371,12 +376,13 @@ const assetFactory = (
                         contentType: assetType,
                         details: {
                             size,
-                            image: assetType.includes('image')
-                                ? {
-                                      width,
-                                      height,
-                                  }
-                                : null,
+                            image:
+                                assetType && assetType.includes('image')
+                                    ? {
+                                          width,
+                                          height,
+                                      }
+                                    : null,
                         },
                     },
                 },

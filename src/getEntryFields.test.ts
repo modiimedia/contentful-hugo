@@ -1,6 +1,6 @@
-const getEntryFields = require('./getEntryFields');
+import getEntryFields from './getEntryFields';
 
-const entry = {
+const entry: any = {
     sys: {
         id: '12345',
         contentType: {

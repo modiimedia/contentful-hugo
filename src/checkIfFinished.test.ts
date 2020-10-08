@@ -1,4 +1,4 @@
-const checkIfFinished = require('./checkIfFinished');
+import checkIfFinished from './checkIfFinished';
 
 test('Numbers Match (Pass)', () => {
     const result = checkIfFinished(5, 5);

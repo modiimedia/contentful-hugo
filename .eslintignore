@@ -3,5 +3,6 @@ examples
 images
 content
 *.test.js
+*.test.ts
 dist
 coverage
