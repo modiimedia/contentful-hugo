@@ -6,15 +6,15 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 
 ## Table of Contents
 
--   [Prerequisites](#Prerequisites)
--   [Installation](#Installation)
--   [Usage](#Usage)
--   [Configuration](#Configuration)
--   [Expected Output](#Expected-Output)
-    -   [Standard Fields](#Default-Date-and-Time-Fields)
-    -   [Richtext Fields](#Rich-Text-As-Main-Content)
-    -   [Resolving Reference Fields](#The-Resolve-Entries-Parameter)
--   [Known Issues](#Known-Issues)
+-   [Prerequisites](#prerequisites)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Configuration](#configuration)
+-   [Expected Output](#expected-output)
+    -   [Standard Fields](#default-date-and-time-fields)
+    -   [Richtext Fields](#rich-text-as-main-content)
+    -   [Resolving Reference Fields](#the-resolve-entries-parameter)
+-   [Known Issues](#known-issues)
 
 ## Prerequisites
 
