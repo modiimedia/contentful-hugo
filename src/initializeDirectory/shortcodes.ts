@@ -8,11 +8,13 @@ const codeNames = [
     'entry-hyperlink.html',
     'inline-entry.html',
 ];
-const shortcodes = {};
+const shortcodes: {
+    [key: string]: { filename: string; template: string };
+} = {};
 
 for (const name of codeNames) {
     const noExtension = name.replace('.html', '');
-    const camelCaseName = noExtension.replace(/-([a-z])/g, function(g) {
+    const camelCaseName: string = noExtension.replace(/-([a-z])/g, function(g) {
         return g[1].toUpperCase();
     });
     shortcodes[camelCaseName] = {
@@ -23,4 +25,4 @@ for (const name of codeNames) {
     };
 }
 
-module.exports = shortcodes;
+export default shortcodes;

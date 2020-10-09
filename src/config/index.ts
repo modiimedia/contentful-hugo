@@ -35,7 +35,7 @@ export interface ContentfulConfig {
 /**
  * Determine if a file is yaml or js depending on the file extension
  */
-const determineFileType = (fileName: string) => {
+const determineFileType = (fileName: string): string | null => {
     const splitStr = fileName.split('.');
     const fileExtension = splitStr[splitStr.length - 1];
     switch (fileExtension) {

@@ -2,8 +2,9 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import shortcodes from './shortcodes';
 import { loadConfig } from '../config';
+import { string } from 'yargs';
 
-const wait = (milli = 1000) => {
+const wait = (milli = 1000): Promise<void> => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             return resolve();
@@ -11,7 +12,7 @@ const wait = (milli = 1000) => {
     });
 };
 
-const generateConfig = filepath => {
+const generateConfig = (filepath: string) => {
     console.log('creating contentful-hugo.config.js');
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo for configuration instructions\n
 module.exports = {
@@ -31,7 +32,7 @@ const checkForConfig = async (override = false) => {
         return generateConfig(filepath);
     }
     const { singleTypes, repeatableTypes } = config;
-    if ((singleTypes, repeatableTypes)) {
+    if (singleTypes || repeatableTypes) {
         console.log('config already exists\n');
         return null;
     }
@@ -40,17 +41,28 @@ const checkForConfig = async (override = false) => {
 
 const regex = /<<([^%>]+)?>>/g;
 
-const getVariablesFromTemplate = template => {
+const getVariablesFromTemplate = (
+    template: string
+): RegExpMatchArray | null => {
     const params = template.match(regex);
     return params;
 };
 
-const replaceVariablesWithValues = template => {
-    const values = {
-        '<<BACKGROUND_COLOR>>': 'rgb(255, 231, 231)',
-        '<<TEXT_COLOR>>': 'red',
-        '<<BORDER_COLOR>>': 'red',
-    };
+interface templateVariables {
+    [key: string]: string;
+    '<<BACKGROUND_COLOR>>': string;
+    '<<TEXT_COLOR>>': string;
+    '<<BORDER_COLOR>>': string;
+}
+
+const templateVariableValues: templateVariables = {
+    '<<BACKGROUND_COLOR>>': 'rgb(255, 231, 231)',
+    '<<TEXT_COLOR>>': 'red',
+    '<<BORDER_COLOR>>': 'red',
+};
+
+const replaceVariablesWithValues = (template: string): string => {
+    const values = templateVariableValues;
     const params = getVariablesFromTemplate(template);
     let newTemplate = template;
     if (params && params.length) {
@@ -81,9 +93,16 @@ const addShortcodes = async (override = false) => {
     return null;
 };
 
-const initializeDirectory = async override => {
+const initializeDirectory = async (override = false): Promise<void> => {
     await checkForConfig(override);
     await addShortcodes(override);
 };
 
 export default initializeDirectory;
+export {
+    wait,
+    replaceVariablesWithValues,
+    getVariablesFromTemplate,
+    initializeDirectory,
+    templateVariableValues,
+};

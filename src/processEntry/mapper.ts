@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { documentToPlainTextString as richTextToPlain } from '@contentful/rich-text-plain-text-renderer';
 import { Asset, Entry } from 'contentful';
 import getEntryFields from '../getEntryFields';
@@ -52,7 +53,9 @@ const mapReferenceField = (fieldContent: Entry<any> | Asset): any => {
     }
 };
 
-const mapRichTextField = (fieldContent: any) => {
+const mapRichTextField = (
+    fieldContent: any
+): { richText: any; plainText: string } => {
     const richText = [];
     const fieldPlainText = richTextToPlain(fieldContent);
     const nodes = fieldContent.content;
@@ -79,7 +82,7 @@ const shouldResolve = (
     return false;
 };
 
-const resolveEntry = (entry: any = {}, resolvesToString = '') => {
+const resolveEntry = (entry: any = {}, resolvesToString = ''): any => {
     const props = resolvesToString.split('.');
     let value = entry;
     for (const prop of props) {
@@ -93,7 +96,8 @@ const resolveEntry = (entry: any = {}, resolvesToString = '') => {
  * @param {Object} fieldContent - contentful entry or array of contentful entries
  * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
  */
-const resolveField = (fieldContent: any, resolvesToString = '') => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const resolveField = (fieldContent: any, resolvesToString = ''): any => {
     if (!resolvesToString || typeof fieldContent !== 'object') {
         return null;
     }
