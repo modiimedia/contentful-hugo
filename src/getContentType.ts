@@ -80,7 +80,7 @@ const getContentType = async (
             }
 
             // check total number of items against number of items pulled in API
-            if (data.total > data.limit) {
+            if (data.total > data.limit && !contentSettings.isSingle) {
                 // run function again if there are still more items to get
                 const newSkip = skip + limit;
                 return getContentType(

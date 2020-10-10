@@ -25,6 +25,7 @@ export interface SingleTypeConfig extends TypeConfig {
 export interface RepeatableTypeConfig extends TypeConfig {
     id: string;
     isHeadless?: boolean;
+    isTaxonomy?: boolean;
 }
 
 export interface ContentfulConfig {

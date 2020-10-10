@@ -20,7 +20,18 @@ const createFile = (
     mainContent: string | null
 ): void => {
     let fileContent = '';
-    const { fileExtension, fileName, isSingle, isHeadless } = contentSettings;
+    const {
+        fileExtension,
+        fileName,
+        isSingle,
+        isHeadless,
+        isTaxonomy,
+    } = contentSettings;
+    if (isHeadless && isTaxonomy) {
+        throw new Error(
+            'A content type cannot have both isHeadless and isTaxonomy set to true'
+        );
+    }
     if (
         fileExtension === 'md' ||
         fileExtension === null ||
@@ -48,6 +59,10 @@ const createFile = (
     if (isHeadless && !isSingle) {
         mkdirp.sync(`./${directory}/${entryId}`);
         filePath = `./${directory}/${entryId}/index.${fileExtension}`;
+    } else if (isTaxonomy) {
+        mkdirp.sync(`./${directory}/${fileName || entryId}`);
+        filePath = `./${directory}/${fileName ||
+            entryId}/_index.${fileExtension}`;
     } else if (isSingle) {
         filePath = `./${directory}/${fileName}.${fileExtension}`;
     } else {

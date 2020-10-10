@@ -26,6 +26,7 @@ export interface ContentSettings {
     mainContent?: string;
     isSingle?: boolean;
     isHeadless?: boolean;
+    isTaxonomy?: boolean;
     type?: string;
     resolveEntries?: { field: string; resolveTo: string }[];
 }
@@ -114,6 +115,7 @@ async function fetchDataFromContentful(
                 dateField,
                 mainContent,
                 type,
+                isTaxonomy,
                 resolveEntries,
             } = types[i];
             const contentSettings: ContentSettings = {
@@ -125,6 +127,7 @@ async function fetchDataFromContentful(
                 dateField: dateField,
                 mainContent: mainContent,
                 type: type,
+                isTaxonomy,
                 resolveEntries,
             };
             // check file extension settings
