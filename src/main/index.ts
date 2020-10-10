@@ -217,4 +217,5 @@ async function fetchDataFromContentful(
     });
 }
 
-export { initialize, fetchDataFromContentful, fetchType };
+export default fetchDataFromContentful;
+export { initialize, fetchDataFromContentful, loadConfig };
