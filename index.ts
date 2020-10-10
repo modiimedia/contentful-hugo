@@ -21,8 +21,7 @@ yargs
         wait: 'Wait X number of ms before fetching data',
         config: 'Specify path to a config file',
     })
-    .usage('Usage: contentful-hugo [flags]')
-    .help();
+    .usage('Usage: contentful-hugo [flags]');
 
 const argv: any = yargs.argv;
 

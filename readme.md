@@ -65,6 +65,8 @@ npx contentful-hugo
 | --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 | --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
 | --config  | -C      | Specify the path to a config file.                                                                       |
+| --help    |         | Show help                                                                                                |
+| --version |         | Show version number                                                                                      |
 
 #### Preview Mode Example
 
@@ -76,6 +78,10 @@ contentful-hugo --preview
 
 ```powershell
 contentful-hugo --wait=2000 --preview --config="my_custom_config.js"
+
+# or
+
+contentful-hugo --wait 2000 --preview --config my_custom_config.js
 ```
 
 ### Example Package.json
