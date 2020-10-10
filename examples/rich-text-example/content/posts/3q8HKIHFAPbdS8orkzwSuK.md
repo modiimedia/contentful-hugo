@@ -13,10 +13,8 @@ featuredImage:
   width: 1779
   height: 1539
 categories:
-  - id: "743Y9PAirb8FodggmzLdVn"
-    contentType: "categories"
-  - id: "5j2RToR48qqMzL7XBCnMVe"
-    contentType: "categories"
+  - "743Y9PAirb8FodggmzLdVn"
+  - "5j2RToR48qqMzL7XBCnMVe"
 tags:
   - "rich text"
   - "text"

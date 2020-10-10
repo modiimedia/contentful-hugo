@@ -12,10 +12,8 @@ featuredImage:
   width: 1950
   height: 2600
 categories:
-  - id: "743Y9PAirb8FodggmzLdVn"
-    contentType: "categories"
-  - id: "5j2RToR48qqMzL7XBCnMVe"
-    contentType: "categories"
+  - "743Y9PAirb8FodggmzLdVn"
+  - "5j2RToR48qqMzL7XBCnMVe"
 ---
 
 # Heading 1

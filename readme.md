@@ -204,6 +204,11 @@ module.exports = {
             directory: 'content/reviews',
             mainContent: 'reviewBody',
         },
+        {
+            id: 'category',
+            directory: 'content/categories',
+            isTaxonomy: true,
+        },
     ],
 };
 ```
@@ -254,20 +259,25 @@ repeatableTypes:
     - id: staff
       isHeadless: true
       directory: content/staff
+
+    - id: category
+      directory: content/categories
+      isTaxonomy: true
 ```
 
 #### **Config File Options**
 
-| field          | required                         | description                                                                                                                                          |
-| -------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| id             | required                         | contentful content type ID goes here                                                                                                                 |
-| directory      | required                         | directory where you want the file(s) to be generated                                                                                                 |
-| fileName       | required (single types only)     | name of the file generated                                                                                                                           |
-| fileExtension  | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                     |
-| isHeadless     | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)) |
-| mainContent    | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                   |
-| type           | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                        |
-| resolveEntries | optional                         | resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                        |
+| field             | required                         | description                                                                                                                                                                                                                                |
+| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| id                | required                         | contentful content type ID goes here                                                                                                                                                                                                       |
+| directory         | required                         | directory where you want the file(s) to be generated                                                                                                                                                                                       |
+| fileName          | required (single types only)     | name of the file generated                                                                                                                                                                                                                 |
+| fileExtension     | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
+| isHeadless        | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
+| isTaxonomy (BETA) | optional (repeatable types only) | organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
+| mainContent       | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                                                                                                         |
+| type              | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                              |
+| resolveEntries    | optional                         | resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
 
 ## Expected Output
 
