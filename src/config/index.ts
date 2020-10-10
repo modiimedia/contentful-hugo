@@ -8,13 +8,25 @@ export interface ResolveEntryConfig {
 }
 
 export interface TypeConfig {
+    /**
+     * Contentful content type ID
+     */
     id: string;
+    /**
+     * Directory where entries will be placed
+     */
     directory: string;
     type?: string;
     title?: string;
     dateField?: string;
+    /**
+     * The field that will act as the main content of the .md file
+     */
     mainContent?: string;
     fileExtension?: string;
+    /**
+     * Configs specifying how to resolve asset references and entry references
+     */
     resolveEntries?: ResolveEntryConfig[];
 }
 
@@ -23,7 +35,6 @@ export interface SingleTypeConfig extends TypeConfig {
 }
 
 export interface RepeatableTypeConfig extends TypeConfig {
-    id: string;
     isHeadless?: boolean;
     isTaxonomy?: boolean;
 }

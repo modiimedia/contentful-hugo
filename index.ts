@@ -26,12 +26,21 @@ yargs
 const argv: any = yargs.argv;
 
 export interface ContentSettings {
+    /**
+     * Contentful content type ID
+     */
     typeId: string;
+    /**
+     * The directory where the entries will be placed
+     */
     directory: string;
     fileExtension?: string;
     fileName?: string;
     titleField?: string;
     dateField?: string;
+    /**
+     * The field that will act as the main content in the .md file
+     */
     mainContent?: string;
     isSingle?: boolean;
     isHeadless?: boolean;
