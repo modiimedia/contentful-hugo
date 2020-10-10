@@ -8,12 +8,22 @@ import { ContentfulConfig } from './src/config/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-yargs.options({
-    preview: { type: 'boolean', default: false, alias: 'P' },
-    init: { type: 'boolean', default: false },
-    wait: { type: 'number', default: 0, alias: 'W' },
-    config: { type: 'string', default: null, alias: 'C' },
-});
+yargs
+    .options({
+        preview: { type: 'boolean', default: false, alias: 'P' },
+        init: { type: 'boolean', default: false },
+        wait: { type: 'number', default: 0, alias: 'W' },
+        config: { type: 'string', default: null, alias: 'C' },
+    })
+    .describe({
+        preview: 'Pulls published and unplublished entries',
+        init: 'Initialize directory for Contentful-Hugo',
+        wait: 'Wait X number of ms before fetching data',
+        config: 'Specify path to a config file',
+    })
+    .usage('Usage: contentful-hugo [flags]')
+    .help();
+
 const argv: any = yargs.argv;
 
 export interface ContentSettings {
@@ -31,7 +41,7 @@ export interface ContentSettings {
     resolveEntries?: { field: string; resolveTo: string }[];
 }
 
-const initialize = (): Promise<any> | any => {
+const initialize = (): Promise<unknown> | unknown => {
     if (argv.init) {
         return initializeDirectory();
     }
