@@ -21,7 +21,7 @@ import {
     documentToHtmlString,
     Next,
 } from '@contentful/rich-text-html-renderer';
-import { isMultilineString, replaceSpecialEntities } from './strings';
+import { isMultilineString, replaceSpecialEntities } from '@helpers/strings';
 import { Entry, Asset } from 'contentful';
 import { AssetObject } from './getAssetFields';
 

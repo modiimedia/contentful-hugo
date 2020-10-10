@@ -1,10 +1,10 @@
 import { Entry } from 'contentful';
 import { mapFields, getMainContent } from './mapper';
-import createFile from '../createFile';
+import createFile from './src/createFile';
 
 const processEntry = (
     item: Entry<any>,
-    contentSettings: import('index').ContentSettings
+    contentSettings: import('@main/index').ContentSettings
 ): void => {
     const {
         directory,

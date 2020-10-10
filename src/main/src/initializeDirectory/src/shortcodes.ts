@@ -20,7 +20,7 @@ for (const name of codeNames) {
     shortcodes[camelCaseName] = {
         filename: name,
         template: fs
-            .readFileSync(resolve(__dirname, `./shortcodes/${name}`))
+            .readFileSync(resolve(__dirname, `../assets/shortcodes/${name}`))
             .toString(),
     };
 }

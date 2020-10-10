@@ -1,7 +1,7 @@
-import { ContentSettings } from '../index';
+import { ContentSettings } from '@main/index';
 import fs from 'fs';
 import { createClient } from 'contentful';
-import { removeLeadingAndTrailingSlashes } from './strings';
+import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import processEntry from './processEntry';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { ContentSettings } from '../index';
 import mkdirp from 'mkdirp';
-import { removeLeadingAndTrailingSlashes } from './strings';
+import { ContentSettings } from '@main/index';
+import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');

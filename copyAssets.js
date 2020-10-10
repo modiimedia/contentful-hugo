@@ -1,9 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const ncp = require('ncp').ncp;
+const mkdirp = require('mkdirp');
+
+mkdirp.sync('./dist/main/src/initializeDirectory/assets/partials');
 
 ncp(
-    './src/initializeDirectory/partials',
-    './dist/src/initializeDirectory/partials',
+    './src/main/src/initializeDirectory/assets/partials',
+    './dist/main/src/initializeDirectory/assets/partials',
     err => {
         if (err) {
             throw err;
@@ -12,8 +15,8 @@ ncp(
 );
 
 ncp(
-    './src/initializeDirectory/shortcodes',
-    './dist/src/initializeDirectory/shortcodes',
+    './src/main/src/initializeDirectory/assets/shortcodes',
+    './dist/main/src/initializeDirectory/assets/shortcodes',
     err => {
         if (err) {
             throw err;

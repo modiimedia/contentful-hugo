@@ -1,9 +1,8 @@
 import yargs from 'yargs';
-import { loadConfig } from './src/config';
+import { loadConfig, ContentfulConfig } from './src/config';
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
-import { ContentfulConfig } from './src/config/index';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();

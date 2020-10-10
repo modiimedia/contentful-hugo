@@ -1,8 +1,7 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
-import shortcodes from './shortcodes';
-import { loadConfig } from '../config';
-import { string } from 'yargs';
+import shortcodes from './src/shortcodes';
+import { loadConfig } from '@main/src/config';
 
 const wait = (milli = 1000): Promise<void> => {
     return new Promise((resolve, reject) => {
