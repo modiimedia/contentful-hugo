@@ -22,7 +22,8 @@ yargs
     })
     .usage('Usage: contentful-hugo [flags]');
 
-const argv: any = yargs.argv;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const argv: { [key: string]: any } = yargs.argv;
 
 export interface ContentSettings {
     /**
@@ -108,7 +109,7 @@ async function fetchDataFromContentful(
     const waitTime = argv.wait;
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
-        await new Promise((resolve, reject) => {
+        await new Promise(resolve => {
             setTimeout(() => {
                 resolve();
             }, waitTime);

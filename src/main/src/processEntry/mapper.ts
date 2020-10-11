@@ -54,6 +54,7 @@ const mapReferenceField = (fieldContent: Entry<any> | Asset): any => {
 };
 
 const mapRichTextField = (
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     fieldContent: any
 ): { richText: any; plainText: string } => {
     const richText = [];

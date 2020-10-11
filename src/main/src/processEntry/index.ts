@@ -3,7 +3,7 @@ import { mapFields, getMainContent } from './mapper';
 import createFile from './src/createFile';
 
 const processEntry = (
-    item: Entry<any>,
+    item: Entry<unknown>,
     contentSettings: import('@main/index').ContentSettings
 ): void => {
     const {

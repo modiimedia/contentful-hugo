@@ -4,7 +4,7 @@ import shortcodes from './src/shortcodes';
 import { loadConfig } from '@main/src/config';
 
 const wait = (milli = 1000): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         setTimeout(() => {
             return resolve();
         }, milli);
@@ -22,7 +22,7 @@ module.exports = {
     console.log('config file created\n');
 };
 
-const checkForConfig = async (override = false) => {
+const checkForConfig = async () => {
     console.log('checking for config...');
     await wait(1000);
     const config = await loadConfig();
@@ -93,7 +93,7 @@ const addShortcodes = async (override = false) => {
 };
 
 const initializeDirectory = async (override = false): Promise<void> => {
-    await checkForConfig(override);
+    await checkForConfig();
     await addShortcodes(override);
 };
 

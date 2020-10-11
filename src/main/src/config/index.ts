@@ -61,7 +61,7 @@ const determineFileType = (fileName: string): string | null => {
     }
 };
 
-const isContentfulConfig = (input: any): input is ContentfulConfig => {
+const isContentfulConfig = (input: unknown): input is ContentfulConfig => {
     return (input as ContentfulConfig) !== undefined;
 };
 
@@ -72,7 +72,7 @@ const loadFile = async (
     rootDir = '.',
     fileName: string
 ): Promise<ContentfulConfig | false> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         const filePath = path.resolve(rootDir, fileName);
         if (fs.existsSync(filePath)) {
             const fileType = determineFileType(fileName);

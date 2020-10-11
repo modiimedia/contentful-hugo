@@ -10,7 +10,7 @@ const isMultilineString = (string: string): boolean => {
     return false;
 };
 
-const specialEntities: any = {
+const specialEntities: { [key: string]: string } = {
     '&quot;': '"',
     '&apos;': "'",
     '&amp;': '&',

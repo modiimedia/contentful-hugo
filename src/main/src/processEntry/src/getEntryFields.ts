@@ -1,7 +1,7 @@
 import { Asset, Entry } from 'contentful';
 
 const getEntryFields = (
-    entry: Entry<any> | Asset
+    entry: Entry<unknown> | Asset
 ): { id?: string; contentType?: string } => {
     let obj = {};
     if (entry.sys) {
