@@ -46,7 +46,6 @@
         "js-yaml": "^3.14.0",
         "json-to-pretty-yaml": "^1.2.2",
         "mkdirp": "^0.5.5",
-        "module-alias": "^2.2.2",
         "yargs": "^15.4.1"
     },
     "bin": {
