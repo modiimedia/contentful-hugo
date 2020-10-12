@@ -13,8 +13,8 @@ export interface TypeConfig {
      */
     directory: string;
     type?: string;
-    title?: string;
-    dateField?: string;
+    // title?: string;
+    // dateField?: string;
     /**
      * The field that will act as the main content of the .md file
      */

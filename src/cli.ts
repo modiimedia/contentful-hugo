@@ -39,7 +39,7 @@ const initialize = (): Promise<unknown> | unknown => {
             if (config === false) {
                 throw new Error(
                     `There is an error in your config file, or it doesn't exits.
-Check your config for errors or run "contentful-hugo --init" to create a config file.\n\n`
+Check your config for errors or run "contentful-hugo --init" to create a config file.\n`
                 );
             }
             fetchDataFromContentful(

@@ -3,6 +3,7 @@ import fs from 'fs';
 import { createClient } from 'contentful';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import processEntry from './processEntry';
+import { ConfigContentfulSettings } from './config/src/types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -15,6 +16,7 @@ const getContentType = async (
     limit: number,
     skip: number,
     contentSettings: ContentSettings,
+    contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
     itemsPulled?: number
 ): Promise<{
@@ -28,18 +30,16 @@ const getContentType = async (
     } else if (!previewMode && !process.env.CONTENTFUL_TOKEN) {
         throw new Error('Environment variable CONTENTFUL_TOKEN not set');
     }
-
-    let accessToken = process.env.CONTENTFUL_Token || '';
+    const { token, previewToken, space, environment } = contentfulSettings;
+    let accessToken = token;
     if (previewMode) {
-        accessToken =
-            process.env.CONTENTFUL_PREVIEW_TOKEN ||
-            process.env.CONTENTFUL_TOKEN ||
-            '';
+        accessToken = previewToken || token || '';
     }
     const options = {
-        space: process.env.CONTENTFUL_SPACE || '',
+        space,
         host: previewMode ? 'preview.contentful.com' : 'cdn.contentful.com',
         accessToken,
+        environment,
     };
     const client = createClient(options);
 
@@ -87,6 +87,7 @@ const getContentType = async (
                     limit,
                     newSkip,
                     contentSettings,
+                    contentfulSettings,
                     previewMode,
                     itemCount
                 );
