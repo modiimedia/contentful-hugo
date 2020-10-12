@@ -95,8 +95,17 @@ const loadFile = async (
     });
 };
 
+/**
+ * Load Contentful Hugo config file
+ */
 const loadConfig = async (
+    /**
+     * Directory of the config file. (Default ".")
+     */
     rootDir = '.',
+    /**
+     * Config filename with extension. (Optional)
+     */
     fileName: string | null = null
 ): Promise<ContentfulConfig | false> => {
     rootDir = path.resolve(rootDir);
