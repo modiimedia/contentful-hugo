@@ -2,6 +2,9 @@ import path from 'path';
 import fs from 'fs';
 import yaml from 'js-yaml';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
 export interface ResolveEntryConfig {
     field: string;
     resolveTo: string;
@@ -40,6 +43,12 @@ export interface RepeatableTypeConfig extends TypeConfig {
 }
 
 export interface ContentfulConfig {
+    contentful?: {
+        space?: string;
+        token?: string;
+        previewToken?: string;
+        environment?: string;
+    };
     singleTypes: SingleTypeConfig[];
     repeatableTypes: RepeatableTypeConfig[];
 }
@@ -95,6 +104,28 @@ const loadFile = async (
     });
 };
 
+const checkContentfulSettings = (
+    config: ContentfulConfig
+): ContentfulConfig => {
+    let { contentful } = config;
+    if (!contentful) {
+        contentful = {};
+    }
+    const space = contentful.space || process.env.CONTENTFUL_SPACE || '';
+    const token = contentful.token || process.env.CONTENTFUL_TOKEN || '';
+    const previewToken =
+        contentful.previewToken || process.env.CONTENTFUL_PREVIEW_TOKEN || '';
+    const environment = contentful.environment || 'master';
+    const newConfig = { ...config };
+    newConfig.contentful = {
+        space,
+        token,
+        previewToken,
+        environment,
+    };
+    return newConfig;
+};
+
 /**
  * Load Contentful Hugo config file
  */
@@ -112,7 +143,8 @@ const loadConfig = async (
     if (fileName) {
         const result = await loadFile(rootDir, fileName);
         if (result) {
-            return result;
+            const config = checkContentfulSettings(result);
+            return config;
         }
         throw new Error(`${fileName} does not exist or it is empty.`);
     }
@@ -127,7 +159,8 @@ const loadConfig = async (
     for (const config of defaultConfigs) {
         const file = loadFile(rootDir, config).then(result => {
             if (result) {
-                configList.push(result);
+                const config = checkContentfulSettings(result);
+                configList.push(config);
             }
         });
         tasks.push(file);
