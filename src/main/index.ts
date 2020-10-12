@@ -34,7 +34,7 @@ interface ContentfulError {
         id: string;
     };
     message: string;
-    details: any;
+    details: unknown;
 }
 
 const fetchType = (
