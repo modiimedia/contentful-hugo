@@ -1,4 +1,5 @@
 import { loadConfig, ContentfulConfig } from './src/config';
+import { ConfigContentfulSettings } from './src/config/src/types';
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
@@ -27,26 +28,40 @@ export interface ContentSettings {
     resolveEntries?: { field: string; resolveTo: string }[];
 }
 
+interface ContentfulError {
+    sys: {
+        type: string;
+        id: string;
+    };
+    message: string;
+    details: any;
+}
+
 const fetchType = (
     limit: number,
     skip: number,
     settings: ContentSettings,
+    contentfulSettings: ConfigContentfulSettings,
     preview = false
 ): Promise<void> => {
-    return getContentType(limit, skip, settings, preview)
+    return getContentType(limit, skip, settings, contentfulSettings, preview)
         .then(result => {
             console.log(
                 getContentTypeResultMessage(result.typeId, result.totalItems)
             );
         })
-        .catch(error => {
-            const response = error.response;
-            if (response) {
+        .catch((error: ContentfulError) => {
+            const { sys } = error;
+            if (sys.id && sys.id === 'InvalidQuery') {
                 console.log(
-                    `   --------------------------\n   ${settings.typeId} - ERROR ${response.status} ${response.statusText}\n   (Note: ${response.data.message})\n   --------------------------`
+                    `   --------------------------\n   ${
+                        settings.typeId
+                    } - ERROR ${error.message} ${JSON.stringify(
+                        error.details
+                    )})\n   --------------------------`
                 );
             } else {
-                console.log(error);
+                throw new Error(`${JSON.stringify(error)}`);
             }
         });
 };
@@ -121,7 +136,13 @@ const fetchDataFromContentful = async (
                 case undefined:
                 case null:
                     asyncTasks.push(
-                        fetchType(1000, 0, contentSettings, isPreview)
+                        fetchType(
+                            1000,
+                            0,
+                            contentSettings,
+                            config.contentful,
+                            isPreview
+                        )
                     );
                     break;
                 default:
@@ -167,7 +188,13 @@ const fetchDataFromContentful = async (
                 case null:
                 case undefined:
                     asyncTasks.push(
-                        fetchType(1, 0, contentSettings, isPreview)
+                        fetchType(
+                            1,
+                            0,
+                            contentSettings,
+                            config.contentful,
+                            isPreview
+                        )
                     );
                     break;
                 default:
