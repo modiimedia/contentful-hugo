@@ -457,7 +457,7 @@ The list of rich text short codes includes:
 
 By default the richtext short codes will show a notification for an unconfigured item.
 
-![Unconfigured Embedded Entry Block](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/unconfigured-embedded-entry-block.jpg)
+![Unconfigured Embedded Entry Block](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/unconfigured-embedded-entry-block.JPG)
 
 You can customize them by navigating to `layouts/shortcodes/contentful-hugo/{shortcode-name}.html`
 
