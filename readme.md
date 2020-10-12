@@ -106,7 +106,10 @@ In this example when you run `npm start` it will first use contentful-hugo to pu
 
 Trying to use this package before completing configuration will return an error in the console
 
-![Config File Missing Or Has Errors](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/contentful-hugo-config-error.png?raw=true)
+```shell
+Error: There is an error in your config file, or it does't exits.
+Check your config for errors or run "contentful-hugo --init" to create a config file.
+```
 
 ## Configuration
 
@@ -171,9 +174,9 @@ module.exports = {
         // defaults to CONTENTFUL_TOKEN env variable
         token: 'content-deliver-token',
         // defaults to CONTENTFUL_PREVIEW_TOKEN env variable
-        previewToken: 'content-preview-token'
+        previewToken: 'content-preview-token',
         // defaults to "master"
-        environment: 'master'
+        environment: 'master',
     },
     singleTypes: [
         {
@@ -353,7 +356,7 @@ module.exports = {
 
 ## Expected Output
 
-Files will be generated in the directory specified in the **contentful-settings.yaml** file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
+Files will be generated in the directory specified in the config file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
 
 ### Default Date and Time Fields
 
