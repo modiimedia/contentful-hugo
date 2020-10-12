@@ -38,7 +38,7 @@ export interface RepeatableTypeConfig extends TypeConfig {
 export interface ConfigContentfulSettings {
     space: string;
     token: string;
-    previewToken: string;
+    previewToken?: string;
     environment: string;
 }
 
