@@ -41,8 +41,10 @@
         "@contentful/rich-text-plain-text-renderer": "^13.4.0",
         "@contentful/rich-text-types": "^14.1.0",
         "@types/mkdirp": "^1.0.1",
+        "body-parser": "^1.19.0",
         "contentful": "^7.14.7",
         "dotenv": "^7.0.0",
+        "express": "^4.17.1",
         "js-yaml": "^3.14.0",
         "json-to-pretty-yaml": "^1.2.2",
         "mkdirp": "^0.5.5",
@@ -50,7 +52,8 @@
         "yargs": "^15.4.1"
     },
     "bin": {
-        "contentful-hugo": "./dist/cli.js"
+        "contentful-hugo": "./dist/cli.js",
+        "contentful-hugo server": "./dist/server/index.js"
     },
     "files": [
         "dist",
@@ -58,6 +61,7 @@
     ],
     "devDependencies": {
         "@babel/cli": "^7.11.6",
+        "@types/express": "^4.17.8",
         "@types/jest": "^26.0.14",
         "@types/js-yaml": "^3.12.5",
         "@typescript-eslint/eslint-plugin": "^4.4.0",
