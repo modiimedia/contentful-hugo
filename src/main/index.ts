@@ -1,29 +1,7 @@
-import yargs from 'yargs';
 import { loadConfig, ContentfulConfig } from './src/config';
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
-
-yargs
-    .options({
-        preview: { type: 'boolean', default: false, alias: 'P' },
-        init: { type: 'boolean', default: false },
-        wait: { type: 'number', default: 0, alias: 'W' },
-        config: { type: 'string', default: null, alias: 'C' },
-    })
-    .describe({
-        preview: 'Pulls published and unplublished entries',
-        init: 'Initialize directory for Contentful-Hugo',
-        wait: 'Wait X number of ms before fetching data',
-        config: 'Specify path to a config file',
-    })
-    .usage('Usage: contentful-hugo [flags]');
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const argv: { [key: string]: any } = yargs.argv;
 
 export interface ContentSettings {
     /**
@@ -49,28 +27,6 @@ export interface ContentSettings {
     resolveEntries?: { field: string; resolveTo: string }[];
 }
 
-const initialize = (): Promise<unknown> | unknown => {
-    if (argv.init) {
-        return initializeDirectory();
-    }
-    if (
-        process.env.CONTENTFUL_SPACE &&
-        (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
-    ) {
-        return loadConfig('.', argv.config).then(config => {
-            if (config === false) {
-                throw new Error(
-                    'error fetching config. Please runing "contentful-hugo --init"'
-                );
-            }
-            fetchDataFromContentful(config);
-        });
-    }
-    return console.error(
-        `\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN, CONTENTFUL_PREVIEW_TOKEN (optional)\n\nYou can set them using the command line or place them in a .env file.\n`
-    );
-};
-
 const fetchType = (
     limit: number,
     skip: number,
@@ -95,18 +51,27 @@ const fetchType = (
         });
 };
 
-async function fetchDataFromContentful(
-    config: ContentfulConfig
-): Promise<void> {
-    const isPreview = argv.preview;
-    const deliveryMode = argv.preview ? 'Preview Data' : 'Published Data';
+const fetchDataFromContentful = async (
+    /**
+     * Contentful Hugo Config Object
+     */
+    config: ContentfulConfig,
+    /**
+     * Fetch from the Content Preview API
+     */
+    previewMode = false,
+    /**
+     * Wait X number of ms before fetching data
+     */
+    waitTime = 0
+): Promise<void> => {
+    const isPreview = previewMode;
+    const deliveryMode = previewMode ? 'Preview Data' : 'Published Data';
     if (!config) {
         return console.log(
             `\nConfiguration file not found. Run "contentful-hugo --init" to get started.\nFor more detailed instructions visit https://github.com/ModiiMedia/contentful-hugo\n`
         );
     }
-
-    const waitTime = argv.wait;
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
         await new Promise(resolve => {
@@ -216,6 +181,6 @@ async function fetchDataFromContentful(
     return Promise.all(asyncTasks).then(() => {
         console.log(`\n---------------------------------------------\n`);
     });
-}
+};
 
-export { initialize, fetchDataFromContentful, loadConfig };
+export { fetchDataFromContentful, loadConfig, initializeDirectory };
