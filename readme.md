@@ -106,7 +106,7 @@ In this example when you run `npm start` it will first use contentful-hugo to pu
 
 Trying to use this package before completing configuration will return an error in the console
 
-![Config File Missing Or Has Errors](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/config-error.jpg)
+![Config File Missing Or Has Errors](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/config-error.JPG)
 
 ## Configuration
 
