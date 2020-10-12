@@ -92,6 +92,9 @@ const addShortcodes = async (override = false) => {
     return null;
 };
 
+/**
+ * Add necessary config and shortcode files to current directory for Contentful-Hugo
+ */
 const initializeDirectory = async (override = false): Promise<void> => {
     await checkForConfig();
     await addShortcodes(override);
