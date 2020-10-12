@@ -1,4 +1,4 @@
-import { Asset } from 'contentful';
+import { Asset, EntryFields } from 'contentful';
 
 export interface AssetObject {
     assetType: string;
@@ -17,7 +17,9 @@ export interface AssetObject {
  * @param {Object} contentfulObject.sys
  * @param {Object} contentfulObject.fields
  */
-const getAssetFields = (contentfulObject: Asset): AssetObject => {
+const getAssetFields = (
+    contentfulObject: EntryFields.Object<Asset>
+): AssetObject => {
     let assetType = '';
     if (contentfulObject.fields.file) {
         assetType = contentfulObject.fields.file.contentType;
