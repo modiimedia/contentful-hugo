@@ -104,7 +104,7 @@ const loadConfig = async (
      */
     rootDir = '.',
     /**
-     * Config filename with extension. (Optional)
+     * Config filename with extension.
      */
     fileName: string | null = null
 ): Promise<ContentfulConfig | false> => {
