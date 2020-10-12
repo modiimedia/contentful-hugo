@@ -218,5 +218,4 @@ async function fetchDataFromContentful(
     });
 }
 
-export default fetchDataFromContentful;
 export { initialize, fetchDataFromContentful, loadConfig };
