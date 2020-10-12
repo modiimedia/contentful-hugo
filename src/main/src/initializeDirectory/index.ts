@@ -14,6 +14,10 @@ const wait = (milli = 1000): Promise<void> => {
 const generateConfig = (filepath: string) => {
     console.log('creating contentful-hugo.config.js');
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo for configuration instructions\n
+
+/**
+ * @type {import('contentful-hugo').ContentfulHugoConfig}
+ */
 module.exports = {
     singleTypes: [],
     repeatableTypes: []

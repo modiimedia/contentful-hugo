@@ -210,4 +210,9 @@ const fetchDataFromContentful = async (
     });
 };
 
-export { fetchDataFromContentful, loadConfig, initializeDirectory };
+export {
+    fetchDataFromContentful,
+    loadConfig,
+    initializeDirectory,
+    ContentfulConfig as ContentfulHugoConfig,
+};
