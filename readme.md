@@ -106,7 +106,7 @@ In this example when you run `npm start` it will first use contentful-hugo to pu
 
 Trying to use this package before completing configuration will return an error in the console
 
-![Config File Missing Or Has Errors](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/contentful-hugo-config-error.png)
+![Config File Missing Or Has Errors](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/contentful-hugo-config-error.png?raw=true)
 
 ## Configuration
 
@@ -457,7 +457,7 @@ The list of rich text short codes includes:
 
 By default the richtext short codes will show a notification for an unconfigured item.
 
-![Unconfigured Embedded Entry Block](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/unconfigured-embedded-entry.PNG)
+![Unconfigured Embedded Entry Block](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/unconfigured-embedded-entry.PNG?raw=true)
 
 You can customize them by navigating to `layouts/shortcodes/contentful-hugo/{shortcode-name}.html`
 
