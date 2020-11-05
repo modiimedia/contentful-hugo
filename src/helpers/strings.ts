@@ -33,9 +33,53 @@ const replaceSpecialEntities = (string: string): string => {
     return finalString;
 };
 
+interface StringSpaceCleanupObject {
+    exists: boolean;
+    newString: string;
+    removedSpaces: string;
+    count: number;
+}
+
+const leadingSpaces = (string: string, count = 0): StringSpaceCleanupObject => {
+    if (string.charAt(0) === ' ') {
+        return leadingSpaces(string.slice(1), count + 1);
+    }
+    let removedSpaces = '';
+    for (let i = 0; i < count; i++) {
+        removedSpaces += ' ';
+    }
+    return {
+        exists: count > 0,
+        newString: string,
+        removedSpaces,
+        count,
+    };
+};
+
+const trailingSpaces = (
+    string: string,
+    count = 0
+): StringSpaceCleanupObject => {
+    if (string.charAt(string.length - 1) === ' ') {
+        return trailingSpaces(string.slice(0, -1), count + 1);
+    }
+    let removedSpaces = '';
+    for (let i = 0; i < count; i++) {
+        removedSpaces += ' ';
+    }
+    return {
+        exists: count > 0,
+        newString: string,
+        removedSpaces,
+        count,
+    };
+};
+
 export {
     isMultilineString,
     replaceSpecialEntities,
     specialEntities,
     removeLeadingAndTrailingSlashes,
+    leadingSpaces,
+    trailingSpaces,
 };
