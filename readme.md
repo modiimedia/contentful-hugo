@@ -354,6 +354,19 @@ module.exports = {
 };
 ```
 
+#### Config File Autocomplete
+
+For JS config files you can import a `ContentfulHugoConfig` type which will enable autocomplete in text editors that support Typescript typings. (Tested in Visual Studio Code.)
+
+```js
+/**
+ * @type {import('contentful-hugo').ContentfulHugoConfig}
+ */
+module.exports = {
+    // rest of config
+};
+```
+
 ## Expected Output
 
 Files will be generated in the directory specified in the config file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
