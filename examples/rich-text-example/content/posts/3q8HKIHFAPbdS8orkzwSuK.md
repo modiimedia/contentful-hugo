@@ -1,6 +1,6 @@
 ---
 type: "blog"
-updated: "2020-09-15T02:04:03.953Z"
+updated: "2020-11-06T00:02:16.430Z"
 createdAt: "2019-08-23T21:34:33.719Z"
 date: "2019-08-23T21:34:33.719Z"
 title: "Example With Text, Assets, and Entries"
@@ -22,7 +22,7 @@ tags:
   - "entries"
 ---
 
-In this example we will see a bit of everything. Below me is an embedded asset.
+In this example we will see a bit of everything. Below me is an embedded<u>    ***asset***   </u> .
 
 {{< contentful-hugo/embedded-asset title="Man in Red Shirt" description="Man in red shirt excited because he was able to use port his rich text fields over to Hugo." url="//images.ctfassets.net/6fc4s4k6v9co/4up9JEFDVOMp1zLOqbAbRN/0054a3bbfc0c5cf4ae172c6957b5b42c/photo-1533227268428-f9ed0900fb3b" filename="photo-1533227268428-f9ed0900fb3b" assetType="image/jpeg" size="470466" width="1779" height="1539" parentContentType="post" >}}
 

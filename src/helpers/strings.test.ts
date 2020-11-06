@@ -2,6 +2,8 @@ const {
     replaceSpecialEntities,
     isMultilineString,
     removeLeadingAndTrailingSlashes,
+    leadingSpaces,
+    trailingSpaces,
 } = require('./strings');
 
 describe('Detect Multiline String', () => {
@@ -81,5 +83,70 @@ describe('file path', () => {
         expect(
             removeLeadingAndTrailingSlashes('//content/posts/something//')
         ).toBe('content/posts/something');
+    });
+});
+
+describe('Leading Spaces', () => {
+    test('One Leading Space', () => {
+        const str = ' johnathon slayter';
+        const spaces = leadingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(1);
+        expect(spaces.newString).toBe('johnathon slayter');
+    });
+    test('No Leading Spaces', () => {
+        const str = 'john doe smith  ';
+        const spaces = leadingSpaces(str);
+        expect(spaces.exists).toBe(false);
+        expect(spaces.count).toBe(0);
+        expect(spaces.newString).toBe('john doe smith  ');
+    });
+    test('Four Leading Spaces', () => {
+        const str = '    john doe';
+        const spaces = leadingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(4);
+        expect(spaces.newString).toBe('john doe');
+    });
+    test('Markdown Rendering Test', () => {
+        const str = '  john smith';
+        const spaces = leadingSpaces(str);
+        const newString = `${spaces.removedSpaces}**${spaces.newString}**`;
+        expect(newString).toBe('  **john smith**');
+    });
+});
+
+describe('Trailing Spaces', () => {
+    test('One Trailing Space', () => {
+        const str = 'johnathon slayter ';
+        const spaces = trailingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(1);
+        expect(spaces.newString).toBe('johnathon slayter');
+    });
+    test('No Trailing Spaces', () => {
+        const str = '  john doe smith';
+        const spaces = trailingSpaces(str);
+        expect(spaces.exists).toBe(false);
+        expect(spaces.count).toBe(0);
+        expect(spaces.newString).toBe('  john doe smith');
+    });
+    test('Four Trailing Spaces', () => {
+        const str = 'john doe    ';
+        const spaces = trailingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(4);
+        expect(spaces.newString).toBe('john doe');
+    });
+});
+
+describe('Markdown Rendering', () => {
+    test('Input with leading and trailing spaces', () => {
+        const input = '  john smith ';
+        const expectedValue = '  **john smith** ';
+        const leading = leadingSpaces(input);
+        const trailing = trailingSpaces(leading.newString);
+        const result = `${leading.removedSpaces}**${trailing.newString}**${trailing.removedSpaces}`;
+        expect(result).toBe(expectedValue);
     });
 });
