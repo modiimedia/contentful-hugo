@@ -52,8 +52,7 @@
         "yargs": "^15.4.1"
     },
     "bin": {
-        "contentful-hugo": "./dist/cli.js",
-        "contentful-hugo server": "./dist/server/index.js"
+        "contentful-hugo": "./dist/cli.js"
     },
     "files": [
         "dist",
