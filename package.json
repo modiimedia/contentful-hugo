@@ -33,7 +33,8 @@
         "prebuild": "npm run lint",
         "build": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist",
         "postbuild": "node copyAssets",
-        "prepublish": "npm run build"
+        "prepublish": "npm run build",
+        "dev:server": "node dist/server/index"
     },
     "license": "ISC",
     "dependencies": {

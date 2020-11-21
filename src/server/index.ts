@@ -1,10 +1,9 @@
 #!/usr/bin/env node
+import yargs from 'yargs';
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { Entry, Asset } from 'contentful';
-import { loadConfig } from '@main/index';
 
-const config = loadConfig();
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
