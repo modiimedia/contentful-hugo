@@ -23,14 +23,14 @@ const getContentType = async (
     totalItems: number;
     typeId: string;
 }> => {
-    if (previewMode && !process.env.CONTENTFUL_PREVIEW_TOKEN) {
+    const { token, previewToken, space, environment } = contentfulSettings;
+    if (previewMode && !previewToken) {
         throw new Error(
             'Environment variable CONTENTFUL_PREVIEW_TOKEN not set'
         );
-    } else if (!previewMode && !process.env.CONTENTFUL_TOKEN) {
+    } else if (!previewMode && !token) {
         throw new Error('Environment variable CONTENTFUL_TOKEN not set');
     }
-    const { token, previewToken, space, environment } = contentfulSettings;
     let accessToken = token;
     if (previewMode) {
         accessToken = previewToken || token || '';
@@ -41,8 +41,8 @@ const getContentType = async (
         accessToken,
         environment,
     };
-    const client = createClient(options);
 
+    const client = createClient(options);
     // check for file extension default to markdown
     if (!contentSettings.fileExtension) {
         contentSettings.fileExtension = 'md';

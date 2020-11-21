@@ -31,27 +31,16 @@ const initialize = (): Promise<unknown> | unknown => {
     if (argv.init) {
         return initializeDirectory();
     }
-    if (
-        process.env.CONTENTFUL_SPACE &&
-        (process.env.CONTENTFUL_TOKEN || process.env.CONTENTFUL_PREVIEW_TOKEN)
-    ) {
-        return loadConfig('.', argv.config).then(config => {
-            if (config === false) {
-                throw new Error(
-                    `There is an error in your config file, or it doesn't exits.
+
+    return loadConfig('.', argv.config).then(config => {
+        if (config === false) {
+            throw new Error(
+                `There is an error in your config file, or it doesn't exits.
 Check your config for errors or run "contentful-hugo --init" to create a config file.\n`
-                );
-            }
-            fetchDataFromContentful(
-                config,
-                argv.preview || false,
-                argv.wait || 0
             );
-        });
-    }
-    return console.error(
-        `\nERROR: Environment variables not yet set.\n\nThis module requires the following environmental variables to be set before running:\nCONTENTFUL_SPACE, CONTENTFUL_TOKEN, CONTENTFUL_PREVIEW_TOKEN (optional)\n\nYou can set them using the command line or place them in a .env file.\n`
-    );
+        }
+        fetchDataFromContentful(config, argv.preview || false, argv.wait || 0);
+    });
 };
 
 initialize();

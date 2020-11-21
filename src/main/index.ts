@@ -52,7 +52,7 @@ const fetchType = (
         })
         .catch((error: ContentfulError) => {
             const { sys } = error;
-            if (sys.id && sys.id === 'InvalidQuery') {
+            if (sys && sys.id && sys.id === 'InvalidQuery') {
                 console.log(
                     `   --------------------------\n   ${
                         settings.typeId
