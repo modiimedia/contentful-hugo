@@ -21,7 +21,12 @@ import {
     documentToHtmlString,
     Next,
 } from '@contentful/rich-text-html-renderer';
-import { isMultilineString, replaceSpecialEntities } from '@helpers/strings';
+import {
+    isMultilineString,
+    replaceSpecialEntities,
+    leadingSpaces,
+    trailingSpaces,
+} from '@helpers/strings';
 import { Entry, Asset } from 'contentful';
 import { AssetObject } from './getAssetFields';
 
@@ -173,14 +178,23 @@ const optionsRenderNode = (parentContentType = ''): any => {
     };
 };
 
+const sanitizedMarkOutput = (
+    input: string,
+    markWrapper: '**' | '*'
+): string => {
+    const leading = leadingSpaces(input);
+    const trailing = trailingSpaces(leading.newString);
+    return `${leading.removedSpaces}${markWrapper}${trailing.newString}${markWrapper}${trailing.removedSpaces}`;
+};
+
 const options = (parentContentType = '') => {
     return {
         renderMark: {
             [MARKS.BOLD]: (text: string) => {
-                return `**${text}**`;
+                return sanitizedMarkOutput(text, '**');
             },
             [MARKS.ITALIC]: (text: string) => {
-                return `*${text}*`;
+                return sanitizedMarkOutput(text, '*');
             },
             [MARKS.CODE]: (text: string) => {
                 if (isMultilineString(text)) {

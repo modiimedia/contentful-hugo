@@ -13,8 +13,8 @@ export interface TypeConfig {
      */
     directory: string;
     type?: string;
-    title?: string;
-    dateField?: string;
+    // title?: string;
+    // dateField?: string;
     /**
      * The field that will act as the main content of the .md file
      */
@@ -38,7 +38,7 @@ export interface RepeatableTypeConfig extends TypeConfig {
 export interface ConfigContentfulSettings {
     space: string;
     token: string;
-    previewToken: string;
+    previewToken?: string;
     environment: string;
 }
 

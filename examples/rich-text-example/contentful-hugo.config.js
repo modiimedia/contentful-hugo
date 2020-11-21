@@ -1,3 +1,6 @@
+/**
+ * @type {import('contentful-hugo').ContentfulHugoConfig}
+ */
 module.exports = {
     singleTypes: [],
     repeatableTypes: [

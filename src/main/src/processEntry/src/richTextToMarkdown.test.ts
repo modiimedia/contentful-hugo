@@ -148,6 +148,17 @@ describe('Marks', () => {
             `\n**bold text example**\n\n`
         );
     });
+    test('Bold With Extra Spaces', () => {
+        const node = contentNodeFactory(
+            'paragraph',
+            '    bold text example  ',
+            [{ type: 'bold' }]
+        );
+        const richText = richTextFactory([node]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n    **bold text example**  \n\n`
+        );
+    });
     test('Underline', () => {
         const node = contentNodeFactory(
             'paragraph',
@@ -166,6 +177,17 @@ describe('Marks', () => {
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
             `\n*italic text example*\n\n`
+        );
+    });
+    test('Italic with Extra Spaces', () => {
+        const node = contentNodeFactory(
+            'paragraph',
+            '      italic text example   ',
+            [{ type: 'italic' }]
+        );
+        const richText = richTextFactory([node]);
+        expect(richTextToMarkdown(richText)).toBe(
+            `\n      *italic text example*   \n\n`
         );
     });
     test('Code (Single-Line)', () => {

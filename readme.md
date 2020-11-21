@@ -10,6 +10,8 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [Configuration](#configuration)
+    -   [Environenment Variables](#environment-variables)
+    -   [Config File(s)](#config-file)
 -   [Expected Output](#expected-output)
     -   [Standard Fields](#default-date-and-time-fields)
     -   [Richtext Fields](#rich-text-as-main-content)
@@ -104,17 +106,24 @@ In this example when you run `npm start` it will first use contentful-hugo to pu
 
 Trying to use this package before completing configuration will return an error in the console
 
-![Environment Variables not set](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/environment-variables-missing.jpg)
-
-![Config file not found](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/config-file-not-found.jpg)
+```shell
+Error: There is an error in your config file, or it does't exits.
+Check your config for errors or run "contentful-hugo --init" to create a config file.
+```
 
 ## Configuration
 
 ### Environment Variables
 
-Before using you must first set the following environment variables. CONTENTFUL_SPACE, and CONTENTFUL_TOKEN. You can also add the CONTENTFUL_PREVIEW_TOKEN variable to use the --preview flag.
+By default this library will look for the following environment variables. You can also override these values with the config file. (See [config](#config-file))
 
-This can be done with a **.env** file in the root directory of your project.
+-   CONTENTFUL_SPACE
+-   CONTENTFUL_TOKEN
+-   CONTENTFUL_PREVIEW_TOKEN
+
+**.env File:**
+
+To declare these environment variables create a `.env` file in the root directory of your project.
 
 ```TOML
 CONTENTFUL_SPACE = '<space-id>'
@@ -144,7 +153,7 @@ export CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 
 ### Config File
 
-In order to pull the data you want you will need to create a config file in the root of your repository. Contentful-hugo by default will search for the following files as a config.
+Before getting started, you will need to create a config file in the root of your repository. Contentful-hugo by default will search for the following files as a config.
 
 -   `contentful-hugo.config.js`
 -   `contentful-hugo.config.yaml`
@@ -159,6 +168,16 @@ You can also specify a custom config file using the `--config` flag. (Javascript
 // contentful-hugo.config.js
 
 module.exports = {
+    contentful: {
+        // defaults to CONTENTFUL_SPACE env variable
+        space: 'space-id',
+        // defaults to CONTENTFUL_TOKEN env variable
+        token: 'content-deliver-token',
+        // defaults to CONTENTFUL_PREVIEW_TOKEN env variable
+        previewToken: 'content-preview-token',
+        // defaults to "master"
+        environment: 'master',
+    },
     singleTypes: [
         {
             id: 'homepage',
@@ -207,7 +226,7 @@ module.exports = {
         {
             id: 'category',
             directory: 'content/categories',
-            isTaxonomy: true,
+            isTaxonomy: true, // Experimental Feature
         },
     ],
 };
@@ -218,24 +237,30 @@ module.exports = {
 ```yaml
 # contentful-hugo.config.yaml
 
+contentful:
+    space: 'space-id' # defaults to CONTENTFUL_SPACE env variable
+    token: 'content-deliver-token' # defaults to  CONTENTFUL_TOKEN env variable
+    previewToken: 'content-preview-token' # defaults to  CONTENTFUL_PREVIEW_TOKEN env variable
+    environment: 'master' # defaults to "master"
+
 singleTypes:
     # fetches only the most recently updated entry in a particular content type
     # Generated file will be named after the fileName setting
+
     - id: homepage
       directory: content
       fileName: _index
       fileExtension: md
 
-      # this will generate a file named "_index.md" in the "content" directory
     - id: siteSettings
       directory: data
       fileName: settings
       fileExtension: yaml
-      # this will generate a file named settings.yaml in the "data" directory
 
 repeatableTypes:
     # fetches all the entries of a content type and places them in a directory.
     # Generated files will be named after their Entry ID in Contentful.
+
     - id: posts
       directory: content/posts
       fileExtension: md
@@ -262,26 +287,89 @@ repeatableTypes:
 
     - id: category
       directory: content/categories
-      isTaxonomy: true
+      isTaxonomy: true # Experimental Feature
 ```
 
-#### **Config File Options**
+#### **Config Fields**
 
-| field             | required                         | description                                                                                                                                                                                                                                |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| id                | required                         | contentful content type ID goes here                                                                                                                                                                                                       |
-| directory         | required                         | directory where you want the file(s) to be generated                                                                                                                                                                                       |
-| fileName          | required (single types only)     | name of the file generated                                                                                                                                                                                                                 |
-| fileExtension     | optional                         | can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
-| isHeadless        | optional (repeatable types only) | turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
-| isTaxonomy (BETA) | optional (repeatable types only) | organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
-| mainContent       | optional                         | field ID for field you want to be the main Markdown content. (Does not work with rich text fields)                                                                                                                                         |
-| type              | optional                         | Allows a type to be set enabling a different layout to be used (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                              |
-| resolveEntries    | optional                         | resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+##### <u>**Contentful Options**</u>
+
+| field        | required | description                                                                                  |
+| ------------ | -------- | -------------------------------------------------------------------------------------------- |
+| space        | optional | Contentful Space ID (Defaults to CONTENTFUL_SPACE environment variable if not set)           |
+| token        | optional | Content delivery token (Defaults to CONTENTFUL_TOKEN environment variable if not set)        |
+| previewToken | optional | Content preview token (Defaults to CONTENTFUL_PREVIEW_TOKEN environment variable if not set) |
+| environment  | optional | Contentful environment ID (Defaults to "master" if not set)                                  |
+
+##### <u>**Single Type Options**</u>
+
+| field          | required | description                                                                                                                   |
+| -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| id             | required | Contentful content type ID                                                                                                    |
+| directory      | required | Directory where you want the file(s) to be generated                                                                          |
+| fileName       | required | Name of the file generated                                                                                                    |
+| fileExtension  | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                              |
+| mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                   |
+| type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))         |
+| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter |
+
+##### <u>**Repeatable Type Options**</u>
+
+| field                     | required | description                                                                                                                                                                                                                                |
+| ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| id                        | required | Contentful content type ID                                                                                                                                                                                                                 |
+| directory                 | required | Directory where you want the files to be generated                                                                                                                                                                                         |
+| fileExtension             | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
+| isHeadless                | optional | Turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
+| isTaxonomy (Experimental) | optional | Organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
+| mainContent               | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
+| type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
+| resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+
+#### Advanced Config Example
+
+Here is an example of dynamically change the `token`, `previewToken`, and `environment` options depending on any arbitrary condition.
+
+```javascript
+// contentful-hugo.config.js
+
+require('dotenv').config(); // assuming you have "dotenv" in your dependencies
+
+const myMasterToken = process.env.CONTENTFUL_MASTER_TOKEN;
+const myMasterPreviewToken = process.env.CONTENTFUL_MASTER_PREVIEW_TOKEN;
+const myStagingToken = process.env.CONTENTFUL_STAGING_TOKEN;
+const myStagingPreviewToken = process.env.CONTENTFUL_STAGING_PREVIEW_TOKEN;
+
+// set some condition
+const isStaging = true || false;
+
+module.exports = {
+    contentful: {
+        space: 'my-space-id',
+        token: isStaging ? myStagingToken : myMasterToken,
+        preview: isStaging ? myStagingPreviewToken : myMasterPreviewToken,
+        environment: isStaging ? 'staging' : 'master',
+    },
+    // rest of config
+};
+```
+
+#### Config File Autocomplete
+
+For JS config files you can import a `ContentfulHugoConfig` type which will enable autocomplete in text editors that support Typescript typings. (Tested in Visual Studio Code.)
+
+```js
+/**
+ * @type {import('contentful-hugo').ContentfulHugoConfig}
+ */
+module.exports = {
+    // rest of config
+};
+```
 
 ## Expected Output
 
-Files will be generated in the directory specified in the **contentful-settings.yaml** file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
+Files will be generated in the directory specified in the config file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
 
 ### Default Date and Time Fields
 
@@ -385,7 +473,7 @@ The list of rich text short codes includes:
 
 By default the richtext short codes will show a notification for an unconfigured item.
 
-![Unconfigured Embedded Entry Block](images/unconfigured-embedded-entry-block.jpg)
+![Unconfigured Embedded Entry Block](https://raw.githubusercontent.com/ModiiMedia/contentful-hugo/master/images/unconfigured-embedded-entry.PNG?raw=true)
 
 You can customize them by navigating to `layouts/shortcodes/contentful-hugo/{shortcode-name}.html`
 
