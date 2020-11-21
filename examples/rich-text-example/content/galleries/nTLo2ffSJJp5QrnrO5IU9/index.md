@@ -1,8 +1,16 @@
 ---
 headless: true
+sys:
+  id: "nTLo2ffSJJp5QrnrO5IU9"
+  type: "Entry"
+  updatedAt: "2019-08-22T11:15:07.027Z"
+  createdAt: "2019-08-22T11:15:28.288Z"
+  revision: 1
+  space: "6fc4s4k6v9co"
+  contentType: "gallery"
 updated: "2019-08-22T11:15:28.288Z"
-createdAt: "2019-08-22T11:15:28.288Z"
-date: "2019-08-22T11:15:28.288Z"
+createdAt: "2019-08-22T11:15:07.027Z"
+date: "2019-08-22T11:15:07.027Z"
 title: "Test Gallery"
 photos:
   - assetType: "image/jpeg"
