@@ -50,7 +50,11 @@ const fetchType = (
                 getContentTypeResultMessage(result.typeId, result.totalItems)
             );
         })
-        .catch((error: ContentfulError) => {
+        .catch((error: ContentfulError | string) => {
+            console.log(error);
+            if (typeof error === 'string') {
+                throw new Error(error);
+            }
             const { sys } = error;
             if (sys && sys.id && sys.id === 'InvalidQuery') {
                 console.log(
@@ -64,6 +68,38 @@ const fetchType = (
                 throw new Error(`${JSON.stringify(error)}`);
             }
         });
+};
+
+const configCheck = (config: ContentfulConfig) => {
+    const { space, token, environment } = config.contentful;
+    const missingParams: string[] = [];
+    if (!space) {
+        missingParams.push('space');
+    }
+    if (!token) {
+        missingParams.push('token');
+    }
+    if (!environment) {
+        missingParams.push('environment');
+    }
+    if (missingParams.length > 0) {
+        const errorMessage = () => {
+            let paramString = '';
+            for (let i = 0; i < missingParams.length; i++) {
+                const param = missingParams[i];
+                if (i === 0) {
+                    paramString += `"${param}"`;
+                } else if (i === missingParams.length - 1) {
+                    paramString += `, and "${param}"`;
+                } else {
+                    paramString += `, "${param}"`;
+                }
+            }
+            return `Config is missing required contentful parameters: ${paramString}`;
+        };
+        throw new Error(errorMessage());
+    }
+    return null;
 };
 
 const fetchDataFromContentful = async (
@@ -82,11 +118,7 @@ const fetchDataFromContentful = async (
 ): Promise<void> => {
     const isPreview = previewMode;
     const deliveryMode = previewMode ? 'Preview Data' : 'Published Data';
-    if (!config) {
-        return console.log(
-            `\nConfiguration file not found. Run "contentful-hugo --init" to get started.\nFor more detailed instructions visit https://github.com/ModiiMedia/contentful-hugo\n`
-        );
-    }
+    configCheck(config);
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
         await new Promise(resolve => {

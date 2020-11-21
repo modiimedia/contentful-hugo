@@ -39,7 +39,11 @@ const isContentfulConfig = (input: unknown): input is ContentfulConfig => {
     if (!contentful) {
         return false;
     }
-    if (!contentful.space || !contentful.environment || !contentful.token) {
+    if (
+        typeof contentful.space !== 'string' ||
+        typeof contentful.environment !== 'string' ||
+        typeof contentful.token !== 'string'
+    ) {
         return false;
     }
     if (!isTypeConfig(singleTypes)) {
