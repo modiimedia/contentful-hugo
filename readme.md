@@ -4,6 +4,15 @@
 
 This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io).
 
+## Features
+
+-   Rich Text support
+-   Has default shortcodes for Rich Text content
+-   Supports the Content Preview API
+-   Asset field resolution
+-   Linked entries can be resolved by a specific field
+-   Server mode to recieve webhook triggers from Contentful ([See docs for server mode](https://github.com/ModiiMedia/contentful-hugo/tree/master/src/server))
+
 ## Table of Contents
 
 -   [Prerequisites](#prerequisites)
@@ -563,3 +572,4 @@ These are some known issues.
 
 -   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
 -   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue add teh the `--wait` flag to your script. Here's an example where we wait an additional 6 seconds `contentful-hugo --wait=6000`.
+-   **Hugo --server Rendering Issues**: If you have fields that where multiple different files are referenced such as a rich text field that references other entries Hugo's default server mode may not rerender everything. To fix this run `hugo server --disableFastRender`
