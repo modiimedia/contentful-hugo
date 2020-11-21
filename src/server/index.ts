@@ -46,7 +46,7 @@ interface ContentfulWebhookRequest {
 
 const startServer = (
     config: ContentfulHugoConfig,
-    port = 4000,
+    port = 1414,
     previewMode = true
 ): unknown => {
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {

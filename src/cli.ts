@@ -17,7 +17,7 @@ yargs
         wait: { type: 'number', default: 0, alias: 'W' },
         config: { type: 'string', default: null, alias: 'C' },
         server: { type: 'boolean', default: false, alias: 'S' },
-        port: { type: 'number', default: 4000 },
+        port: { type: 'number', default: 1414 },
     })
     .describe({
         preview: 'Pulls published and unplublished entries',
