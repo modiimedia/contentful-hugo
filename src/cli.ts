@@ -5,6 +5,7 @@ import {
     loadConfig,
     fetchDataFromContentful,
 } from './main';
+import startServer from './server';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -15,6 +16,8 @@ yargs
         init: { type: 'boolean', default: false },
         wait: { type: 'number', default: 0, alias: 'W' },
         config: { type: 'string', default: null, alias: 'C' },
+        server: { type: 'boolean', default: false, alias: 'S' },
+        port: { type: 'number', default: 4000 },
     })
     .describe({
         preview: 'Pulls published and unplublished entries',
@@ -39,7 +42,15 @@ const initialize = (): Promise<unknown> | unknown => {
 Check your config for errors or run "contentful-hugo --init" to create a config file.\n`
             );
         }
-        fetchDataFromContentful(config, argv.preview || false, argv.wait || 0);
+        if (argv.server) {
+            startServer(config, argv.port, true);
+        } else {
+            fetchDataFromContentful(
+                config,
+                argv.preview || false,
+                argv.wait || 0
+            );
+        }
     });
 };
 
