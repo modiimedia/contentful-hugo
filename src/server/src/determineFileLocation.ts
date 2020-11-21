@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import { determineFilePath } from '@/main/src/processEntry/src/createFile';
 
@@ -47,12 +48,23 @@ const determineFileLocations = (
     entryId: string,
     contentType: string
 ): string[] => {
-    const configs: ContentSettings[] = getRepeatableTypeConfigs(
+    const singleConfigs: ContentSettings[] = getSingleTypeConfigs(
         config,
         contentType
-    ).concat(getSingleTypeConfigs(config, contentType));
+    );
     const locations: string[] = [];
-    for (const item of configs) {
+    for (const item of singleConfigs) {
+        const location = determineFilePath(item, entryId);
+        const data = fs.readFileSync(location);
+        if (data.includes(`id: "${entryId}"`)) {
+            locations.push(location);
+        }
+    }
+    const repeatableConfigs: ContentSettings[] = getRepeatableTypeConfigs(
+        config,
+        contentType
+    );
+    for (const item of repeatableConfigs) {
         locations.push(determineFilePath(item, entryId));
     }
     console.log(locations);
