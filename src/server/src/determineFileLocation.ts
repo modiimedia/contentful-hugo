@@ -67,7 +67,6 @@ const determineFileLocations = (
     for (const item of repeatableConfigs) {
         locations.push(determineFilePath(item, entryId));
     }
-    console.log(locations);
     return locations;
 };
 
