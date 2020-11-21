@@ -6,6 +6,46 @@ import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
 
+export const determineFilePath = (
+    contentSettings: ContentSettings,
+    entryId: string
+): string => {
+    const {
+        fileExtension,
+        fileName,
+        isSingle,
+        isHeadless,
+        isTaxonomy,
+    } = contentSettings;
+    const directory = removeLeadingAndTrailingSlashes(
+        contentSettings.directory
+    );
+    if (isHeadless && !isSingle) {
+        return `./${directory}/${entryId}/index.${fileExtension}`;
+    } else if (isTaxonomy) {
+        mkdirp.sync(`./${directory}/${fileName || entryId}`);
+        return `./${directory}/${fileName || entryId}/_index.${fileExtension}`;
+    } else if (isSingle) {
+        return `./${directory}/${fileName}.${fileExtension}`;
+    }
+    return `./${directory}/${entryId}.${fileExtension}`;
+};
+
+export const createDirectoryForFile = (
+    contentSettings: ContentSettings,
+    entryId: string
+): void => {
+    const { fileName, isSingle, isHeadless, isTaxonomy } = contentSettings;
+    const directory = removeLeadingAndTrailingSlashes(
+        contentSettings.directory
+    );
+    if (isHeadless && !isSingle) {
+        mkdirp.sync(`./${directory}/${entryId}`);
+    } else if (isTaxonomy) {
+        mkdirp.sync(`./${directory}/${fileName || entryId}`);
+    }
+};
+
 /**
  *
  * @param {Object} contentSettings - Content settings object
@@ -20,13 +60,7 @@ const createFile = (
     mainContent: string | null
 ): void => {
     let fileContent = '';
-    const {
-        fileExtension,
-        fileName,
-        isSingle,
-        isHeadless,
-        isTaxonomy,
-    } = contentSettings;
+    const { fileExtension, isHeadless, isTaxonomy } = contentSettings;
     if (isHeadless && isTaxonomy) {
         throw new Error(
             'A content type cannot have both isHeadless and isTaxonomy set to true'
@@ -52,22 +86,8 @@ const createFile = (
     }
 
     // create file
-    let filePath = '';
-    const directory = removeLeadingAndTrailingSlashes(
-        contentSettings.directory
-    );
-    if (isHeadless && !isSingle) {
-        mkdirp.sync(`./${directory}/${entryId}`);
-        filePath = `./${directory}/${entryId}/index.${fileExtension}`;
-    } else if (isTaxonomy) {
-        mkdirp.sync(`./${directory}/${fileName || entryId}`);
-        filePath = `./${directory}/${fileName ||
-            entryId}/_index.${fileExtension}`;
-    } else if (isSingle) {
-        filePath = `./${directory}/${fileName}.${fileExtension}`;
-    } else {
-        filePath = `./${directory}/${entryId}.${fileExtension}`;
-    }
+    createDirectoryForFile(contentSettings, entryId);
+    const filePath = determineFilePath(contentSettings, entryId);
     return fs.writeFile(filePath, fileContent, error => {
         if (error) {
             console.log(error);
