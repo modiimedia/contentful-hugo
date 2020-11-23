@@ -24,6 +24,9 @@ yargs
         init: 'Initialize directory for Contentful-Hugo',
         wait: 'Wait X number of ms before fetching data',
         config: 'Specify path to a config file',
+        server:
+            'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
+        port: 'Specify server port',
     })
     .usage('Usage: contentful-hugo [flags]');
 
