@@ -123,7 +123,7 @@ const fetchDataFromContentful = async (
         console.log(`waiting ${waitTime}ms...`);
         await new Promise(resolve => {
             setTimeout(() => {
-                resolve();
+                resolve(null);
             }, waitTime);
         });
     }
