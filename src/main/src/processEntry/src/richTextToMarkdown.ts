@@ -128,7 +128,14 @@ const optionsRenderNode = (parentContentType = ''): any => {
                 width,
                 height,
             } = mapAsset(node.data.target);
-            return `{{< contentful-hugo/embedded-asset title="${title}" description="${description ||
+            const handleQuotes = (string: string) => {
+                const regex = new RegExp(/"/, 'g');
+                return string.replace(regex, '\\"');
+            };
+
+            return `{{< contentful-hugo/embedded-asset title="${handleQuotes(
+                title
+            )}" description="${handleQuotes(description || '') ||
                 ''}" url="${url || ''}" filename="${fileName ||
                 ''}" assetType="${assetType || ''}" size="${size ||
                 ''}" width="${width || ''}" height="${height ||
