@@ -9,9 +9,9 @@ export interface OverrideConfig {
         /**
          * Overrides the fieldname
          */
-        name?: string;
+        fieldName?: string;
         /**
-         * Transforms the value of the field
+         * Transforms the value of the field.
          */
         valueTransformer?: (fieldValue: unknown) => unknown;
     };

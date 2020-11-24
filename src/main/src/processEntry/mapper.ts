@@ -148,8 +148,8 @@ const mapFields = (
         const fieldContent = entry.fields[field];
         let fieldName = field;
         const fieldOverride = shouldOverride(field, overrides);
-        if (fieldOverride && fieldOverride.options?.name) {
-            fieldName = fieldOverride.options.name;
+        if (fieldOverride && fieldOverride.options?.fieldName) {
+            fieldName = fieldOverride.options.fieldName;
         }
         if (fieldOverride && fieldOverride.options?.valueTransformer) {
             frontMatter[fieldName] = fieldOverride.options.valueTransformer(

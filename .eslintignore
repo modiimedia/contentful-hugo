@@ -6,3 +6,4 @@ content
 *.test.ts
 dist
 coverage
+*.html
