@@ -84,10 +84,10 @@ const shouldResolve = (
     return false;
 };
 
-const shouldOverride = (
+export const shouldOverride = (
     fieldName: string,
     overrides: OverrideConfig[] = []
-) => {
+): OverrideConfig | false => {
     for (const item of overrides) {
         if (fieldName === item.field) {
             return item;
