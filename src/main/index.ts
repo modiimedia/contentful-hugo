@@ -1,5 +1,8 @@
 import { loadConfig, ContentfulConfig } from './src/config';
-import { ConfigContentfulSettings } from './src/config/src/types';
+import {
+    ConfigContentfulSettings,
+    OverrideConfig,
+} from './src/config/src/types';
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
@@ -26,6 +29,7 @@ export interface ContentSettings {
     isTaxonomy?: boolean;
     type?: string;
     resolveEntries?: { field: string; resolveTo: string }[];
+    overrides?: OverrideConfig[];
 }
 
 interface ContentfulError {
@@ -147,6 +151,7 @@ const fetchDataFromContentful = async (
                 type,
                 isTaxonomy,
                 resolveEntries,
+                overrides,
             } = types[i];
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -159,6 +164,7 @@ const fetchDataFromContentful = async (
                 type: type,
                 isTaxonomy,
                 resolveEntries,
+                overrides,
             };
             // check file extension settings
             switch (fileExtension) {
@@ -200,6 +206,7 @@ const fetchDataFromContentful = async (
                 mainContent,
                 resolveEntries,
                 type,
+                overrides,
             } = single;
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -212,6 +219,7 @@ const fetchDataFromContentful = async (
                 isSingle: true,
                 type: type,
                 resolveEntries,
+                overrides,
             };
             switch (contentSettings.fileExtension) {
                 case 'md':
