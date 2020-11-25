@@ -321,6 +321,7 @@ repeatableTypes:
 | mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                   |
 | type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))         |
 | resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter |
+| overrides      | optional | Do custom overrides for field values or field names                                                                           |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -334,8 +335,11 @@ repeatableTypes:
 | mainContent               | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
 | type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
 | resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+| overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 
-#### Advanced Config Example
+#### Advanced Config Examples
+
+##### Dynmically Changing Tokens
 
 Here is an example of dynamically change the `token`, `previewToken`, and `environment` options depending on any arbitrary condition.
 
@@ -363,6 +367,42 @@ module.exports = {
 };
 ```
 
+##### Overriding Fields and Field Values
+
+```js
+// contentful-hugo.config.js
+
+module.exports = {
+    repeatableTypes: [
+        {
+            id: "trips",
+            directory: "content/trips"
+            overrides: [{
+                field: "url",
+                options: {
+                    // change the url field name to "slug" in frontmatter
+                    fieldName: "slug"
+                }
+            },
+            {
+                field: "distanceInKilometers",
+                options: {
+                    // rename "distanceInKilometers" to "distanceInMiles"
+                    fieldName: "distanceInMiles",
+                    // convert distance to miles and output the result in frontmatter
+                    valueTransformer: (val) => {
+                        if(typeof val === 'number') {
+                            return val * 0.621371
+                        }
+                        return 0
+                    }
+                }
+            }]
+        }
+    ]
+}
+```
+
 #### Config File Autocomplete
 
 For JS config files you can import a `ContentfulHugoConfig` type which will enable autocomplete in text editors that support Typescript typings. (Tested in Visual Studio Code.)
@@ -385,7 +425,7 @@ Files will be generated in the directory specified in the config file. Front mat
 The following fields will always appear in your frontmatter:
 
 ```yaml
-updated: # the last time this entry was update in Contentful
+updatedAt: # the last time this entry was update in Contentful
 createdAt: # when the entry was created in Contentful
 date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
 ```
@@ -565,6 +605,54 @@ category: my-category-slug
 ```
 
 The resolve entries feature works with both reference fields and asset fields. (As well as multiple reference and multiple asset fields)
+
+### The Overrides Parameter
+
+Overrides can be used to modify field names and field values.
+
+Here's a simple example of changing a field name from "url" to "videoUrl"
+
+```js
+repeatableTypes: [
+    {
+        id: 'youtubeVideo',
+        directory: 'content/_youtubeVideo',
+        isHeadless: true,
+        overrides: [
+            {
+                field: 'url',
+                options: {
+                    // change fieldname to videoUrl in order to prevent Hugo errors
+                    fieldName: 'videoUrl',
+                },
+            },
+        ],
+    },
+];
+```
+
+You can also use the overrides to transform the field data that will appear in frontmatter. Here's an example where we change the field name from "url" to "videoId" and then we use the valueTransformer to extract the video id from the url and then place it in the frontmatter.
+
+```js
+repeatableTypes: [
+    {
+        id: 'youtubeVideo',
+        directory: 'content/_youtubeVideo',
+        isHeadless: true,
+        overrides: [
+            field: 'url',
+            options: {
+                fieldName: 'videoId',
+                valueTransformer: (value) => {
+                    const url = new URL(value)
+                    // extract the video id from the url and return it
+                    return url.searchParams.get('v')
+                }
+            }
+        ]
+    }
+]
+```
 
 ## Known Issues
 

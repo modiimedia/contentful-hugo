@@ -3,6 +3,20 @@ export interface ResolveEntryConfig {
     resolveTo: string;
 }
 
+export interface OverrideConfig {
+    field: string;
+    options: {
+        /**
+         * Overrides the fieldname
+         */
+        fieldName?: string;
+        /**
+         * Transforms the value of the field.
+         */
+        valueTransformer?: (fieldValue: unknown) => unknown;
+    };
+}
+
 export interface TypeConfig {
     /**
      * Contentful content type ID
@@ -21,9 +35,13 @@ export interface TypeConfig {
     mainContent?: string;
     fileExtension?: string;
     /**
-     * Configs specifying how to resolve asset references and entry references
+     * Options specifying how to resolve asset references and entry references
      */
     resolveEntries?: ResolveEntryConfig[];
+    /**
+     * Options that allow you to override field names and modify field values before rendering the content file
+     */
+    overrides?: OverrideConfig[];
 }
 
 export interface SingleTypeConfig extends TypeConfig {

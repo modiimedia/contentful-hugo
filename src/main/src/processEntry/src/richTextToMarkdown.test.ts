@@ -441,6 +441,31 @@ describe('Assets', () => {
         const expectedResult = `\n{{< contentful-hugo/embedded-asset title="${title}" description="${description}" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width}" height="${height}" parentContentType="${parentContentType}" >}}\n\n`;
         expect(result).toBe(expectedResult);
     });
+    test('Asset Block (Image with quotations in description)', () => {
+        const title = 'My "Photo"';
+        const description = 'Description of "my photo"';
+        const url = 'https://source.unsplash.com/random';
+        const fileName = 'myphoto.jpg';
+        const assetType = 'image/jpeg';
+        const size = 1000;
+        const width = 1920;
+        const height = 1080;
+        const parentContentType = 'post';
+        const result = assetFactory(
+            'embedded-asset-block',
+            title,
+            description,
+            url,
+            fileName,
+            assetType,
+            size,
+            width,
+            height,
+            parentContentType
+        );
+        const expectedResult = `\n{{< contentful-hugo/embedded-asset title="My \\"Photo\\"" description="Description of \\"my photo\\"" url="${url}" filename="${fileName}" assetType="${assetType}" size="${size}" width="${width}" height="${height}" parentContentType="${parentContentType}" >}}\n\n`;
+        expect(result).toBe(expectedResult);
+    });
     test('Asset Block (Non Image)', () => {
         const title = 'My Video';
         const description = 'Description of my video';
