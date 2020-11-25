@@ -416,7 +416,7 @@ Files will be generated in the directory specified in the config file. Front mat
 The following fields will always appear in your frontmatter:
 
 ```yaml
-updated: # the last time this entry was update in Contentful
+updatedAt: # the last time this entry was update in Contentful
 createdAt: # when the entry was created in Contentful
 date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
 ```
@@ -596,6 +596,54 @@ category: my-category-slug
 ```
 
 The resolve entries feature works with both reference fields and asset fields. (As well as multiple reference and multiple asset fields)
+
+### The Overrides Parameter
+
+Overrides can be used to modify field names and field values.
+
+Here's a simple example of changing a field name from "url" to "videoUrl"
+
+```js
+repeatableTypes: [
+    {
+        id: 'youtubeVideo',
+        directory: 'content/_youtubeVideo',
+        isHeadless: true,
+        overrides: [
+            {
+                field: 'url',
+                options: {
+                    // change fieldname to videoUrl in order to prevent Hugo errors
+                    fieldName: 'videoUrl',
+                },
+            },
+        ],
+    },
+];
+```
+
+You can also use the overrides to transform the field data that will appear in frontmatter. Here's an example where we change the field name from "url" to "videoId" and then we use the valueTransformer to extract the video id from the url and then place it in the frontmatter.
+
+```js
+repeatableTypes: [
+    {
+        id: 'youtubeVideo',
+        directory: 'content/_youtubeVideo',
+        isHeadless: true,
+        overrides: [
+            field: 'url',
+            options: {
+                fieldName: 'videoId',
+                valueTransformer: (value) => {
+                    const url = new URL(value)
+                    // extract the video id from the url and return it
+                    return url.searchParams.get('v')
+                }
+            }
+        ]
+    }
+]
+```
 
 ## Known Issues
 
