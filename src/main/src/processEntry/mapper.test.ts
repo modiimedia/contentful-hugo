@@ -1,4 +1,11 @@
-import { mapArrayField, resolveField } from './mapper';
+import { Entry } from 'contentful';
+import { OverrideConfig } from '../config/src/types';
+import {
+    mapArrayField,
+    resolveField,
+    shouldOverride,
+    mapFields,
+} from './mapper';
 
 const assetFactory = (
     title: string,
@@ -35,6 +42,38 @@ const assetFactory = (
         },
     };
     return asset;
+};
+
+const entryFactory = (fields: { [key: string]: any } = {}): Entry<any> => {
+    const entry: Entry<any> = {
+        sys: {
+            id: 'my-id',
+            createdAt: '2016-01-10',
+            updatedAt: '2016-01-10',
+            type: 'Entry',
+            contentType: {
+                sys: {
+                    type: 'Link',
+                    id: 'post',
+                    linkType: 'ContentType',
+                },
+            },
+            locale: 'en-US',
+        },
+        fields: {},
+        toPlainObject: () => {
+            return {};
+        },
+        update: () => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(entry);
+                });
+            });
+        },
+    };
+    entry.fields = fields;
+    return entry;
 };
 
 describe('Array Fields', () => {
@@ -120,5 +159,80 @@ describe('resolveable entries', () => {
         );
         const result = resolveField(asset, 'fields.file.url');
         expect(result).toBe('https://source.unsplash.com/200x200');
+    });
+});
+
+describe('Override Tests', () => {
+    test('Should override', () => {
+        const fieldName = 'post';
+        const overrides: OverrideConfig[] = [
+            {
+                field: 'gallery',
+                options: {
+                    fieldName: 'galleries',
+                },
+            },
+            {
+                field: 'post',
+                options: {
+                    fieldName: 'posts',
+                },
+            },
+        ];
+        const result = shouldOverride(fieldName, overrides);
+        expect(typeof result).toBe('object');
+    });
+    test('Should not override', () => {
+        const fieldName = 'post';
+        const overrides: OverrideConfig[] = [
+            {
+                field: 'gallery',
+                options: {
+                    fieldName: 'galleries',
+                },
+            },
+            {
+                field: 'posts',
+                options: {
+                    fieldName: 'post',
+                },
+            },
+        ];
+        const result = shouldOverride(fieldName, overrides);
+        expect(result).toBe(false);
+    });
+    test('Override Value', () => {
+        const entry: Entry<any> = entryFactory({
+            title: 'My Awesome Title',
+            slug: 'my-awesome-title',
+            content: 'content goes here',
+            locale: 'en-US',
+        });
+        const overrides = [
+            {
+                field: 'content',
+                options: {
+                    valueTransformer: (val: any) => {
+                        return val.toUpperCase();
+                    },
+                },
+            },
+        ];
+        const result = mapFields(entry, '', false, '', '', [], overrides);
+        expect(result.content).toBe('CONTENT GOES HERE');
+    });
+    test('override field name', () => {
+        const entry = entryFactory({ title: 'My Title' });
+        const overrides = [
+            {
+                field: 'title',
+                options: {
+                    fieldName: 'name',
+                },
+            },
+        ];
+        const result = mapFields(entry, '', false, '', '', [], overrides);
+        expect(result.title).toBe(undefined);
+        expect(result.name).toBe('My Title');
     });
 });

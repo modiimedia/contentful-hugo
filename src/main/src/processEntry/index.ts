@@ -12,6 +12,7 @@ const processEntry = (
         type,
         mainContent,
         resolveEntries,
+        overrides,
     } = contentSettings;
     const frontMatter = mapFields(
         item,
@@ -19,7 +20,8 @@ const processEntry = (
         isHeadless,
         type,
         mainContent,
-        resolveEntries
+        resolveEntries,
+        overrides
     );
     const content = contentSettings.mainContent
         ? getMainContent(item, contentSettings.mainContent)

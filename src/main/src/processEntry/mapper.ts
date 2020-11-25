@@ -6,6 +6,7 @@ import getEntryFields from './src/getEntryFields';
 import getAssetFields from './src/getAssetFields';
 import richTextToMarkdown from './src/richTextToMarkdown';
 import richTextNodes from './src/richTextNodes';
+import { OverrideConfig } from '../config/src/types';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[]
@@ -83,6 +84,18 @@ const shouldResolve = (
     return false;
 };
 
+export const shouldOverride = (
+    fieldName: string,
+    overrides: OverrideConfig[] = []
+): OverrideConfig | false => {
+    for (const item of overrides) {
+        if (fieldName === item.field) {
+            return item;
+        }
+    }
+    return false;
+};
+
 const resolveEntry = (entry: any = {}, resolvesToString = ''): any => {
     const props = resolvesToString.split('.');
     let value = entry;
@@ -118,9 +131,10 @@ const mapFields = (
     isHeadless?: boolean,
     type?: string,
     mainContentField?: string,
-    resolveList?: ResolveEntryConfig[]
+    resolveList?: ResolveEntryConfig[],
+    overrides?: OverrideConfig[]
 ): any => {
-    const frontMatter: any = {};
+    const frontMatter: { [key: string]: any } = {};
     if (isHeadless) {
         frontMatter.headless = true;
     }
@@ -132,14 +146,26 @@ const mapFields = (
     frontMatter.date = entry.sys.createdAt;
     for (const field of Object.keys(entry.fields)) {
         const fieldContent = entry.fields[field];
+        let fieldName = field;
+        const fieldOverride = shouldOverride(field, overrides);
+        if (fieldOverride && fieldOverride.options?.fieldName) {
+            fieldName = fieldOverride.options.fieldName;
+        }
+        if (fieldOverride && fieldOverride.options?.valueTransformer) {
+            frontMatter[fieldName] = fieldOverride.options.valueTransformer(
+                entry.fields[field]
+            );
+            continue;
+        }
         const fieldResolver = shouldResolve(field, resolveList);
         if (fieldResolver) {
-            frontMatter[field] = resolveField(
+            frontMatter[fieldName] = resolveField(
                 fieldContent,
                 fieldResolver.resolveTo
             );
             continue;
         }
+
         if (field === mainContentField) {
             // skips to prevent duplicating mainContent in frontmatter
             continue;
@@ -156,11 +182,11 @@ const mapFields = (
         switch (typeof fieldContent) {
             case 'object':
                 if ('sys' in fieldContent) {
-                    frontMatter[field] = mapReferenceField(fieldContent);
+                    frontMatter[fieldName] = mapReferenceField(fieldContent);
                 }
                 // rich text (see rich text function)
                 else if ('nodeType' in fieldContent) {
-                    frontMatter[field] = mapRichTextField(
+                    frontMatter[fieldName] = mapRichTextField(
                         fieldContent
                     ).richText;
                     frontMatter[`${field}_plaintext`] = mapRichTextField(
@@ -169,11 +195,11 @@ const mapFields = (
                 }
                 // arrays
                 else {
-                    frontMatter[field] = mapArrayField(fieldContent);
+                    frontMatter[fieldName] = mapArrayField(fieldContent);
                 }
                 break;
             default:
-                frontMatter[field] = fieldContent;
+                frontMatter[fieldName] = fieldContent;
                 break;
         }
     }

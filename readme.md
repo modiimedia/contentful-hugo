@@ -312,6 +312,7 @@ repeatableTypes:
 | mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                   |
 | type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))         |
 | resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter |
+| overrides      | optional | Do custom overrides for field values or field names                                                                           |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -325,8 +326,11 @@ repeatableTypes:
 | mainContent               | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
 | type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
 | resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+| overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 
-#### Advanced Config Example
+#### Advanced Config Examples
+
+##### Dynmically Changing Tokens
 
 Here is an example of dynamically change the `token`, `previewToken`, and `environment` options depending on any arbitrary condition.
 
@@ -352,6 +356,42 @@ module.exports = {
     },
     // rest of config
 };
+```
+
+##### Overriding Fields and Field Values
+
+```js
+// contentful-hugo.config.js
+
+module.exports = {
+    repeatableTypes: [
+        {
+            id: "trips",
+            directory: "content/trips"
+            overrides: [{
+                field: "url",
+                options: {
+                    // change the url field name to "slug" in frontmatter
+                    fieldName: "slug"
+                }
+            },
+            {
+                field: "distanceInKilometers",
+                options: {
+                    // rename "distanceInKilometers" to "distanceInMiles"
+                    fieldName: "distanceInMiles",
+                    // convert distance to miles and output the result in frontmatter
+                    valueTransformer: (val) => {
+                        if(typeof val === 'number') {
+                            return val * 0.621371
+                        }
+                        return 0
+                    }
+                }
+            }]
+        }
+    ]
+}
 ```
 
 #### Config File Autocomplete
