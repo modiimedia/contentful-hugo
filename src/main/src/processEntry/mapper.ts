@@ -142,7 +142,6 @@ const mapFields = (
         frontMatter.type = type;
     }
     frontMatter.updated = entry.sys.updatedAt;
-    frontMatter.updatedAt = entry.sys.updatedAt;
     frontMatter.createdAt = entry.sys.createdAt;
     frontMatter.date = entry.sys.createdAt;
     for (const field of Object.keys(entry.fields)) {

@@ -416,7 +416,7 @@ Files will be generated in the directory specified in the config file. Front mat
 The following fields will always appear in your frontmatter:
 
 ```yaml
-updatedAt: # the last time this entry was update in Contentful
+updated: # the last time this entry was update in Contentful
 createdAt: # when the entry was created in Contentful
 date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
 ```
