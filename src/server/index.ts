@@ -6,6 +6,7 @@ import { Entry, Asset } from 'contentful';
 import { ContentfulHugoConfig, fetchDataFromContentful } from '@main/index';
 import determineFileLocations from './src/determineFileLocation';
 import deleteFile from './src/deleteFile';
+import pullEntry from './src/pullEntry';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -73,6 +74,16 @@ const startServer = (
                     .status(500)
                     .send('Contentful Hugo config file error');
             }
+            return pullEntry(sys.contentType.sys.id, config, previewMode).then(
+                () => {
+                    return res.status(200).send({
+                        date: new Date(),
+                        message: 'Created file',
+                        entryId: sys.id,
+                        contentType: sys.contentType.sys.id,
+                    });
+                }
+            );
             return fetchDataFromContentful(config, previewMode)
                 .then(() => {
                     return res.status(200).send({

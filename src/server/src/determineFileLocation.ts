@@ -2,10 +2,10 @@ import fs from 'fs';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import { determineFilePath } from '@/main/src/processEntry/src/createFile';
 
-const getSingleTypeConfigs = (
+export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
     contentType: string
-) => {
+): ContentSettings[] => {
     const fileData: ContentSettings[] = [];
     for (const item of config.singleTypes) {
         if (item.id === contentType) {
@@ -23,10 +23,10 @@ const getSingleTypeConfigs = (
     return fileData;
 };
 
-const getRepeatableTypeConfigs = (
+export const getRepeatableTypeConfigs = (
     config: ContentfulHugoConfig,
     contentType: string
-) => {
+): ContentSettings[] => {
     const configs: ContentSettings[] = [];
     for (const item of config.repeatableTypes) {
         if (item.id === contentType) {

@@ -18,7 +18,8 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number
+    itemsPulled?: number,
+    isWebhookTriggered?: boolean
 ): Promise<{
     totalItems: number;
     typeId: string;
@@ -80,7 +81,11 @@ const getContentType = async (
             }
 
             // check total number of items against number of items pulled in API
-            if (data.total > data.limit && !contentSettings.isSingle) {
+            if (
+                data.total > data.limit &&
+                !contentSettings.isSingle &&
+                !isWebhookTriggered
+            ) {
                 // run function again if there are still more items to get
                 const newSkip = skip + limit;
                 return getContentType(
