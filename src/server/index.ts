@@ -74,16 +74,19 @@ const startServer = (
                     .status(500)
                     .send('Contentful Hugo config file error');
             }
-            return pullEntry(sys.contentType.sys.id, config, previewMode).then(
-                () => {
-                    return res.status(200).send({
-                        date: new Date(),
-                        message: 'Created file',
-                        entryId: sys.id,
-                        contentType: sys.contentType.sys.id,
-                    });
-                }
-            );
+            return pullEntry(
+                sys.id,
+                sys.contentType.sys.id,
+                config,
+                previewMode
+            ).then(() => {
+                return res.status(200).send({
+                    date: new Date(),
+                    message: 'Created file',
+                    entryId: sys.id,
+                    contentType: sys.contentType.sys.id,
+                });
+            });
             return fetchDataFromContentful(config, previewMode)
                 .then(() => {
                     return res.status(200).send({

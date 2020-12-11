@@ -7,6 +7,7 @@ import {
 } from './determineFileLocation';
 
 const pullEntry = (
+    entryId: string,
     contentType: string,
     config: ContentfulHugoConfig,
     previewMode = true
@@ -34,13 +35,13 @@ const pullEntry = (
         const contentfulSettings: ConfigContentfulSettings = config.contentful;
         tasks.push(
             getContentType(
-                1,
+                100,
                 0,
                 contentSettings,
                 contentfulSettings,
                 previewMode,
                 0,
-                true
+                { 'sys.id': entryId }
             )
         );
     }
