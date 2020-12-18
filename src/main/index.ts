@@ -245,9 +245,10 @@ const fetchDataFromContentful = async (
             }
         }
     }
-    return Promise.all(asyncTasks).then(() => {
-        console.log(`\n---------------------------------------------\n`);
-    });
+    for (const task of asyncTasks) {
+        await task;
+    }
+    console.log(`\n---------------------------------------------\n`);
 };
 
 export {
