@@ -7,6 +7,8 @@ import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
 
+import Limiter = require('async-limiter');
+
 export interface ContentSettings {
     /**
      * Contentful content type ID
@@ -136,7 +138,12 @@ const fetchDataFromContentful = async (
     );
     // loop through repeatable content types
     const types = config.repeatableTypes;
-    const asyncTasks = [];
+    const jobs: {
+        limit: number;
+        skip: number;
+        contentSettings: ContentSettings;
+        isPreview: boolean;
+    }[] = [];
     if (types) {
         for (let i = 0; i < types.length; i++) {
             // object to pass settings into the function
@@ -172,17 +179,16 @@ const fetchDataFromContentful = async (
                 case 'yaml':
                 case 'yml':
                 case undefined:
-                case null:
-                    asyncTasks.push(
-                        fetchType(
-                            1000,
-                            0,
-                            contentSettings,
-                            config.contentful,
-                            isPreview
-                        )
-                    );
+                case null: {
+                    const job = {
+                        limit: 1000,
+                        skip: 0,
+                        contentSettings: contentSettings,
+                        isPreview: isPreview,
+                    };
+                    jobs.push(job);
                     break;
+                }
                 default:
                     console.log(
                         `   ERROR: extension "${contentSettings.fileExtension}" not supported`
@@ -227,15 +233,15 @@ const fetchDataFromContentful = async (
                 case 'yml':
                 case null:
                 case undefined:
-                    asyncTasks.push(
-                        fetchType(
-                            1,
-                            0,
-                            contentSettings,
-                            config.contentful,
-                            isPreview
-                        )
-                    );
+                    {
+                        const job = {
+                            limit: 1,
+                            skip: 0,
+                            contentSettings: contentSettings,
+                            isPreview: isPreview,
+                        };
+                        jobs.push(job);
+                    }
                     break;
                 default:
                     console.log(
@@ -245,10 +251,23 @@ const fetchDataFromContentful = async (
             }
         }
     }
-    for (const task of asyncTasks) {
-        await task;
+    const t = new Limiter({ concurrency: 2 });
+    for (const job of jobs) {
+        t.push((cb: any) => {
+            fetchType(
+                job.limit,
+                job.skip,
+                job.contentSettings,
+                config.contentful,
+                job.isPreview
+            ).then(() => {
+                cb();
+            });
+        });
     }
-    console.log(`\n---------------------------------------------\n`);
+    t.onDone(() => {
+        console.log(`\n---------------------------------------------\n`);
+    });
 };
 
 export {

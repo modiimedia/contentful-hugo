@@ -15,10 +15,11 @@
             "@main/*": ["main/*"],
             "@server/*": ["server/*"]
         },
+        "typeRoots": ["./types", "./node_modules/@types"],
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
     "include": ["./src/**/*", "src/cli.ts"],
-    "exclude": ["node_modules", "dist", "**/*.test.ts", "**.*.test.js"]
+    "exclude": ["node_modules", "dist", "**/*.test.ts", "**.*.test.js", "types"]
 }
