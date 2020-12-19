@@ -151,7 +151,6 @@ const mapFields = (
         contentType: entry.sys.contentType.sys.id,
     };
     frontMatter.updated = entry.sys.updatedAt;
-    frontMatter.updatedAt = entry.sys.updatedAt;
     frontMatter.createdAt = entry.sys.createdAt;
     frontMatter.date = entry.sys.createdAt;
     for (const field of Object.keys(entry.fields)) {
