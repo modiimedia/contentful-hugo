@@ -6,11 +6,14 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 
 ## Features
 
--   Rich Text support
--   Has default shortcodes for Rich Text content
--   Supports the Content Preview API
+-   Markdown and YAML output
+-   Singleton support
+-   Rich text field support
+-   Default shortcodes for rich text content
 -   Asset field resolution
--   Linked entries can be resolved by a specific field
+-   Customizable linked entry resolution
+-   Supports the Content Preview API
+-   Field name and field value overrides
 -   Server mode to recieve webhook triggers from Contentful ([See docs for server mode](https://github.com/ModiiMedia/contentful-hugo/tree/master/src/server))
 
 ## Table of Contents
@@ -57,15 +60,15 @@ Complete [configuration](#configuration) then run the following command(s) in th
 ## initialize the directory
 contentful-hugo --init
 
-## fetch from contentful
-contentful-hugo
+## fetch content from contentful
+contentful-hugo [flags]
 ```
 
 #### When Installed Locally
 
 ```powershell
 npx contentful-hugo --init
-npx contentful-hugo
+npx contentful-hugo [flags]
 ```
 
 ### Flags
@@ -78,12 +81,6 @@ npx contentful-hugo
 | --config  | -C      | Specify the path to a config file.                                                                       |
 | --help    |         | Show help                                                                                                |
 | --version |         | Show version number                                                                                      |
-
-#### Preview Mode Example
-
-```powershell
-contentful-hugo --preview
-```
 
 #### Multiple Flags Example
 
