@@ -6,12 +6,12 @@ import {
     getSingleTypeConfigs,
 } from './determineFileLocation';
 
-const pullEntry = (
+const pullEntry = async (
     entryId: string,
     contentType: string,
     config: ContentfulHugoConfig,
     previewMode = true
-): Promise<{ totalItems: number; typeId: string }[]> => {
+): Promise<void> => {
     const configs = getRepeatableTypeConfigs(config, contentType).concat(
         getSingleTypeConfigs(config, contentType)
     );
@@ -45,7 +45,7 @@ const pullEntry = (
             )
         );
     }
-    return Promise.all(tasks);
+    await Promise.all(tasks);
 };
 
 export default pullEntry;

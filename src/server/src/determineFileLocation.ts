@@ -46,7 +46,8 @@ export const getRepeatableTypeConfigs = (
 const determineFileLocations = (
     config: ContentfulHugoConfig,
     entryId: string,
-    contentType: string
+    contentType: string,
+    isDeleting = false
 ): string[] => {
     const singleConfigs: ContentSettings[] = getSingleTypeConfigs(
         config,
@@ -55,8 +56,15 @@ const determineFileLocations = (
     const locations: string[] = [];
     for (const item of singleConfigs) {
         const location = determineFilePath(item, entryId);
-        const data = fs.readFileSync(location);
-        if (data.includes(`id: "${entryId}"`)) {
+        if (isDeleting) {
+            const fileExists = fs.existsSync(location);
+            if (fileExists) {
+                const data = fs.readFileSync(location);
+                if (data.includes(`id: "${entryId}"`)) {
+                    locations.push(location);
+                }
+            }
+        } else {
             locations.push(location);
         }
     }

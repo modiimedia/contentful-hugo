@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import express, { Response } from 'express';
+import { resolve } from 'path';
 import { IncomingHttpHeaders } from 'http';
 import bodyParser from 'body-parser';
 import { Entry, Asset } from 'contentful';
-import { ContentfulHugoConfig, fetchDataFromContentful } from '@main/index';
+import { ContentfulHugoConfig } from '@main/index';
 import determineFileLocations from './src/determineFileLocation';
 import deleteFile from './src/deleteFile';
 import pullEntry from './src/pullEntry';
@@ -14,7 +15,7 @@ app.use(bodyParser.json());
 
 declare module 'http' {
     interface IncomingHttpHeaders {
-        'X-Contentful-Topic':
+        'x-contentful-topic':
             | 'ContentManagement.ContentType.create'
             | 'ContentManagement.ContentType.save'
             | 'ContentManagement.ContentType.publish'
@@ -45,6 +46,48 @@ interface ContentfulWebhookRequest {
     body: Entry<unknown> | Asset;
 }
 
+const shouldCreate = (
+    triggerType: ContentfulWebhookRequest['headers']['x-contentful-topic'],
+    previewMode: boolean
+) => {
+    const conditions = ['.publish', '.unarchive'];
+    for (const condition of conditions) {
+        if (triggerType.includes(condition)) {
+            return true;
+        }
+    }
+    if (previewMode) {
+        const previewCondition = ['.save', '.create', '.auto_save'];
+        for (const condition of previewCondition) {
+            if (triggerType.includes(condition)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+const shouldDelete = (
+    triggerType: IncomingHttpHeaders['x-contentful-topic'],
+    previewMode: boolean
+) => {
+    const conditions = ['.delete', '.archive'];
+    for (const condition of conditions) {
+        if (triggerType.includes(condition)) {
+            return true;
+        }
+    }
+    if (previewMode) {
+        const previewConditions = ['.unpublish'];
+        for (const condition of previewConditions) {
+            if (triggerType.includes(condition)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
 const startServer = (
     config: ContentfulHugoConfig,
     port = 1414,
@@ -62,13 +105,7 @@ const startServer = (
         if (typeof triggerType !== 'string') {
             return res.status(401).send('Invalid format');
         }
-        if (
-            triggerType.includes('.save') ||
-            triggerType.includes('.create') ||
-            triggerType.includes('.publish') ||
-            triggerType.includes('.auto_save') ||
-            triggerType.includes('.unarchive')
-        ) {
+        if (shouldCreate(triggerType, previewMode)) {
             if (!config) {
                 return res
                     .status(500)
@@ -80,44 +117,46 @@ const startServer = (
                 config,
                 previewMode
             ).then(() => {
+                const fileLocations = determineFileLocations(
+                    config,
+                    sys.id,
+                    sys.contentType.sys.id,
+                    false
+                );
+                for (const location of fileLocations) {
+                    console.log(`created ${resolve(location)}`);
+                }
+                const message = `Created ${fileLocations.length} file${
+                    fileLocations.length === 1 ? '' : 's'
+                }`;
                 return res.status(200).send({
                     date: new Date(),
-                    message: 'Created file',
+                    message,
                     entryId: sys.id,
                     contentType: sys.contentType.sys.id,
+                    files: fileLocations,
                 });
             });
-            return fetchDataFromContentful(config, previewMode)
-                .then(() => {
-                    return res.status(200).send({
-                        date: new Date(),
-                        message: 'Created file',
-                        entryId: sys.id,
-                        contentType: sys.contentType,
-                    });
-                })
-                .catch(err => {
-                    return res.status(500).send(err);
-                });
-        } else if (
-            triggerType.includes('.delete') ||
-            triggerType.includes('unpublish') ||
-            triggerType.includes('archive')
-        ) {
+        } else if (shouldDelete(triggerType, previewMode)) {
             if (sys.type === 'Entry') {
                 const filePaths = determineFileLocations(
                     config,
                     sys.id,
-                    sys.contentType.sys.id
+                    sys.contentType.sys.id,
+                    true
                 );
                 for (const path of filePaths) {
                     deleteFile(path);
                 }
+                const message = `Deleted ${filePaths.length} file${
+                    filePaths.length === 1 ? '' : 's'
+                }`;
                 return res.status(200).send({
                     date: new Date(),
-                    message: 'Deleted item',
+                    message,
                     entryId: sys.id,
-                    contentType: sys.contentType,
+                    contentType: sys.contentType.sys.id,
+                    files: filePaths,
                 });
             }
         }

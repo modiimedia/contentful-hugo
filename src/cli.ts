@@ -46,7 +46,7 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
             );
         }
         if (argv.server) {
-            startServer(config, argv.port, true);
+            startServer(config, argv.port, argv.preview || false);
         } else {
             fetchDataFromContentful(
                 config,
