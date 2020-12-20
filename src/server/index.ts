@@ -46,10 +46,10 @@ interface ContentfulWebhookRequest {
     body: Entry<unknown> | Asset;
 }
 
-const shouldCreate = (
+export const shouldCreate = (
     triggerType: ContentfulWebhookRequest['headers']['x-contentful-topic'],
     previewMode: boolean
-) => {
+): boolean => {
     const conditions = ['.publish', '.unarchive'];
     for (const condition of conditions) {
         if (triggerType.includes(condition)) {
@@ -67,17 +67,17 @@ const shouldCreate = (
     return false;
 };
 
-const shouldDelete = (
+export const shouldDelete = (
     triggerType: IncomingHttpHeaders['x-contentful-topic'],
     previewMode: boolean
-) => {
+): boolean => {
     const conditions = ['.delete', '.archive'];
     for (const condition of conditions) {
         if (triggerType.includes(condition)) {
             return true;
         }
     }
-    if (previewMode) {
+    if (!previewMode) {
         const previewConditions = ['.unpublish'];
         for (const condition of previewConditions) {
             if (triggerType.includes(condition)) {
