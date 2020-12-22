@@ -42,6 +42,7 @@ export interface TypeConfig {
      * Options that allow you to override field names and modify field values before rendering the content file
      */
     overrides?: OverrideConfig[];
+    filters?: { [key: string]: string | number | boolean };
 }
 
 export interface SingleTypeConfig extends TypeConfig {

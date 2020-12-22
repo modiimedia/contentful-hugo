@@ -32,6 +32,7 @@ export interface ContentSettings {
     type?: string;
     resolveEntries?: { field: string; resolveTo: string }[];
     overrides?: OverrideConfig[];
+    filters?: { [key: string]: string | number | boolean };
 }
 
 interface ContentfulError {
@@ -159,6 +160,7 @@ const fetchDataFromContentful = async (
                 isTaxonomy,
                 resolveEntries,
                 overrides,
+                filters,
             } = types[i];
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -172,6 +174,7 @@ const fetchDataFromContentful = async (
                 isTaxonomy,
                 resolveEntries,
                 overrides,
+                filters,
             };
             // check file extension settings
             switch (fileExtension) {
@@ -213,6 +216,7 @@ const fetchDataFromContentful = async (
                 resolveEntries,
                 type,
                 overrides,
+                filters,
             } = single;
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -226,6 +230,7 @@ const fetchDataFromContentful = async (
                 type: type,
                 resolveEntries,
                 overrides,
+                filters,
             };
             switch (contentSettings.fileExtension) {
                 case 'md':
