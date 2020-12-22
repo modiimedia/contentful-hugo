@@ -626,7 +626,7 @@ repeatableTypes: [
 ];
 ```
 
-`overrides` also has a `valueTransformer` options that allows you to manipulate the field data that will appear in frontmatter. `valueTransformer` takes a method that has the field value as a parameter and then returns the final result that will appear in the frontmatter.
+`overrides` also has a `valueTransformer` options that allows you to manipulate the field data that will appear in frontmatter. `valueTransformer` takes a method that has the field value as a parameter and then returns the final result that will appear in the frontmatter. (Be aware that since `valueTransformer` must be a method this option will only work in javascript config files)
 
 Here's an example where we change the field name from "url" to "videoId" and then we use the `valueTransformer` to extract the video id from the url and then place it in the frontmatter.
 
