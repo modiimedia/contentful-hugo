@@ -33,7 +33,7 @@ export interface TypeConfig {
      * The field that will act as the main content of the .md file
      */
     mainContent?: string;
-    fileExtension?: string;
+    fileExtension?: 'md' | 'yaml' | 'yml';
     /**
      * Options specifying how to resolve asset references and entry references
      */
