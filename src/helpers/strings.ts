@@ -39,9 +39,12 @@ interface StringSpaceCleanupObject {
     removedSpaces: string;
     count: number;
 }
+const characterIsWhiteSpace = (char: string): boolean => {
+    return /\s/.test(char);
+};
 
 const leadingSpaces = (string: string, count = 0): StringSpaceCleanupObject => {
-    if (string.charAt(0) === ' ') {
+    if (characterIsWhiteSpace(string.charAt(0))) {
         return leadingSpaces(string.slice(1), count + 1);
     }
     let removedSpaces = '';
@@ -60,8 +63,9 @@ const trailingSpaces = (
     string: string,
     count = 0
 ): StringSpaceCleanupObject => {
-    if (string.charAt(string.length - 1) === ' ') {
-        return trailingSpaces(string.slice(0, -1), count + 1);
+    const str = string.replace(/\s/g, ' ');
+    if (characterIsWhiteSpace(str.charAt(str.length - 1))) {
+        return trailingSpaces(str.slice(0, -1), count + 1);
     }
     let removedSpaces = '';
     for (let i = 0; i < count; i++) {
@@ -69,13 +73,14 @@ const trailingSpaces = (
     }
     return {
         exists: count > 0,
-        newString: string,
+        newString: str,
         removedSpaces,
         count,
     };
 };
 
 export {
+    characterIsWhiteSpace,
     isMultilineString,
     replaceSpecialEntities,
     specialEntities,

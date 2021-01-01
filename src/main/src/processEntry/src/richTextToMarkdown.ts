@@ -187,7 +187,7 @@ const optionsRenderNode = (parentContentType = ''): any => {
 
 const sanitizedMarkOutput = (
     input: string,
-    markWrapper: '**' | '*'
+    markWrapper: '__' | '_' | '**' | '*'
 ): string => {
     const leading = leadingSpaces(input);
     const trailing = trailingSpaces(leading.newString);
@@ -201,7 +201,7 @@ const options = (parentContentType = '') => {
                 return sanitizedMarkOutput(text, '**');
             },
             [MARKS.ITALIC]: (text: string) => {
-                return sanitizedMarkOutput(text, '*');
+                return sanitizedMarkOutput(text, '_');
             },
             [MARKS.CODE]: (text: string) => {
                 if (isMultilineString(text)) {

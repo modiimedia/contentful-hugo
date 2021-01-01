@@ -4,7 +4,17 @@ const {
     removeLeadingAndTrailingSlashes,
     leadingSpaces,
     trailingSpaces,
+    characterIsWhiteSpace,
 } = require('./strings');
+
+describe('Detect Whitespace', () => {
+    test('Normal space', () => {
+        expect(characterIsWhiteSpace(' ')).toBe(true);
+    });
+    test('Non breaking space', () => {
+        expect(characterIsWhiteSpace('\xC2\xA0'));
+    });
+});
 
 describe('Detect Multiline String', () => {
     test('Unescaped New Line', () => {
@@ -137,6 +147,13 @@ describe('Trailing Spaces', () => {
         expect(spaces.exists).toBe(true);
         expect(spaces.count).toBe(4);
         expect(spaces.newString).toBe('john doe');
+    });
+    test('Trailing Spaces with Colon', () => {
+        const str = 'In Short: ';
+        const spaces = trailingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(1);
+        expect(spaces.newString).toBe('In Short:');
     });
 });
 

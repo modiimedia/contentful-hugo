@@ -176,7 +176,7 @@ describe('Marks', () => {
         ]);
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
-            `\n*italic text example*\n\n`
+            `\n_italic text example_\n\n`
         );
     });
     test('Italic with Extra Spaces', () => {
@@ -187,8 +187,57 @@ describe('Marks', () => {
         );
         const richText = richTextFactory([node]);
         expect(richTextToMarkdown(richText)).toBe(
-            `\n      *italic text example*   \n\n`
+            `\n      _italic text example_   \n\n`
         );
+    });
+    test('Bold Mark Inside Italic Mark', () => {
+        const nodes = [
+            {
+                data: {},
+                content: [
+                    {
+                        data: {},
+                        marks: [],
+                        value: 'Information collected from other sources',
+                        nodeType: 'text',
+                    },
+                ],
+                nodeType: 'heading-3',
+            },
+            {
+                data: {},
+                content: [
+                    {
+                        data: {},
+                        marks: [
+                            {
+                                type: 'italic',
+                            },
+                            {
+                                type: 'bold',
+                            },
+                        ],
+                        value: 'In Short:  ',
+                        nodeType: 'text',
+                    },
+                    {
+                        data: {},
+                        marks: [
+                            {
+                                type: 'italic',
+                            },
+                        ],
+                        value:
+                            'We may collect limited data from public databases, marketing partners, social media platforms, and other outside sources.',
+                        nodeType: 'text',
+                    },
+                ],
+                nodeType: 'paragraph',
+            },
+        ];
+        const document = richTextFactory(nodes);
+        const expectedResult = `\n### Information collected from other sources\n\n**_In Short:_**  _We may collect limited data from public databases, marketing partners, social media platforms, and other outside sources._\n\n`;
+        expect(richTextToMarkdown(document)).toBe(expectedResult);
     });
     test('Code (Single-Line)', () => {
         const node = contentNodeFactory(
