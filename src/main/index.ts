@@ -6,6 +6,7 @@ import {
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
+import { isValidFileExtension } from './src/config/src/utilities';
 
 import Limiter = require('async-limiter');
 
@@ -176,27 +177,20 @@ const fetchDataFromContentful = async (
                 overrides,
                 filters,
             };
+
             // check file extension settings
-            switch (fileExtension) {
-                case 'md':
-                case 'yaml':
-                case 'yml':
-                case undefined:
-                case null: {
-                    const job = {
-                        limit: 1000,
-                        skip: 0,
-                        contentSettings: contentSettings,
-                        isPreview: isPreview,
-                    };
-                    jobs.push(job);
-                    break;
-                }
-                default:
-                    console.log(
-                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                    );
-                    break;
+            if (isValidFileExtension(fileExtension)) {
+                const job = {
+                    limit: 1000,
+                    skip: 0,
+                    contentSettings: contentSettings,
+                    isPreview: isPreview,
+                };
+                jobs.push(job);
+            } else {
+                console.log(
+                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                );
             }
         }
     }
@@ -232,27 +226,19 @@ const fetchDataFromContentful = async (
                 overrides,
                 filters,
             };
-            switch (contentSettings.fileExtension) {
-                case 'md':
-                case 'yaml':
-                case 'yml':
-                case null:
-                case undefined:
-                    {
-                        const job = {
-                            limit: 1,
-                            skip: 0,
-                            contentSettings: contentSettings,
-                            isPreview: isPreview,
-                        };
-                        jobs.push(job);
-                    }
-                    break;
-                default:
-                    console.log(
-                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                    );
-                    break;
+
+            if (isValidFileExtension(contentSettings.fileExtension)) {
+                const job = {
+                    limit: 1,
+                    skip: 0,
+                    contentSettings: contentSettings,
+                    isPreview: isPreview,
+                };
+                jobs.push(job);
+            } else {
+                console.log(
+                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                );
             }
         }
     }

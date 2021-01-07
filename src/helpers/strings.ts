@@ -79,6 +79,16 @@ const trailingSpaces = (
     };
 };
 
+/**
+ * Check if string ends with ext
+ * @param {String} str
+ * @param {String} ext
+ * @returns {boolean}
+ */
+const endsWith = (str: string | undefined | null, ext: string): boolean => {
+    return new RegExp(`${ext}$`).test(str || '');
+};
+
 export {
     characterIsWhiteSpace,
     isMultilineString,
@@ -87,4 +97,5 @@ export {
     removeLeadingAndTrailingSlashes,
     leadingSpaces,
     trailingSpaces,
+    endsWith,
 };
