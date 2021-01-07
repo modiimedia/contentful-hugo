@@ -7,6 +7,16 @@ import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 const YAML = require('json-to-pretty-yaml');
 
 /**
+ * Check if string ends with ext
+ * @param {String} str
+ * @param {String} ext
+ * @returns {boolean}
+ */
+const endsWith = (str: string | undefined | null, ext: string): boolean => {
+    return new RegExp(`${ext}$`).test(str || '');
+};
+
+/**
  *
  * @param {Object} contentSettings - Content settings object
  * @param {String} entryId - The id of the Contentful entry
@@ -32,17 +42,18 @@ const createFile = (
             'A content type cannot have both isHeadless and isTaxonomy set to true'
         );
     }
+
     if (
-        fileExtension === 'md' ||
         fileExtension === null ||
-        fileExtension === undefined
+        fileExtension === undefined ||
+        endsWith(fileExtension, 'md')
     ) {
         fileContent += `---\n`;
     }
 
     // add current item to filecontent
     fileContent += YAML.stringify(frontMatter);
-    if (fileExtension !== 'yaml' && fileExtension !== 'yml') {
+    if (!endsWith(fileExtension, 'yaml') && !endsWith(fileExtension, 'yml')) {
         fileContent += `---\n`;
     }
 
