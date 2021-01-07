@@ -12,7 +12,10 @@ const YAML = require('json-to-pretty-yaml');
  * @param {String} ext
  * @returns {boolean}
  */
-const endsWith = (str: string | undefined | null, ext: string): boolean => {
+export const endsWith = (
+    str: string | undefined | null,
+    ext: string
+): boolean => {
     return new RegExp(`${ext}$`).test(str || '');
 };
 
