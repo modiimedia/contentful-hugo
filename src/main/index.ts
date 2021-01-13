@@ -6,6 +6,7 @@ import {
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
 import initializeDirectory from './src/initializeDirectory';
+import { isValidFileExtension } from './src/config/src/utilities';
 
 import Limiter = require('async-limiter');
 
@@ -32,6 +33,7 @@ export interface ContentSettings {
     type?: string;
     resolveEntries?: { field: string; resolveTo: string }[];
     overrides?: OverrideConfig[];
+    filters?: { [key: string]: string | number | boolean };
 }
 
 interface ContentfulError {
@@ -159,6 +161,7 @@ const fetchDataFromContentful = async (
                 isTaxonomy,
                 resolveEntries,
                 overrides,
+                filters,
             } = types[i];
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -172,28 +175,22 @@ const fetchDataFromContentful = async (
                 isTaxonomy,
                 resolveEntries,
                 overrides,
+                filters,
             };
+
             // check file extension settings
-            switch (fileExtension) {
-                case 'md':
-                case 'yaml':
-                case 'yml':
-                case undefined:
-                case null: {
-                    const job = {
-                        limit: 1000,
-                        skip: 0,
-                        contentSettings: contentSettings,
-                        isPreview: isPreview,
-                    };
-                    jobs.push(job);
-                    break;
-                }
-                default:
-                    console.log(
-                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                    );
-                    break;
+            if (isValidFileExtension(fileExtension)) {
+                const job = {
+                    limit: 1000,
+                    skip: 0,
+                    contentSettings: contentSettings,
+                    isPreview: isPreview,
+                };
+                jobs.push(job);
+            } else {
+                console.log(
+                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                );
             }
         }
     }
@@ -213,6 +210,7 @@ const fetchDataFromContentful = async (
                 resolveEntries,
                 type,
                 overrides,
+                filters,
             } = single;
             const contentSettings: ContentSettings = {
                 typeId: id,
@@ -226,28 +224,21 @@ const fetchDataFromContentful = async (
                 type: type,
                 resolveEntries,
                 overrides,
+                filters,
             };
-            switch (contentSettings.fileExtension) {
-                case 'md':
-                case 'yaml':
-                case 'yml':
-                case null:
-                case undefined:
-                    {
-                        const job = {
-                            limit: 1,
-                            skip: 0,
-                            contentSettings: contentSettings,
-                            isPreview: isPreview,
-                        };
-                        jobs.push(job);
-                    }
-                    break;
-                default:
-                    console.log(
-                        `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                    );
-                    break;
+
+            if (isValidFileExtension(contentSettings.fileExtension)) {
+                const job = {
+                    limit: 1,
+                    skip: 0,
+                    contentSettings: contentSettings,
+                    isPreview: isPreview,
+                };
+                jobs.push(job);
+            } else {
+                console.log(
+                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
+                );
             }
         }
     }

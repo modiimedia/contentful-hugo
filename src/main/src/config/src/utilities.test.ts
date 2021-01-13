@@ -1,4 +1,8 @@
-import { determineFileType, isContentfulConfig } from './utilities';
+import {
+    determineFileType,
+    isContentfulConfig,
+    isValidFileExtension,
+} from './utilities';
 
 describe('File Ext Checks', () => {
     test('js file', () => {
@@ -17,6 +21,26 @@ describe('File Ext Checks', () => {
         expect(determineFileType('myfile.css')).toBe(null);
         expect(determineFileType('hi')).toBe(null);
         expect(determineFileType('myfile.txt')).toBe(null);
+    });
+});
+
+describe('Validate fileExtension checks', () => {
+    test('Valid fileExtension', () => {
+        expect(isValidFileExtension('md')).toBe(true);
+        expect(isValidFileExtension('yaml')).toBe(true);
+        expect(isValidFileExtension('yml')).toBe(true);
+        expect(isValidFileExtension('de.md')).toBe(true);
+        expect(isValidFileExtension('en.yaml')).toBe(true);
+        expect(isValidFileExtension('fr.yml')).toBe(true);
+    });
+
+    test('Invalid fileExtension', () => {
+        expect(isValidFileExtension('js')).toBe(false);
+        expect(isValidFileExtension('json')).toBe(false);
+        expect(isValidFileExtension('txt')).toBe(false);
+        expect(isValidFileExtension('md.js')).toBe(false);
+        expect(isValidFileExtension('yml.json')).toBe(false);
+        expect(isValidFileExtension('yaml.txt')).toBe(false);
     });
 });
 

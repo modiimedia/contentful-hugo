@@ -33,7 +33,7 @@ export interface TypeConfig {
      * The field that will act as the main content of the .md file
      */
     mainContent?: string;
-    fileExtension?: string;
+    fileExtension?: 'md' | 'yaml' | 'yml';
     /**
      * Options specifying how to resolve asset references and entry references
      */
@@ -42,6 +42,7 @@ export interface TypeConfig {
      * Options that allow you to override field names and modify field values before rendering the content file
      */
     overrides?: OverrideConfig[];
+    filters?: { [key: string]: string | number | boolean };
 }
 
 export interface SingleTypeConfig extends TypeConfig {

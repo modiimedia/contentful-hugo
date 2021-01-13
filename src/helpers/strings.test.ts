@@ -4,7 +4,35 @@ const {
     removeLeadingAndTrailingSlashes,
     leadingSpaces,
     trailingSpaces,
+    characterIsWhiteSpace,
+    endsWith,
 } = require('./strings');
+
+describe('File Ending Tests', () => {
+    test('Regular md file', () => {
+        const result = endsWith('md', 'md');
+        expect(result).toBe(true);
+    });
+    test("Shouldn't pass", () => {
+        expect(endsWith('dsmdsh', 'md')).toBe(false);
+        expect(endsWith('yaml.hi', 'yaml')).toBe(false);
+        expect(endsWith('yaml.md.js', 'md')).toBe(false);
+    });
+    test('Should Pass', () => {
+        expect(endsWith('config.md', 'md')).toBe(true);
+        expect(endsWith('en.config.md', 'md')).toBe(true);
+        expect(endsWith('yaml.en.md', 'md')).toBe(true);
+    });
+});
+
+describe('Detect Whitespace', () => {
+    test('Normal space', () => {
+        expect(characterIsWhiteSpace(' ')).toBe(true);
+    });
+    test('Non breaking space', () => {
+        expect(characterIsWhiteSpace('\xC2\xA0'));
+    });
+});
 
 describe('Detect Multiline String', () => {
     test('Unescaped New Line', () => {
@@ -137,6 +165,13 @@ describe('Trailing Spaces', () => {
         expect(spaces.exists).toBe(true);
         expect(spaces.count).toBe(4);
         expect(spaces.newString).toBe('john doe');
+    });
+    test('Trailing Spaces with Colon', () => {
+        const str = 'In Short: ';
+        const spaces = trailingSpaces(str);
+        expect(spaces.exists).toBe(true);
+        expect(spaces.count).toBe(1);
+        expect(spaces.newString).toBe('In Short:');
     });
 });
 

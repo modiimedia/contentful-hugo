@@ -1,7 +1,7 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { ContentSettings } from '@main/index';
-import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
@@ -66,17 +66,18 @@ const createFile = (
             'A content type cannot have both isHeadless and isTaxonomy set to true'
         );
     }
+
     if (
-        fileExtension === 'md' ||
         fileExtension === null ||
-        fileExtension === undefined
+        fileExtension === undefined ||
+        endsWith(fileExtension, 'md')
     ) {
         fileContent += `---\n`;
     }
 
     // add current item to filecontent
     fileContent += YAML.stringify(frontMatter);
-    if (fileExtension !== 'yaml' && fileExtension !== 'yml') {
+    if (!endsWith(fileExtension, 'yaml') && !endsWith(fileExtension, 'yml')) {
         fileContent += `---\n`;
     }
 

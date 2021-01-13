@@ -10,6 +10,16 @@ require('dotenv').config();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mkdirp = require('mkdirp');
 
+interface ContentfulClientQuery {
+    [key: string]: string | number | undefined | boolean;
+    // eslint-disable-next-line camelcase
+    content_type?: string;
+    limit?: number;
+    skip?: number;
+    order?: string;
+    'sys.id'?: string;
+}
+
 /// get content for a single content type ///
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
 const getContentType = async (
@@ -18,9 +28,7 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number,
-    query?: { [key: string]: string }
-): Promise<{
+    itemsPulled?: number): Promise<{
     totalItems: number;
     typeId: string;
 }> => {
@@ -42,25 +50,27 @@ const getContentType = async (
         accessToken,
         environment,
     };
-
     const client = createClient(options);
     // check for file extension default to markdown
     if (!contentSettings.fileExtension) {
         contentSettings.fileExtension = 'md';
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const clientSettings: any = {
+    const query: ContentfulClientQuery = {
         content_type: contentSettings.typeId,
-        limit: limit,
-        skip: skip,
+        limit,
+        skip,
         order: 'sys.updatedAt',
     };
-    if (query) {
-        Object.keys(query).forEach(key => {
-            clientSettings[key] = query[key];
+    if (contentSettings.filters) {
+        const { filters } = contentSettings;
+        const ignoreKeys = ['content_type', 'limit', 'skip'];
+        Object.keys(filters).forEach(key => {
+            if (!ignoreKeys.includes(key)) {
+                query[key] = filters[key];
+            }
         });
     }
-    return client.getEntries(clientSettings).then(data => {
+    return client.getEntries(query).then(data => {
         // variable for counting number of items pulled
         let itemCount;
         if (itemsPulled) {

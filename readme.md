@@ -28,6 +28,8 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
     -   [Standard Fields](#default-date-and-time-fields)
     -   [Richtext Fields](#rich-text-as-main-content)
     -   [Resolving Reference Fields](#the-resolve-entries-parameter)
+    -   [Overriding Field Names & Field Values](#the-overrides-parameter)
+    -   [Filtering Entries Within a Content Type](#the-filters-parameter)
 -   [Known Issues](#known-issues)
 
 ## Prerequisites
@@ -309,16 +311,17 @@ repeatableTypes:
 
 ##### <u>**Single Type Options**</u>
 
-| field          | required | description                                                                                                                   |
-| -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| id             | required | Contentful content type ID                                                                                                    |
-| directory      | required | Directory where you want the file(s) to be generated                                                                          |
-| fileName       | required | Name of the file generated                                                                                                    |
-| fileExtension  | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                              |
-| mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                   |
-| type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))         |
-| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter |
-| overrides      | optional | Do custom overrides for field values or field names                                                                           |
+| field          | required | description                                                                                                                                                                                                          |
+| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| id             | required | Contentful content type ID                                                                                                                                                                                           |
+| directory      | required | Directory where you want the file(s) to be generated                                                                                                                                                                 |
+| fileName       | required | Name of the file generated                                                                                                                                                                                           |
+| fileExtension  | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                     |
+| mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                                                                                                          |
+| type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                |
+| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                        |
+| overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                  |
+| filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator) |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -333,6 +336,7 @@ repeatableTypes:
 | type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
 | resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
 | overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
+| filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
 
 #### Advanced Config Examples
 
@@ -567,7 +571,7 @@ richTextField_plaintext: 'This is a simple paragraph. This is a paragraph with i
 
 ### The Resolve Entries Parameter
 
-The resolve entries option let's you specify a field from a referenced entry or asset to resolve that field value you. For example say you have a `category` content type that is referenced in `posts`. Normally contentful-hugo will give the following result
+The resolve entries option let's you specify a property from a referenced entry or asset to resolve that field value to. For example say you have a `category` content type that is referenced in `posts`. Normally contentful-hugo will give the following result
 
 ```yaml
 category:
@@ -601,7 +605,7 @@ Now the category field will only display the slug as the value.
 category: my-category-slug
 ```
 
-The resolve entries feature works with both reference fields and asset fields. (As well as multiple reference and multiple asset fields)
+The resolve entries feature works with both reference fields and asset fields, as well as multiple reference and multiple asset fields.
 
 ### The Overrides Parameter
 
@@ -619,7 +623,7 @@ repeatableTypes: [
             {
                 field: 'url',
                 options: {
-                    // change fieldname to videoUrl in order to prevent Hugo errors
+                    // set new field name in frontmatter
                     fieldName: 'videoUrl',
                 },
             },
@@ -628,7 +632,9 @@ repeatableTypes: [
 ];
 ```
 
-You can also use the overrides to transform the field data that will appear in frontmatter. Here's an example where we change the field name from "url" to "videoId" and then we use the valueTransformer to extract the video id from the url and then place it in the frontmatter.
+`overrides` also has a `valueTransformer` options that allows you to manipulate the field data that will appear in frontmatter. `valueTransformer` takes a method that has the field value as a parameter and then returns the final result that will appear in the frontmatter. (Be aware that since `valueTransformer` must be a method this option will only work in javascript config files)
+
+Here's an example where we change the field name from "url" to "videoId" and then we use the `valueTransformer` to extract the video id from the url and then place it in the frontmatter.
 
 ```js
 repeatableTypes: [
@@ -637,18 +643,112 @@ repeatableTypes: [
         directory: 'content/_youtubeVideo',
         isHeadless: true,
         overrides: [
-            field: 'url',
-            options: {
-                fieldName: 'videoId',
-                valueTransformer: (value) => {
-                    const url = new URL(value)
-                    // extract the video id from the url and return it
-                    return url.searchParams.get('v')
-                }
+            {
+                field: 'url',
+                options: {
+                    fieldName: 'videoId',
+                    // "value" is whatever value is currently saved in the field.
+                    // in this case it's a url for a youtube video
+                    valueTransformer: value => {
+                        const url = new URL(value);
+                        // extract the video id from the url and return it
+                        return url.searchParams.get('v');
+                    },
+                },
+            },
+        ],
+    },
+];
+```
+
+When using the `valueTransformer` option on fields that contain arrays make sure to loop through the value when manipulating it.
+
+```js
+repeatabledTypes: [
+    {
+        id: 'post',
+        directory: 'content/posts',
+        overrides: [
+            {
+                // the author field is a multi-reference field
+                field: 'authors',
+                options: {
+                    valueTransformer: authorRefs => {
+                        const authors = [];
+                        for (const ref of authorRefs) {
+                            // get the name, photo, and bio of the author
+                            // and add it to the array
+                            authors.push({
+                                name: ref.fields.name,
+                                photo: ref.fields.photo.fields.file.url,
+                                bio: ref.fields.bio,
+                            });
+                        }
+                        return authors;
+                    },
+                },
+            },
+        ],
+    },
+];
+```
+
+Now the `authors` field will look like this:
+
+```yaml
+authors:
+    - name: Some Name
+      photo: //images.cfassets.net/path-to-photo.jpg
+      bio: some bio text
+    - name: Some other name
+      photo: //images.cfassets.net/path-to-photo.jpg
+      bio: some other bio text
+```
+
+As you can see this can be used to produce similar results to the `resolveEntries` parameter, but `resolveEntries` can only return one property while with overrides you can do whatever you want with the field values.
+
+### The Filters Parameter
+
+You can use to `filters` option to enter search parameters allowing you to filter entries based on some of their properties. For more info on Contentful search parameters visit their [docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters).
+
+Be aware that the following search parameters will be ignored `content_type`, `skip`, `order`, `limit`
+
+#### Examples:
+
+```js
+module.exports = {
+    singleTypes: [
+        // get a homepage with a specific entryId
+        {
+            id: 'homepage',
+            directory: 'content',
+            fileName: '_index',
+            filters: {
+                'sys.id': 'my-homepace-id'
             }
-        ]
-    }
-]
+        }
+    ]
+    repeatableTypes: [
+        // only get events that start after 01/01/2020
+        {
+            id: 'events',
+            directory: 'content/events',
+            filters: {
+                'fields.startDate[gte]': '2020-01-01T00:00:00Z',
+            },
+        },
+        // get posts where author is "John Doe" and contains the tag "flowers"
+        {
+            id: 'posts',
+            directory: 'content/posts',
+            filters: {
+                'fields.author': 'John Doe',
+                'fields.tags': 'flowers'
+            },
+        },
+    ];
+
+}
 ```
 
 ## Known Issues
