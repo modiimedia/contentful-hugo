@@ -1,3 +1,4 @@
+import { endsWith } from '@/helpers/strings';
 import { ContentfulConfig, TypeConfig } from './types';
 
 /**
@@ -15,6 +16,12 @@ const determineFileType = (fileName: string): string | null => {
         default:
             return null;
     }
+};
+
+const isValidFileExtension = (extension: string | undefined): boolean => {
+    return ['md', 'yaml', 'yml'].some((ext: string) =>
+        endsWith(extension || 'md', ext)
+    );
 };
 
 const isTypeConfig = (input: unknown): input is TypeConfig[] => {
@@ -55,4 +62,4 @@ const isContentfulConfig = (input: unknown): input is ContentfulConfig => {
     return true;
 };
 
-export { determineFileType, isContentfulConfig };
+export { determineFileType, isContentfulConfig, isValidFileExtension };

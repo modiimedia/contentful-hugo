@@ -1,23 +1,10 @@
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { ContentSettings } from '@main/index';
-import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
-
-/**
- * Check if string ends with ext
- * @param {String} str
- * @param {String} ext
- * @returns {boolean}
- */
-export const endsWith = (
-    str: string | undefined | null,
-    ext: string
-): boolean => {
-    return new RegExp(`${ext}$`).test(str || '');
-};
 
 /**
  *
