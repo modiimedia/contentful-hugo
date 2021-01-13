@@ -129,6 +129,7 @@ const optionsRenderNode = (parentContentType = ''): any => {
                 height,
             } = mapAsset(node.data.target);
             const handleQuotes = (string: string) => {
+                // eslint-disable-next-line prefer-regex-literals
                 const regex = new RegExp(/"/, 'g');
                 return string.replace(regex, '\\"');
             };

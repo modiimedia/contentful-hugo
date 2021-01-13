@@ -45,6 +45,7 @@ const loadConfig = async (
         tasks.push(file);
     }
     return Promise.all(tasks).then(() => {
+        // eslint-disable-next-line no-unreachable-loop
         for (const config of configList) {
             return config;
         }

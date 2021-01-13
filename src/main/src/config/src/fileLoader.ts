@@ -45,7 +45,7 @@ const loadJavascriptConfigFile = (
 };
 
 const loadYamlConfigFile = (filePath: string): ContentfulConfig | false => {
-    let configObject = yaml.safeLoad(fs.readFileSync(filePath).toString());
+    let configObject = yaml.load(fs.readFileSync(filePath).toString());
     if (configObject && typeof configObject === 'object') {
         configObject = checkContentfulSettings(configObject);
         if (isContentfulConfig(configObject)) {
