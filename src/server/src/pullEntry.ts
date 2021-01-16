@@ -31,6 +31,7 @@ const pullEntry = async (
             resolveEntries: cf.resolveEntries,
             overrides: cf.overrides,
             mainContent: cf.mainContent,
+            filters: { 'sys.id': entryId },
         };
         const contentfulSettings: ConfigContentfulSettings = config.contentful;
         tasks.push(
@@ -40,8 +41,7 @@ const pullEntry = async (
                 contentSettings,
                 contentfulSettings,
                 previewMode,
-                0,
-                { 'sys.id': entryId }
+                0
             )
         );
     }
