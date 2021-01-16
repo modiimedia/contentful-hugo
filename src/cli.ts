@@ -38,7 +38,7 @@ const initialize = (): Promise<unknown> | unknown => {
         return initializeDirectory();
     }
 
-    return loadConfig('.', argv.config).then(config => {
+    return loadConfig('.', argv.config).then(async (config) => {
         if (config === false) {
             throw new Error(
                 `There is an error in your config file, or it doesn't exits.
@@ -46,9 +46,14 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
             );
         }
         if (argv.server) {
+            await fetchDataFromContentful(
+                config,
+                argv.preview || false,
+                argv.wait || 0
+            );
             startServer(config, argv.port, argv.preview || false);
         } else {
-            fetchDataFromContentful(
+            return fetchDataFromContentful(
                 config,
                 argv.preview || false,
                 argv.wait || 0
