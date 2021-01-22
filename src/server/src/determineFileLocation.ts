@@ -17,6 +17,7 @@ export const getSingleTypeConfigs = (
                 isHeadless: false,
                 isSingle: true,
                 isTaxonomy: false,
+                mainContent: item.mainContent || '',
             });
         }
     }
@@ -37,6 +38,7 @@ export const getRepeatableTypeConfigs = (
                 isHeadless: item.isHeadless,
                 isTaxonomy: item.isTaxonomy,
                 isSingle: false,
+                mainContent: item.mainContent || '',
             });
         }
     }
