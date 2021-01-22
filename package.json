@@ -59,8 +59,8 @@
         "postInstall.js"
     ],
     "devDependencies": {
-        "@types/express": "^4.17.9",
         "@babel/cli": "^7.12.10",
+        "@types/express": "^4.17.9",
         "@types/jest": "^26.0.20",
         "@types/js-yaml": "^4.0.0",
         "@types/mkdirp": "^1.0.1",

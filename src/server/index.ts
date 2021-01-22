@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import express, { Response } from 'express';
 import { resolve } from 'path';
-import { IncomingHttpHeaders } from 'http';
+import { IncomingHttpHeaders, Server } from 'http';
 import bodyParser from 'body-parser';
 import { Entry, Asset } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
@@ -91,8 +91,8 @@ export const shouldDelete = (
 const startServer = (
     config: ContentfulHugoConfig,
     port = 1414,
-    previewMode = true
-): unknown => {
+    previewMode = false
+): Server => {
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
         if (!req.body.sys) {
             res.status(401).send();

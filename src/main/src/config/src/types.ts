@@ -17,6 +17,12 @@ export interface OverrideConfig {
     };
 }
 
+type fileExtensionBase = 'md' | 'yaml' | 'yml';
+
+export type fileExtension =
+    | `${string}.${fileExtensionBase}`
+    | fileExtensionBase;
+
 export interface TypeConfig {
     /**
      * Contentful content type ID
@@ -33,7 +39,7 @@ export interface TypeConfig {
      * The field that will act as the main content of the .md file
      */
     mainContent?: string;
-    fileExtension?: 'md' | 'yaml' | 'yml';
+    fileExtension?: fileExtension;
     /**
      * Options specifying how to resolve asset references and entry references
      */

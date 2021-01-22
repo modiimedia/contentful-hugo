@@ -46,19 +46,13 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
             );
         }
         if (argv.server) {
-            await fetchDataFromContentful(
-                config,
-                argv.preview || false,
-                argv.wait || 0
-            );
-            startServer(config, argv.port, argv.preview || false);
-        } else {
-            return fetchDataFromContentful(
-                config,
-                argv.preview || false,
-                argv.wait || 0
-            );
+            return startServer(config, argv.port, argv.preview || false);
         }
+        return fetchDataFromContentful(
+            config,
+            argv.preview || false,
+            argv.wait || 0
+        );
     });
 };
 
