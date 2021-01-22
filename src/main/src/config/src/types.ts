@@ -19,9 +19,13 @@ export interface OverrideConfig {
 
 type fileExtensionBase = 'md' | 'yaml' | 'yml';
 
-export type fileExtension =
-    | `${string}.${fileExtensionBase}`
-    | fileExtensionBase;
+// produced a "Maximum call stack size exceeded" error
+// probably a problem with Typescript, will try again on future TS versions
+// export type fileExtension =
+//     | `${string}.${fileExtensionBase}`
+//     | fileExtensionBase;
+
+export type fileExtension = fileExtensionBase | string;
 
 export interface TypeConfig {
     /**
