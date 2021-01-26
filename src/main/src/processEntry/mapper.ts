@@ -143,7 +143,6 @@ const mapFields = (
     }
     frontMatter.sys = {
         id: entry.sys.id,
-        type: entry.sys.type,
         updatedAt: entry.sys.createdAt,
         createdAt: entry.sys.updatedAt,
         revision: entry.sys.revision,
