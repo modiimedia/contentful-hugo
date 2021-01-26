@@ -1,7 +1,15 @@
 ---
 type: "blog"
+sys:
+  id: "6WpgTH2wCLQNldpJw8fFoK"
+  type: "Entry"
+  updatedAt: "2019-08-20T15:09:32.699Z"
+  createdAt: "2020-08-09T19:41:18.841Z"
+  revision: 20
+  space: "6fc4s4k6v9co"
+  contentType: "post"
 updated: "2020-08-09T19:41:18.841Z"
-createdAt: "2019-08-20T15:19:50.678Z"
+createdAt: "2019-08-20T15:09:32.699Z"
 date: "2019-10-28T17:50:00.000Z"
 title: "Example With Text Only"
 slug: "text-only"

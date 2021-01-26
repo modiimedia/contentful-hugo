@@ -53,7 +53,7 @@ const fetchType = (
     preview = false
 ): Promise<void> => {
     return getContentType(limit, skip, settings, contentfulSettings, preview)
-        .then(result => {
+        .then((result) => {
             console.log(
                 getContentTypeResultMessage(result.typeId, result.totalItems)
             );
@@ -129,7 +129,7 @@ const fetchDataFromContentful = async (
     configCheck(config);
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
             setTimeout(() => {
                 resolve(null);
             }, waitTime);
@@ -242,22 +242,25 @@ const fetchDataFromContentful = async (
             }
         }
     }
-    const t = new Limiter({ concurrency: 2 });
-    for (const job of jobs) {
-        t.push((cb: any) => {
-            fetchType(
-                job.limit,
-                job.skip,
-                job.contentSettings,
-                config.contentful,
-                job.isPreview
-            ).then(() => {
-                cb();
+    return new Promise((resolve) => {
+        const t = new Limiter({ concurrency: 2 });
+        for (const job of jobs) {
+            t.push((cb: any) => {
+                fetchType(
+                    job.limit,
+                    job.skip,
+                    job.contentSettings,
+                    config.contentful,
+                    job.isPreview
+                ).then(() => {
+                    cb();
+                });
             });
+        }
+        t.onDone(() => {
+            console.log(`\n---------------------------------------------\n`);
+            resolve();
         });
-    }
-    t.onDone(() => {
-        console.log(`\n---------------------------------------------\n`);
     });
 };
 

@@ -6,11 +6,15 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "prestart": "contentful-hugo",
-        "start": "hugo server"
+        "start": "hugo server",
+        "start:preview": "concurrently \"contentful-hugo --server\" \"hugo server --disableFastRender --quiet\""
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
         "contentful-hugo": "file:../.."
+    },
+    "devDependencies": {
+        "concurrently": "^5.3.0"
     }
 }
