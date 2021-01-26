@@ -12,9 +12,10 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   Default shortcodes for rich text content
 -   Asset field resolution
 -   Customizable linked entry resolution
+-   Content Filters
 -   Supports the Content Preview API
 -   Field name and field value overrides
--   Server mode to recieve webhook triggers from Contentful ([See docs for server mode](https://github.com/ModiiMedia/contentful-hugo/tree/master/src/server))
+-   Server mode to recieve webhook triggers from Contentful (BETA)
 
 ## Table of Contents
 
@@ -81,6 +82,8 @@ npx contentful-hugo [flags]
 | --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 | --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
 | --config  | -C      | Specify the path to a config file.                                                                       |
+| --server  | -S      | Run in server mode to recieve webhooks from Contentful (BETA)                                            |
+| --port    |         | Specify port for server mode (Default 1414)                                                              |
 | --help    |         | Show help                                                                                                |
 | --version |         | Show version number                                                                                      |
 
@@ -421,14 +424,24 @@ module.exports = {
 
 Files will be generated in the directory specified in the config file. Front matter will be in YAML format. Files of single types will be named after fileName specified in the config file. Files of repeatable types will be named after their entry ID in Contenful, which makes it easy to link files together.
 
-### Default Date and Time Fields
+### Default Metadata Fields and Date Field
 
 The following fields will always appear in your frontmatter:
 
 ```yaml
-updated: # the last time this entry was update in Contentful
+date: # defaults to sys.createdAt unless you have a field with the id "date" then it get's overwritten
+sys:
+    id: # the entry id
+    updatedAt: # the last time this entry was updated in Contentful
+    createdAt: # when the entry was created in Contentful
+    revision: # the revision number
+    space: # the space id
+    contentType: # the content type id
+
+# the following fields are depreciated and will be removed in a future version
+# migrate to using the sys.updatedAt and sys.createdAt iterations
+updated: # the last time the entry was updated in Contentful
 createdAt: # when the entry was created in Contentful
-date: # defaults to creation date unless you have a field with the id "date" then it get's overwritten
 ```
 
 ### Asset Information
@@ -649,7 +662,7 @@ repeatableTypes: [
                     fieldName: 'videoId',
                     // "value" is whatever value is currently saved in the field.
                     // in this case it's a url for a youtube video
-                    valueTransformer: value => {
+                    valueTransformer: (value) => {
                         const url = new URL(value);
                         // extract the video id from the url and return it
                         return url.searchParams.get('v');
@@ -673,7 +686,7 @@ repeatabledTypes: [
                 // the author field is a multi-reference field
                 field: 'authors',
                 options: {
-                    valueTransformer: authorRefs => {
+                    valueTransformer: (authorRefs) => {
                         const authors = [];
                         for (const ref of authorRefs) {
                             // get the name, photo, and bio of the author
