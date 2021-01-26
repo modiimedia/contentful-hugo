@@ -11,7 +11,18 @@ import pullEntry from './src/pullEntry';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(
+    bodyParser.json({
+        type: [
+            'application/vnd.contentful.management.v1+json',
+            'application/vnd.contentful.management.v1+json; charset=utf-8',
+            'application/json',
+            'application/json; charset=utf-8',
+            'application/x-www-form-urlencoded',
+            'application/x-www-form-urlencoded; charset=utf-8',
+        ],
+    })
+);
 
 declare module 'http' {
     interface IncomingHttpHeaders {
