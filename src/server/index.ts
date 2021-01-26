@@ -96,7 +96,7 @@ const startServer = (
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
         console.log(req);
         if (!req.body.sys) {
-            res.status(401).send();
+            return res.status(401).send();
         }
         const { sys } = req.body;
         if (!sys || !sys.id || (sys.type !== 'Asset' && sys.type !== 'Entry')) {
