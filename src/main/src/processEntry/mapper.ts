@@ -141,6 +141,14 @@ const mapFields = (
     if (type) {
         frontMatter.type = type;
     }
+    frontMatter.sys = {
+        id: entry.sys.id,
+        updatedAt: entry.sys.createdAt,
+        createdAt: entry.sys.updatedAt,
+        revision: entry.sys.revision,
+        space: entry.sys.space?.sys.id,
+        contentType: entry.sys.contentType.sys.id,
+    };
     frontMatter.updated = entry.sys.updatedAt;
     frontMatter.createdAt = entry.sys.createdAt;
     frontMatter.date = entry.sys.createdAt;

@@ -28,8 +28,7 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number
-): Promise<{
+    itemsPulled?: number): Promise<{
     totalItems: number;
     typeId: string;
 }> => {

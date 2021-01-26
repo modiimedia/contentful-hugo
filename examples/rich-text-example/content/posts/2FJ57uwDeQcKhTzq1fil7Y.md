@@ -1,8 +1,16 @@
 ---
 type: "blog"
+sys:
+  id: "2FJ57uwDeQcKhTzq1fil7Y"
+  type: "Entry"
+  updatedAt: "2019-08-22T10:40:00.343Z"
+  createdAt: "2019-08-23T21:30:50.479Z"
+  revision: 8
+  space: "6fc4s4k6v9co"
+  contentType: "post"
 updated: "2019-08-23T21:30:50.479Z"
-createdAt: "2019-08-22T10:40:35.023Z"
-date: "2019-08-22T10:40:35.023Z"
+createdAt: "2019-08-22T10:40:00.343Z"
+date: "2019-08-22T10:40:00.343Z"
 title: "Example With Text And Assets"
 slug: "example-with-text-and-embedded-assets"
 featuredImage:
