@@ -105,7 +105,6 @@ const startServer = (
     previewMode = false
 ): Server => {
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
-        console.log(req);
         if (!req.body.sys) {
             return res.status(401).send();
         }
