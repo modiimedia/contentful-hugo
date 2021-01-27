@@ -31,6 +31,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
     -   [Resolving Reference Fields](#the-resolve-entries-parameter)
     -   [Overriding Field Names & Field Values](#the-overrides-parameter)
     -   [Filtering Entries Within a Content Type](#the-filters-parameter)
+-   [Guides](#guides)
 -   [Known Issues](#known-issues)
 
 ## Prerequisites
@@ -763,6 +764,10 @@ module.exports = {
 
 }
 ```
+
+## Guides
+
+-   [Getting live Contentful updates on Localhost with Contentful-Hugo and Ngrok](guides/localhost-live-updates.md)
 
 ## Known Issues
 
