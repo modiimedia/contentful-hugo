@@ -6,7 +6,7 @@ import {
     getSingleTypeConfigs,
 } from './determineFileLocation';
 
-const pullEntry = async (
+const fetchEntryFromContentful = async (
     entryId: string,
     contentType: string,
     config: ContentfulHugoConfig,
@@ -48,4 +48,4 @@ const pullEntry = async (
     await Promise.all(tasks);
 };
 
-export default pullEntry;
+export default fetchEntryFromContentful;

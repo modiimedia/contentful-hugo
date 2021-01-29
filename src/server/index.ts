@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 import express, { Response } from 'express';
-import { resolve } from 'path';
 import { IncomingHttpHeaders, Server } from 'http';
 import bodyParser from 'body-parser';
-import { Entry, Asset } from 'contentful';
+import { Entry, Asset, ContentType } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
-import determineFileLocations from './src/determineFileLocation';
-import deleteFile from './src/deleteFile';
-import pullEntry from './src/pullEntry';
+import { removeEntry, updateEntry } from './src/handleEntry';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,7 +51,7 @@ declare module 'http' {
 
 interface ContentfulWebhookRequest {
     headers: IncomingHttpHeaders;
-    body: Entry<unknown> | Asset;
+    body: Entry<unknown> | Asset | ContentType;
 }
 
 export const shouldCreate = (
@@ -104,12 +101,21 @@ const startServer = (
     port = 1414,
     previewMode = false
 ): Server => {
+    if (!config) {
+        throw new Error('Missing contentful hugo config');
+    }
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
         if (!req.body.sys) {
             return res.status(401).send();
         }
         const { sys } = req.body;
-        if (!sys || !sys.id || (sys.type !== 'Asset' && sys.type !== 'Entry')) {
+        if (
+            !sys ||
+            !sys.id ||
+            (sys.type !== 'Asset' &&
+                sys.type !== 'Entry' &&
+                sys.type !== 'ContentType')
+        ) {
             return res.status(401).send('Invalid format');
         }
         const triggerType = req.headers['x-contentful-topic'];
@@ -117,63 +123,45 @@ const startServer = (
             return res.status(401).send('Invalid format');
         }
         if (shouldCreate(triggerType, previewMode)) {
-            if (!config) {
-                return res
-                    .status(500)
-                    .send('Contentful Hugo config file error');
+            switch (sys.type) {
+                case 'Entry':
+                    return updateEntry(config, sys, previewMode).then(
+                        (payload) => {
+                            return res.status(200).send(payload);
+                        }
+                    );
+                case 'Asset':
+                    // handle asset publish / changes (find affected entries and refetch them)
+                    break;
+                case 'ContentType':
+                    // handle contentType changes (find affected entries and refetch them)
+                    break;
+                default:
+                    break;
             }
-            return pullEntry(
-                sys.id,
-                sys.contentType.sys.id,
-                config,
-                previewMode
-            ).then(() => {
-                const fileLocations = determineFileLocations(
-                    config,
-                    sys.id,
-                    sys.contentType.sys.id,
-                    false
-                );
-                for (const location of fileLocations) {
-                    console.log(`created ${resolve(location)}`);
-                }
-                const message = `Created ${fileLocations.length} file${
-                    fileLocations.length === 1 ? '' : 's'
-                }`;
-                return res.status(200).send({
-                    date: new Date(),
-                    message,
-                    entryId: sys.id,
-                    contentType: sys.contentType.sys.id,
-                    files: fileLocations,
-                });
-            });
-        } else if (shouldDelete(triggerType, previewMode)) {
-            if (sys.type === 'Entry') {
-                const filePaths = determineFileLocations(
-                    config,
-                    sys.id,
-                    sys.contentType.sys.id,
-                    true
-                );
-                for (const path of filePaths) {
-                    deleteFile(path);
-                }
-                const message = `Deleted ${filePaths.length} file${
-                    filePaths.length === 1 ? '' : 's'
-                }`;
-                return res.status(200).send({
-                    date: new Date(),
-                    message,
-                    entryId: sys.id,
-                    contentType: sys.contentType.sys.id,
-                    files: filePaths,
-                });
+            // to do
+        }
+        if (shouldDelete(triggerType, previewMode)) {
+            switch (sys.type) {
+                case 'Entry':
+                    return removeEntry(config, sys).then((payload) => {
+                        return res.status(200).send(payload);
+                    });
+                case 'Asset':
+                    // handle asset removal (find entries connected to an asset that has been modified and refetch them)
+                    break;
+                case 'ContentType':
+                    // handle content type changes (find entries connected to a contentType remove them)
+                    break;
+                default:
+                    break;
             }
         }
-        const entryId = sys.id;
-        const contentType = sys.contentType;
-        return res.status(200).send({ entryId, contentType });
+        return res.status(200).send({
+            id: sys.id,
+            type: sys.type,
+            message: 'Did nothing',
+        });
     });
 
     return app.listen(port, () => {
