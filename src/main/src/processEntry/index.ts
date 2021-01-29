@@ -7,7 +7,6 @@ const processEntry = (
     contentSettings: import('@main/index').ContentSettings
 ): void => {
     const {
-        directory,
         isHeadless,
         type,
         mainContent,
@@ -16,7 +15,6 @@ const processEntry = (
     } = contentSettings;
     const frontMatter = mapFields(
         item,
-        directory,
         isHeadless,
         type,
         mainContent,

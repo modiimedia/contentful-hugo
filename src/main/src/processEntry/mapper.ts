@@ -127,7 +127,6 @@ const resolveField = (fieldContent: any, resolvesToString = ''): any => {
 
 const mapFields = (
     entry: Entry<any>,
-    dirName: string,
     isHeadless?: boolean,
     type?: string,
     mainContentField?: string,
