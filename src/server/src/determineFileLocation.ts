@@ -18,6 +18,8 @@ export const getSingleTypeConfigs = (
                 isSingle: true,
                 isTaxonomy: false,
                 mainContent: item.mainContent || '',
+                overrides: item.overrides || [],
+                filters: item.filters,
             });
         }
     }
@@ -39,6 +41,8 @@ export const getRepeatableTypeConfigs = (
                 isTaxonomy: item.isTaxonomy,
                 isSingle: false,
                 mainContent: item.mainContent || '',
+                overrides: item.overrides || [],
+                filters: item.filters,
             });
         }
     }
