@@ -245,7 +245,7 @@ const fetchDataFromContentful = async (
     return new Promise((resolve) => {
         const t = new Limiter({ concurrency: 2 });
         for (const job of jobs) {
-            t.push((cb: any) => {
+            t.push((cb: VoidFunction) => {
                 fetchType(
                     job.limit,
                     job.skip,
