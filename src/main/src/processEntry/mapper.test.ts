@@ -218,8 +218,28 @@ describe('Override Tests', () => {
                 },
             },
         ];
-        const result = mapFields(entry, '', false, '', '', [], overrides);
+        const result = mapFields(entry, false, '', '', [], overrides);
         expect(result.content).toBe('CONTENT GOES HERE');
+    });
+    test('Override Reference Field', () => {
+        const entry: Entry<any> = entryFactory({
+            title: 'My Entry',
+            reference: entryFactory({
+                title: 'My Referenced Entry',
+            }),
+        });
+        const overrides = [
+            {
+                field: 'reference',
+                options: {
+                    valueTransformer: (ref: any) => {
+                        return ref.fields.title;
+                    },
+                },
+            },
+        ];
+        const result = mapFields(entry, false, '', '', [], overrides);
+        expect(result.reference).toBe('My Referenced Entry');
     });
     test('override field name', () => {
         const entry = entryFactory({ title: 'My Title' });
@@ -231,7 +251,7 @@ describe('Override Tests', () => {
                 },
             },
         ];
-        const result = mapFields(entry, '', false, '', '', [], overrides);
+        const result = mapFields(entry, false, '', '', [], overrides);
         expect(result.title).toBe(undefined);
         expect(result.name).toBe('My Title');
     });
