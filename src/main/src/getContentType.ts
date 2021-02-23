@@ -18,6 +18,23 @@ interface ContentfulClientQuery {
     'sys.id'?: string;
 }
 
+const prepDirectory = async (settings: ContentSettings) => {
+    // create directory for file
+    const newDir = `./${removeLeadingAndTrailingSlashes(settings.directory)}`;
+    await ensureDir(newDir);
+    if (settings.isHeadless && !settings.isSingle) {
+        const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
+        if (settings.locale && settings.locale.mapTo) {
+            await writeFile(
+                `${newDir}/_index.${settings.locale.mapTo.toLowerCase()}.md`,
+                listPageFrontMatter
+            );
+        } else {
+            await writeFile(`${newDir}/_index.md`, listPageFrontMatter);
+        }
+    }
+};
+
 /// get content for a single content type ///
 // itemsPulled refers to entries that have already been called it's used in conjunction with skip for pagination
 const getContentType = async (
@@ -26,11 +43,15 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number
+    itemsPulled?: number,
+    directoryPrepped = false
 ): Promise<{
     totalItems: number;
     typeId: string;
 }> => {
+    if (!directoryPrepped) {
+        await prepDirectory(contentSettings);
+    }
     const { token, previewToken, space, environment } = contentfulSettings;
     if (previewMode && !previewToken) {
         throw new Error(
@@ -69,6 +90,7 @@ const getContentType = async (
             }
         });
     }
+
     if (contentSettings.locale && contentSettings.locale.name) {
         query.locale = contentSettings.locale.name;
     }
@@ -80,22 +102,13 @@ const getContentType = async (
         } else {
             itemCount = 0;
         }
-        // create directory for file
-        const newDir = `./${removeLeadingAndTrailingSlashes(
-            contentSettings.directory
-        )}`;
-        await ensureDir(newDir);
-        if (contentSettings.isHeadless && !contentSettings.isSingle) {
-            const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
-            await writeFile(`${newDir}/_index.md`, listPageFrontMatter);
-        }
-
+        const tasks: Promise<void>[] = [];
         for (let i = 0; i < data.items.length; i++) {
             const item = data.items[i];
-            processEntry(item, contentSettings);
+            tasks.push(processEntry(item, contentSettings));
             itemCount++;
         }
-
+        await Promise.all(tasks);
         // check total number of items against number of items pulled in API
         if (data.total > data.limit && !contentSettings.isSingle) {
             // run function again if there are still more items to get
@@ -106,7 +119,8 @@ const getContentType = async (
                 contentSettings,
                 contentfulSettings,
                 previewMode,
-                itemCount
+                itemCount,
+                true
             );
         }
         return {
