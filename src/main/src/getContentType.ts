@@ -18,7 +18,9 @@ interface ContentfulClientQuery {
     'sys.id'?: string;
 }
 
-const prepDirectory = async (settings: ContentSettings) => {
+export const prepDirectory = async (
+    settings: ContentSettings
+): Promise<void> => {
     // create directory for file
     const newDir = `./${removeLeadingAndTrailingSlashes(settings.directory)}`;
     await ensureDir(newDir);

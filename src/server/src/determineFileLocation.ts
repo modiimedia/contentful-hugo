@@ -6,10 +6,10 @@ export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
     contentType: string
 ): ContentSettings[] => {
-    const fileData: ContentSettings[] = [];
+    const configs: ContentSettings[] = [];
     for (const item of config.singleTypes) {
         if (item.id === contentType) {
-            const data = {
+            const con = {
                 typeId: item.id,
                 locale: {
                     name: '',
@@ -21,29 +21,33 @@ export const getSingleTypeConfigs = (
                 isHeadless: false,
                 isSingle: true,
                 isTaxonomy: false,
-                mainContent: item.mainContent || '',
-                overrides: item.overrides || [],
+                mainContent: item.mainContent,
+                overrides: item.overrides,
                 filters: item.filters,
             };
-            if (config.locales && !item.ignoreLocales) {
+            if (
+                config.locales &&
+                config.locales.length &&
+                !item.ignoreLocales
+            ) {
                 for (const locale of config.locales) {
-                    const newData = { ...data };
+                    const configWithLocale = { ...con };
                     if (typeof locale === 'string') {
-                        newData.locale = {
+                        configWithLocale.locale = {
                             name: locale,
                             mapTo: locale,
                         };
                     } else {
-                        newData.locale = locale;
+                        configWithLocale.locale = locale;
                     }
-                    fileData.push(newData);
+                    configs.push(configWithLocale);
                 }
             } else {
-                fileData.push(data);
+                configs.push(con);
             }
         }
     }
-    return fileData;
+    return configs;
 };
 
 export const getRepeatableTypeConfigs = (
@@ -53,7 +57,7 @@ export const getRepeatableTypeConfigs = (
     const configs: ContentSettings[] = [];
     for (const item of config.repeatableTypes) {
         if (item.id === contentType) {
-            const c = {
+            const con = {
                 typeId: item.id,
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
@@ -68,21 +72,25 @@ export const getRepeatableTypeConfigs = (
                     mapTo: '',
                 },
             };
-            if (config.locales && !item.ignoreLocales) {
+            if (
+                config.locales &&
+                config.locales.length &&
+                !item.ignoreLocales
+            ) {
                 for (const locale of config.locales) {
-                    const newC = { ...c };
+                    const configWithLocale = { ...con };
                     if (typeof locale === 'string') {
-                        newC.locale = {
+                        configWithLocale.locale = {
                             name: locale,
                             mapTo: locale,
                         };
                     } else {
-                        newC.locale = locale;
+                        configWithLocale.locale = locale;
                     }
-                    configs.push(newC);
+                    configs.push(configWithLocale);
                 }
             } else {
-                configs.push(c);
+                configs.push(con);
             }
         }
     }

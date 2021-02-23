@@ -143,3 +143,21 @@ test('Non-Existent Entry (Single Type)', async () => {
     );
     expect(result.length).toBe(0);
 });
+
+test('Repeatable Type with Locales', async () => {
+    const settings = { ...testConfig };
+    settings.locales = ['en-US', 'fr-FR'];
+    settings.singleTypes = [];
+    const result = await determineFileLocations(
+        settings,
+        'my-entry-id',
+        'post',
+        false
+    );
+    for (const item of result) {
+        const localeIncluded =
+            item === './content/post/my-entry-id.en-us.md' ||
+            item === './content/post/my-entry-id.fr-fr.md';
+        expect(localeIncluded).toBe(true);
+    }
+});
