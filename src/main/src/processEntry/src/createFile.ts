@@ -1,5 +1,4 @@
-import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ensureDir, writeFile } from 'fs-extra';
 import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 
@@ -21,13 +20,12 @@ export const determineFilePath = (
     const directory = removeLeadingAndTrailingSlashes(
         contentSettings.directory
     );
-    const ext = locale
-        ? `${locale.toLowerCase()}.${fileExtension}`
+    const ext = locale.mapTo
+        ? `${locale.mapTo.toLowerCase()}.${fileExtension}`
         : fileExtension;
     if (isHeadless && !isSingle) {
         return `./${directory}/${entryId}/index.${ext}`;
     } else if (isTaxonomy) {
-        mkdirp.sync(`./${directory}/${fileName || entryId}`);
         return `./${directory}/${fileName || entryId}/_index.${ext}`;
     } else if (isSingle) {
         return `./${directory}/${fileName}.${ext}`;
@@ -35,18 +33,18 @@ export const determineFilePath = (
     return `./${directory}/${entryId}.${ext}`;
 };
 
-export const createDirectoryForFile = (
+export const createDirectoryForFile = async (
     contentSettings: ContentSettings,
     entryId: string
-): void => {
+): Promise<void> => {
     const { fileName, isSingle, isHeadless, isTaxonomy } = contentSettings;
     const directory = removeLeadingAndTrailingSlashes(
         contentSettings.directory
     );
     if (isHeadless && !isSingle) {
-        mkdirp.sync(`./${directory}/${entryId}`);
+        await ensureDir(`./${directory}/${entryId}`);
     } else if (isTaxonomy) {
-        mkdirp.sync(`./${directory}/${fileName || entryId}`);
+        await ensureDir(`./${directory}/${fileName || entryId}`);
     }
 };
 
@@ -57,12 +55,12 @@ export const createDirectoryForFile = (
  * @param {Object} frontMatter - Object containing all the data for frontmatter
  * @param {String} mainContent - String data for the main content that will appear below the frontmatter
  */
-const createFile = (
+const createFile = async (
     contentSettings: ContentSettings,
     entryId: string,
     frontMatter: unknown = {},
     mainContent: string | null
-): void => {
+): Promise<void> => {
     let fileContent = '';
     const { fileExtension, isHeadless, isTaxonomy } = contentSettings;
     if (isHeadless && isTaxonomy) {
@@ -91,9 +89,9 @@ const createFile = (
     }
 
     // create file
-    createDirectoryForFile(contentSettings, entryId);
+    await createDirectoryForFile(contentSettings, entryId);
     const filePath = determineFilePath(contentSettings, entryId);
-    return fs.writeFile(filePath, fileContent, (error) => {
+    return writeFile(filePath, fileContent).catch((error) => {
         if (error) {
             console.log(error);
         }

@@ -1,6 +1,7 @@
 import { loadConfig, ContentfulConfig } from './src/config';
 import {
     ConfigContentfulSettings,
+    LocaleConfig,
     OverrideConfig,
     RepeatableTypeConfig,
     SingleTypeConfig,
@@ -20,7 +21,7 @@ export interface ContentSettings {
     /**
      * The directory where the entries will be placed
      */
-    locale: string;
+    locale: LocaleConfig;
     directory: string;
     fileExtension?: string;
     fileName?: string;
@@ -61,7 +62,7 @@ const fetchType = (
                 getContentTypeResultMessage(
                     result.typeId,
                     result.totalItems,
-                    settings.locale
+                    settings.locale.name
                 )
             );
         })
@@ -134,6 +135,8 @@ const fetchDataFromContentful = async (
     const isPreview = previewMode;
     const deliveryMode = previewMode ? 'Preview Data' : 'Published Data';
     configCheck(config);
+
+    // check for wait time (from the --wait flag)
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
         await new Promise((resolve) => {
@@ -145,8 +148,7 @@ const fetchDataFromContentful = async (
     console.log(
         `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
     );
-    // loop through repeatable content types
-    const types = config.repeatableTypes;
+
     const jobs: {
         limit: number;
         skip: number;
@@ -155,15 +157,17 @@ const fetchDataFromContentful = async (
     }[] = [];
     const addJob = (
         item: SingleTypeConfig | RepeatableTypeConfig,
-        isSingle: boolean,
-        locales: string[]
+        isSingle: boolean
     ) => {
         let settings: ContentSettings;
         if (isSingle) {
             settings = {
                 typeId: item.id,
                 directory: item.directory,
-                locale: '',
+                locale: {
+                    name: '',
+                    mapTo: '',
+                },
                 fileExtension: item.fileExtension,
                 fileName: (item as SingleTypeConfig).fileName,
                 mainContent: item.mainContent,
@@ -176,7 +180,10 @@ const fetchDataFromContentful = async (
         } else {
             settings = {
                 typeId: item.id,
-                locale: '',
+                locale: {
+                    name: '',
+                    mapTo: '',
+                },
                 directory: item.directory,
                 isHeadless: (item as RepeatableTypeConfig).isHeadless,
                 fileExtension: item.fileExtension,
@@ -189,10 +196,18 @@ const fetchDataFromContentful = async (
             };
         }
         if (isValidFileExtension(settings.fileExtension)) {
-            if (locales.length && !item.ignoreLocales) {
-                for (const locale of locales) {
+            if (config.locales.length && !item.ignoreLocales) {
+                // add a job for each locale
+                for (const locale of config.locales) {
                     const newSettings = { ...settings };
-                    newSettings.locale = locale;
+                    if (typeof locale === 'string') {
+                        newSettings.locale = {
+                            name: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        newSettings.locale = locale;
+                    }
                     const job = {
                         limit: isSingle ? 1 : 1000,
                         skip: 0,
@@ -202,8 +217,9 @@ const fetchDataFromContentful = async (
                     jobs.push(job);
                 }
             } else {
+                // add single job if no locales
                 const job = {
-                    limit: 1,
+                    limit: isSingle ? 1 : 1000,
                     skip: 0,
                     contentSettings: settings,
                     isPreview: isPreview,
@@ -216,17 +232,19 @@ const fetchDataFromContentful = async (
             );
         }
     };
-    if (types) {
-        for (let i = 0; i < types.length; i++) {
+    // Loop through repeatable types
+    const repeatables = config.repeatableTypes;
+    if (repeatables) {
+        for (let i = 0; i < repeatables.length; i++) {
             // object to pass settings into the function
-            addJob(types[i], false, config.locales);
+            addJob(repeatables[i], false);
         }
     }
     // loop through single content types
     const singles = config.singleTypes;
     if (singles) {
         for (let i = 0; i < singles.length; i++) {
-            addJob(singles[i], true, config.locales);
+            addJob(singles[i], true);
         }
     }
     return new Promise((resolve) => {

@@ -1,17 +1,16 @@
-import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ensureDir, pathExists, writeFile } from 'fs-extra';
 import shortcodes from './src/shortcodes';
 import { loadConfig } from '@main/src/config';
 
 const wait = (milli = 1000): Promise<void> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             return resolve();
         }, milli);
     });
 };
 
-const generateConfig = (filepath: string) => {
+const generateConfig = async (filepath: string) => {
     console.log('creating contentful-hugo.config.js');
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo#configuration for configuration instructions
 
@@ -22,7 +21,7 @@ module.exports = {
     singleTypes: [],
     repeatableTypes: []
 };`;
-    fs.writeFileSync(filepath, configContent);
+    await writeFile(filepath, configContent);
     console.log('config file created\n');
 };
 
@@ -80,15 +79,15 @@ const addShortcodes = async (override = false) => {
     console.log('adding shortcodes for rich text...');
     await wait(1000);
     const directory = './layouts/shortcodes/contentful-hugo';
-    mkdirp.sync(directory);
-    Object.keys(shortcodes).forEach(key => {
+    await ensureDir(directory);
+    Object.keys(shortcodes).forEach(async (key) => {
         const { filename, template } = shortcodes[key];
         const finalTemplate = replaceVariablesWithValues(template);
         const filepath = `${directory}/${filename}`;
-        if (fs.existsSync(filepath) && !override) {
+        if ((await pathExists(filepath)) && !override) {
             console.log(`${filepath} already exists`);
         } else {
-            fs.writeFileSync(filepath, finalTemplate);
+            await writeFile(filepath, finalTemplate);
             console.log(`created ${filepath}`);
         }
     });

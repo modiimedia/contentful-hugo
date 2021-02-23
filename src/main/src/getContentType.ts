@@ -1,5 +1,5 @@
 import { ContentSettings } from '@main/index';
-import fs from 'fs';
+import { ensureDir, writeFile } from 'fs-extra';
 import { createClient } from 'contentful';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import processEntry from './processEntry';
@@ -7,8 +7,6 @@ import { ConfigContentfulSettings } from './config/src/types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const mkdirp = require('mkdirp');
 
 interface ContentfulClientQuery {
     [key: string]: string | number | undefined | boolean;
@@ -71,10 +69,10 @@ const getContentType = async (
             }
         });
     }
-    if (contentSettings.locale) {
-        query.locale = contentSettings.locale;
+    if (contentSettings.locale && contentSettings.locale.name) {
+        query.locale = contentSettings.locale.name;
     }
-    return client.getEntries(query).then((data) => {
+    return client.getEntries(query).then(async (data) => {
         // variable for counting number of items pulled
         let itemCount;
         if (itemsPulled) {
@@ -86,10 +84,10 @@ const getContentType = async (
         const newDir = `./${removeLeadingAndTrailingSlashes(
             contentSettings.directory
         )}`;
-        mkdirp.sync(newDir);
+        await ensureDir(newDir);
         if (contentSettings.isHeadless && !contentSettings.isSingle) {
             const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
-            fs.writeFileSync(`${newDir}/_index.md`, listPageFrontMatter);
+            await writeFile(`${newDir}/_index.md`, listPageFrontMatter);
         }
 
         for (let i = 0; i < data.items.length; i++) {

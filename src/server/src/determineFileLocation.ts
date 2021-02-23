@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { pathExists, readFile } from 'fs-extra';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import { determineFilePath } from '@/main/src/processEntry/src/createFile';
 
@@ -11,7 +11,10 @@ export const getSingleTypeConfigs = (
         if (item.id === contentType) {
             const data = {
                 typeId: item.id,
-                locale: '',
+                locale: {
+                    name: '',
+                    mapTo: '',
+                },
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
                 fileName: item.fileName,
@@ -25,7 +28,14 @@ export const getSingleTypeConfigs = (
             if (config.locales && !item.ignoreLocales) {
                 for (const locale of config.locales) {
                     const newData = { ...data };
-                    newData.locale = locale;
+                    if (typeof locale === 'string') {
+                        newData.locale = {
+                            name: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        newData.locale = locale;
+                    }
                     fileData.push(newData);
                 }
             } else {
@@ -53,12 +63,22 @@ export const getRepeatableTypeConfigs = (
                 mainContent: item.mainContent || '',
                 overrides: item.overrides || [],
                 filters: item.filters,
-                locale: '',
+                locale: {
+                    name: '',
+                    mapTo: '',
+                },
             };
             if (config.locales && !item.ignoreLocales) {
-                for (const local of config.locales) {
+                for (const locale of config.locales) {
                     const newC = { ...c };
-                    newC.locale = local;
+                    if (typeof locale === 'string') {
+                        newC.locale = {
+                            name: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        newC.locale = locale;
+                    }
                     configs.push(newC);
                 }
             } else {
@@ -69,12 +89,12 @@ export const getRepeatableTypeConfigs = (
     return configs;
 };
 
-const determineFileLocations = (
+const determineFileLocations = async (
     config: ContentfulHugoConfig,
     entryId: string,
     contentType: string,
     isDeleting = false
-): string[] => {
+): Promise<string[]> => {
     const singleConfigs: ContentSettings[] = getSingleTypeConfigs(
         config,
         contentType
@@ -83,9 +103,9 @@ const determineFileLocations = (
     for (const item of singleConfigs) {
         const location = determineFilePath(item, entryId);
         if (isDeleting) {
-            const fileExists = fs.existsSync(location);
+            const fileExists = await pathExists(location);
             if (fileExists) {
-                const data = fs.readFileSync(location);
+                const data = await readFile(location);
                 if (data.includes(`id: "${entryId}"`)) {
                     locations.push(location);
                 }

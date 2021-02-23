@@ -1,11 +1,12 @@
 import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ensureDir, unlink, writeFile } from 'fs-extra';
 import { ContentfulConfig } from '../../main/src/config/src/types';
 import determineFileLocations from './determineFileLocation';
 
 const YAML = require('json-to-pretty-yaml');
 
 const testConfig: ContentfulConfig = {
+    locales: [],
     contentful: {
         space: '',
         token: '',
@@ -60,57 +61,81 @@ const testConfig: ContentfulConfig = {
 
 const testEntryId = 'my-test-entry-id';
 
-beforeAll(() => {
-    mkdirp.sync('content');
+beforeAll(async () => {
+    await ensureDir('content');
     const fileContent = {
         sys: {
             id: testEntryId,
         },
     };
-    fs.writeFileSync('./content/home.md', YAML.stringify(fileContent));
+    await writeFile('./content/home.md', YAML.stringify(fileContent));
 });
 
-afterAll(() => {
-    fs.unlinkSync('./content/home.md');
+afterAll(async () => {
+    await unlink('./content/home.md');
 });
-test('Single Type', () => {
-    const result = determineFileLocations(testConfig, testEntryId, 'homepage');
+test('Single Type', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        testEntryId,
+        'homepage'
+    );
     expect(result.length).toBe(1);
     expect(result[0]).toBe('./content/home.md');
 });
 
-test('Multiple Locations', () => {
-    const result = determineFileLocations(testConfig, testEntryId, 'post');
+test('Multiple Locations', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        testEntryId,
+        'post'
+    );
     expect(result.length).toBe(2);
     expect(result[0]).toBe('./content/post-test.md');
     expect(result[1]).toBe(`./content/post/${testEntryId}.md`);
 });
 
-test('Taxonomy Entry', () => {
-    const result = determineFileLocations(testConfig, testEntryId, 'category');
+test('Taxonomy Entry', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        testEntryId,
+        'category'
+    );
     expect(result.length).toBe(1);
     expect(result[0]).toBe(`./content/category/${testEntryId}/_index.md`);
 });
 
-test('Headless Entry', () => {
-    const result = determineFileLocations(testConfig, testEntryId, 'person');
+test('Headless Entry', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        testEntryId,
+        'person'
+    );
     expect(result.length).toBe(1);
     expect(result[0]).toBe(`./content/person/${testEntryId}/index.md`);
 });
 
-test('Uncommon file Extension', () => {
-    const result = determineFileLocations(testConfig, testEntryId, 'fr-post');
+test('Uncommon file Extension', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        testEntryId,
+        'fr-post'
+    );
     expect(result.length).toBe(1);
     expect(result[0]).toBe(`./content/fr-post/${testEntryId}.fr.md`);
 });
 
-test('Non-Existent Content Type', () => {
-    const result = determineFileLocations(testConfig, 'my-other-id', 'blah');
+test('Non-Existent Content Type', async () => {
+    const result = await determineFileLocations(
+        testConfig,
+        'my-other-id',
+        'blah'
+    );
     expect(result.length).toBe(0);
 });
 
-test('Non-Existent Entry (Single Type)', () => {
-    const result = determineFileLocations(
+test('Non-Existent Entry (Single Type)', async () => {
+    const result = await determineFileLocations(
         testConfig,
         'my-other-id',
         'homepage',

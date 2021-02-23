@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import { pathExists, readFile } from 'fs-extra';
 import yaml from 'js-yaml';
 import { determineFileType, isContentfulConfig } from './utilities';
 import { ContentfulConfig } from './types';
@@ -18,7 +18,7 @@ const checkContentfulSettings = (config: {
         contentful.previewToken || process.env.CONTENTFUL_PREVIEW_TOKEN || '';
     const environment = contentful.environment || 'master';
     const newConfig: ContentfulConfig = {
-        locales: config.locales || {},
+        locales: config.locales || [],
         contentful: {
             space,
             token,
@@ -45,8 +45,10 @@ const loadJavascriptConfigFile = (
     return false;
 };
 
-const loadYamlConfigFile = (filePath: string): ContentfulConfig | false => {
-    let configObject = yaml.load(fs.readFileSync(filePath).toString());
+const loadYamlConfigFile = async (
+    filePath: string
+): Promise<ContentfulConfig | false> => {
+    let configObject = yaml.load(await readFile(filePath).toString());
     if (configObject && typeof configObject === 'object') {
         configObject = checkContentfulSettings(configObject);
         if (isContentfulConfig(configObject)) {
@@ -63,19 +65,17 @@ const loadFile = async (
     rootDir = '.',
     fileName: string
 ): Promise<ContentfulConfig | false> => {
-    return new Promise((resolve) => {
-        const filePath = path.resolve(rootDir, fileName);
-        if (fs.existsSync(filePath)) {
-            const fileType = determineFileType(fileName);
-            if (fileType === 'javascript') {
-                return resolve(loadJavascriptConfigFile(filePath));
-            }
-            if (fileType === 'yaml') {
-                return resolve(loadYamlConfigFile(filePath));
-            }
+    const filePath = path.resolve(rootDir, fileName);
+    if (await pathExists(filePath)) {
+        const fileType = determineFileType(fileName);
+        if (fileType === 'javascript') {
+            return loadJavascriptConfigFile(filePath);
         }
-        return resolve(false);
-    });
+        if (fileType === 'yaml') {
+            return loadYamlConfigFile(filePath);
+        }
+    }
+    return false;
 };
 
 export {
