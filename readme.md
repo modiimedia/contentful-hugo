@@ -9,6 +9,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   Markdown and YAML output
 -   Singleton support
 -   Rich text field support
+-   Multilingual Support
 -   Default shortcodes for rich text content
 -   Asset field resolution
 -   Customizable linked entry resolution
@@ -180,6 +181,9 @@ You can also specify a custom config file using the `--config` flag. (Javascript
 // contentful-hugo.config.js
 
 module.exports = {
+    // fetches from default locale if left blank
+    locales: ["en-US", "fr-FR"]
+
     contentful: {
         // defaults to CONTENTFUL_SPACE env variable
         space: 'space-id',
@@ -190,6 +194,7 @@ module.exports = {
         // defaults to "master"
         environment: 'master',
     },
+
     singleTypes: [
         {
             id: 'homepage',
@@ -204,6 +209,7 @@ module.exports = {
             fileExtension: 'yaml',
         },
     ],
+
     repeatableTypes: [
         {
             id: 'posts',
@@ -248,6 +254,10 @@ module.exports = {
 
 ```yaml
 # contentful-hugo.config.yaml
+
+locales: # fetches from default locale if left blank
+    - en-US
+    - fr-FR
 
 contentful:
     space: 'space-id' # defaults to CONTENTFUL_SPACE env variable
@@ -326,6 +336,7 @@ repeatableTypes:
 | resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                        |
 | overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                  |
 | filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator) |
+| ignoreLocales  | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                               |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -341,6 +352,61 @@ repeatableTypes:
 | resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
 | overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 | filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
+| ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
+
+#### <u>**Localization Options**</u>
+
+The config also has a `locales` field that allows you to specify what locales you want to pull from. This field can take an array of strings, an array of objects, or a combination.
+
+```js
+
+// produce en-us.md and fr-fr.md files
+module.exports = {
+    locales: ['en-US', 'fr-FR'];
+    // rest of config
+}
+
+// produce en.md and fr.md files
+module.exports = {
+    locales: [
+        {
+            name: 'en-US',
+            mapTo: 'en'
+        },
+        {
+            name: 'fr-FR',
+            mapTo: 'fr'
+        }
+    ]
+    // rest of config
+}
+
+// produce en-us.md files and fr.md files
+module.exports = {
+    locales: [
+        'en-US',
+        {
+            name: 'fr-FR',
+            mapTo: 'fr'
+        }
+    ]
+    // rest of config
+}
+```
+
+After configuring locales in Contentful Hugo you will need to update your Hugo config to account for these locales. Consult the [Hugo docs](https://gohugo.io/content-management/multilingual/) for more details.
+
+```toml
+# config.toml
+
+[languages]
+
+    [languages.en-us]
+    #language settings
+
+    [languages.fr-fr]
+    #language settings
+```
 
 #### Advanced Config Examples
 
