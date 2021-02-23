@@ -5,7 +5,7 @@ import createFile from './src/createFile';
 const processEntry = (
     item: Entry<unknown>,
     contentSettings: import('@main/index').ContentSettings
-): void => {
+): Promise<void> => {
     const {
         isHeadless,
         type,
@@ -24,7 +24,7 @@ const processEntry = (
     const content = contentSettings.mainContent
         ? getMainContent(item, contentSettings.mainContent)
         : '';
-    createFile(contentSettings, item.sys.id, frontMatter, content);
+    return createFile(contentSettings, item.sys.id, frontMatter, content);
 };
 
 export default processEntry;
