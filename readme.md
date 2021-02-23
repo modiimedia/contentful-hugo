@@ -27,7 +27,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
     -   [Environenment Variables](#environment-variables)
     -   [Config File(s)](#config-file)
 -   [Expected Output](#expected-output)
-    -   [Standard Fields](#default-date-and-time-fields)
+    -   [Standard Fields](#default-metadata-fields-and-date-field)
     -   [Richtext Fields](#rich-text-as-main-content)
     -   [Resolving Reference Fields](#the-resolve-entries-parameter)
     -   [Overriding Field Names & Field Values](#the-overrides-parameter)
