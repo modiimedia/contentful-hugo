@@ -28,7 +28,8 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number): Promise<{
+    itemsPulled?: number
+): Promise<{
     totalItems: number;
     typeId: string;
 }> => {
@@ -64,13 +65,16 @@ const getContentType = async (
     if (contentSettings.filters) {
         const { filters } = contentSettings;
         const ignoreKeys = ['content_type', 'limit', 'skip'];
-        Object.keys(filters).forEach(key => {
+        Object.keys(filters).forEach((key) => {
             if (!ignoreKeys.includes(key)) {
                 query[key] = filters[key];
             }
         });
     }
-    return client.getEntries(query).then(data => {
+    if (contentSettings.locale) {
+        query.locale = contentSettings.locale;
+    }
+    return client.getEntries(query).then((data) => {
         // variable for counting number of items pulled
         let itemCount;
         if (itemsPulled) {

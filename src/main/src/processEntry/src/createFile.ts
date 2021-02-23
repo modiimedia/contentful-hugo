@@ -16,19 +16,23 @@ export const determineFilePath = (
         isSingle,
         isHeadless,
         isTaxonomy,
+        locale,
     } = contentSettings;
     const directory = removeLeadingAndTrailingSlashes(
         contentSettings.directory
     );
+    const ext = locale
+        ? `${locale.toLowerCase()}.${fileExtension}`
+        : fileExtension;
     if (isHeadless && !isSingle) {
-        return `./${directory}/${entryId}/index.${fileExtension}`;
+        return `./${directory}/${entryId}/index.${ext}`;
     } else if (isTaxonomy) {
         mkdirp.sync(`./${directory}/${fileName || entryId}`);
-        return `./${directory}/${fileName || entryId}/_index.${fileExtension}`;
+        return `./${directory}/${fileName || entryId}/_index.${ext}`;
     } else if (isSingle) {
-        return `./${directory}/${fileName}.${fileExtension}`;
+        return `./${directory}/${fileName}.${ext}`;
     }
-    return `./${directory}/${entryId}.${fileExtension}`;
+    return `./${directory}/${entryId}.${ext}`;
 };
 
 export const createDirectoryForFile = (
@@ -89,7 +93,7 @@ const createFile = (
     // create file
     createDirectoryForFile(contentSettings, entryId);
     const filePath = determineFilePath(contentSettings, entryId);
-    return fs.writeFile(filePath, fileContent, error => {
+    return fs.writeFile(filePath, fileContent, (error) => {
         if (error) {
             console.log(error);
         }

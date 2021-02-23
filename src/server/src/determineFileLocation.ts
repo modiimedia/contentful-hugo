@@ -9,8 +9,9 @@ export const getSingleTypeConfigs = (
     const fileData: ContentSettings[] = [];
     for (const item of config.singleTypes) {
         if (item.id === contentType) {
-            fileData.push({
+            const data = {
                 typeId: item.id,
+                locale: '',
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
                 fileName: item.fileName,
@@ -20,7 +21,16 @@ export const getSingleTypeConfigs = (
                 mainContent: item.mainContent || '',
                 overrides: item.overrides || [],
                 filters: item.filters,
-            });
+            };
+            if (config.locales && !item.ignoreLocales) {
+                for (const locale of config.locales) {
+                    const newData = { ...data };
+                    newData.locale = locale;
+                    fileData.push(newData);
+                }
+            } else {
+                fileData.push(data);
+            }
         }
     }
     return fileData;
@@ -33,7 +43,7 @@ export const getRepeatableTypeConfigs = (
     const configs: ContentSettings[] = [];
     for (const item of config.repeatableTypes) {
         if (item.id === contentType) {
-            configs.push({
+            const c = {
                 typeId: item.id,
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
@@ -43,7 +53,17 @@ export const getRepeatableTypeConfigs = (
                 mainContent: item.mainContent || '',
                 overrides: item.overrides || [],
                 filters: item.filters,
-            });
+                locale: '',
+            };
+            if (config.locales && !item.ignoreLocales) {
+                for (const local of config.locales) {
+                    const newC = { ...c };
+                    newC.locale = local;
+                    configs.push(newC);
+                }
+            } else {
+                configs.push(c);
+            }
         }
     }
     return configs;

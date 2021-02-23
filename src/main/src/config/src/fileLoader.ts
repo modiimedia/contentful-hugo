@@ -18,6 +18,7 @@ const checkContentfulSettings = (config: {
         contentful.previewToken || process.env.CONTENTFUL_PREVIEW_TOKEN || '';
     const environment = contentful.environment || 'master';
     const newConfig: ContentfulConfig = {
+        locales: config.locales || {},
         contentful: {
             space,
             token,
@@ -62,7 +63,7 @@ const loadFile = async (
     rootDir = '.',
     fileName: string
 ): Promise<ContentfulConfig | false> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const filePath = path.resolve(rootDir, fileName);
         if (fs.existsSync(filePath)) {
             const fileType = determineFileType(fileName);
