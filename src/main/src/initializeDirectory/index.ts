@@ -18,6 +18,7 @@ const generateConfig = async (filepath: string) => {
  * @type {import('contentful-hugo').ContentfulHugoConfig}
  */
 module.exports = {
+    locales: [],
     singleTypes: [],
     repeatableTypes: []
 };`;
