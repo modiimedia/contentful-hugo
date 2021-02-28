@@ -1,6 +1,6 @@
-import { ContentSettings } from '../../../../../dist/main';
-import { LocaleConfig } from '../../../../../dist/main/src/config/src/types';
-import { determineFilePath } from './createFile';
+import { ContentSettings } from '../../../index';
+import { LocaleConfig } from '../../config/src/types';
+import { determineFilePath, parseDirectoryPath } from './createFile';
 
 const settingsFactory = (
     typeId: string,
@@ -10,7 +10,7 @@ const settingsFactory = (
     isHeadless = false,
     isTaxonomy = false,
     fileExtension = 'md',
-    locale: LocaleConfig = { name: '', mapTo: '' },
+    locale: LocaleConfig = { code: '', mapTo: '' },
     filters: ContentSettings['filters'] = {},
     resolveEntries: ContentSettings['resolveEntries'] = []
 ): ContentSettings => {
@@ -22,7 +22,7 @@ const settingsFactory = (
         isTaxonomy,
         directory,
         fileName,
-        fileExtension,
+        fileExtension: fileExtension || 'md',
         filters,
         resolveEntries,
     };
@@ -55,18 +55,22 @@ describe('Determine File Path', () => {
         );
         // test locale mapping
         settings.locale = {
-            name: 'en-US',
+            code: 'en-US',
             mapTo: 'en-US',
         };
         expect(determineFilePath(settings, 'my-post-id')).toBe(
             './content/post/my-post-id.en-us.md'
         );
         settings.locale = {
-            name: 'fr-FR',
+            code: 'fr-FR',
             mapTo: 'fr',
         };
         expect(determineFilePath(settings, 'my-post-id')).toBe(
             './content/post/my-post-id.fr.md'
+        );
+        settings.directory = 'content/[locale]/post';
+        expect(determineFilePath(settings, 'my-post-id')).toBe(
+            './content/fr/post/my-post-id.md'
         );
     });
     test('Repeatable Type (Headless)', () => {
@@ -93,5 +97,16 @@ describe('Determine File Path', () => {
         expect(determineFilePath(settings, 'my-category-id')).toBe(
             './content/categories/my-category-id/_index.md'
         );
+    });
+});
+
+describe('Parse Directory', () => {
+    test('No Locale', () => {
+        const result = parseDirectoryPath('content/post', 'en');
+        expect(result.path).toBe('content/post');
+    });
+    test('Locale', () => {
+        const result = parseDirectoryPath('content/[locale]/post', 'en');
+        expect(result.path).toBe('content/en/post');
     });
 });

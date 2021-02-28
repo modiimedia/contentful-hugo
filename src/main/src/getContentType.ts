@@ -93,8 +93,8 @@ const getContentType = async (
         });
     }
 
-    if (contentSettings.locale && contentSettings.locale.name) {
-        query.locale = contentSettings.locale.name;
+    if (contentSettings.locale && contentSettings.locale.code) {
+        query.locale = contentSettings.locale.code;
     }
     return client.getEntries(query).then(async (data) => {
         // variable for counting number of items pulled

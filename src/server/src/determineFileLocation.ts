@@ -12,7 +12,7 @@ export const getSingleTypeConfigs = (
             const con = {
                 typeId: item.id,
                 locale: {
-                    name: '',
+                    code: '',
                     mapTo: '',
                 },
                 directory: item.directory,
@@ -34,7 +34,7 @@ export const getSingleTypeConfigs = (
                     const configWithLocale = { ...con };
                     if (typeof locale === 'string') {
                         configWithLocale.locale = {
-                            name: locale,
+                            code: locale,
                             mapTo: locale,
                         };
                     } else {
@@ -68,7 +68,7 @@ export const getRepeatableTypeConfigs = (
                 overrides: item.overrides || [],
                 filters: item.filters,
                 locale: {
-                    name: '',
+                    code: '',
                     mapTo: '',
                 },
             };
@@ -81,7 +81,7 @@ export const getRepeatableTypeConfigs = (
                     const configWithLocale = { ...con };
                     if (typeof locale === 'string') {
                         configWithLocale.locale = {
-                            name: locale,
+                            code: locale,
                             mapTo: locale,
                         };
                     } else {

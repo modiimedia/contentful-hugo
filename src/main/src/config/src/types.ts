@@ -72,7 +72,7 @@ export interface ConfigContentfulSettings {
     environment: string;
 }
 
-export type LocaleConfig = { name: string; mapTo: string };
+export type LocaleConfig = { code: string; mapTo: string };
 
 export interface ContentfulConfig {
     locales: (string | LocaleConfig)[];

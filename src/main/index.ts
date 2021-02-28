@@ -62,7 +62,7 @@ const fetchType = (
                 getContentTypeResultMessage(
                     result.typeId,
                     result.totalItems,
-                    settings.locale.name
+                    settings.locale.code
                 )
             );
         })
@@ -165,7 +165,7 @@ const fetchDataFromContentful = async (
                 typeId: item.id,
                 directory: item.directory,
                 locale: {
-                    name: '',
+                    code: '',
                     mapTo: '',
                 },
                 fileExtension: item.fileExtension,
@@ -181,7 +181,7 @@ const fetchDataFromContentful = async (
             settings = {
                 typeId: item.id,
                 locale: {
-                    name: '',
+                    code: '',
                     mapTo: '',
                 },
                 directory: item.directory,
@@ -202,7 +202,7 @@ const fetchDataFromContentful = async (
                     const newSettings = { ...settings };
                     if (typeof locale === 'string') {
                         newSettings.locale = {
-                            name: locale,
+                            code: locale,
                             mapTo: locale,
                         };
                     } else {

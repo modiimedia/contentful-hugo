@@ -358,8 +358,9 @@ repeatableTypes:
 
 The config also has a `locales` field that allows you to specify what locales you want to pull from. This field can take an array of strings, an array of objects, or a combination.
 
-```js
+By default locale specific file extensions will be used for multiple translations.
 
+```js
 // produce en-us.md and fr-fr.md files
 module.exports = {
     locales: ['en-US', 'fr-FR'];
@@ -370,11 +371,11 @@ module.exports = {
 module.exports = {
     locales: [
         {
-            name: 'en-US',
+            code: 'en-US',
             mapTo: 'en'
         },
         {
-            name: 'fr-FR',
+            code: 'fr-FR',
             mapTo: 'fr'
         }
     ]
@@ -386,7 +387,7 @@ module.exports = {
     locales: [
         'en-US',
         {
-            name: 'fr-FR',
+            code: 'fr-FR',
             mapTo: 'fr'
         }
     ]
@@ -400,12 +401,46 @@ After configuring locales in Contentful Hugo you will need to update your Hugo c
 # config.toml
 
 [languages]
-
     [languages.en-us]
     #language settings
-
     [languages.fr-fr]
     #language settings
+```
+
+##### Locale Specific Directories
+
+There are sometimes cases where you will want to place content in a directory based on it's locale rather than using a file extension based translation. In order to do this you simple include `[locale]` inside your directory file path.
+
+When using locale specific directories the locale specific file extensions (i.e. `en.md` or `fr.md`) get dropped
+
+```js
+module.exports = {
+    locales: ['en', 'fr']
+    singleTypes: [
+        {
+            id: 'settings',
+            fileName: 'settings',
+            fileExtension: 'yaml',
+            directory: 'data/[locale]'
+            /*
+                produces:
+                - data/en/settings.yaml
+                - data/fr/settings.yaml
+            */
+        }
+    ]
+    repeatableTypes: [
+        {
+            id: 'post',
+            directory: 'content/[locale]/post',
+            /*
+                produces:
+                - content/en/post/[entryId].md
+                - content/fr/post/[entryId].md
+            */
+        },
+    ],
+};
 ```
 
 #### Advanced Config Examples
@@ -507,6 +542,7 @@ sys:
 
 # the following fields are depreciated and will be removed in a future version
 # migrate to using the sys.updatedAt and sys.createdAt iterations
+
 updated: # the last time the entry was updated in Contentful
 createdAt: # when the entry was created in Contentful
 ```

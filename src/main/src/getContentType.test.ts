@@ -14,7 +14,7 @@ test('PrepDirectory', async () => {
         isHeadless: false,
         isTaxonomy: false,
         locale: {
-            name: '',
+            code: '',
             mapTo: '',
         },
     };
@@ -26,7 +26,7 @@ test('PrepDirectory', async () => {
     expect(await pathExists('./.temp/blah/_index.md')).toBe(true);
 
     settings.locale = {
-        name: 'en-US',
+        code: 'en-US',
         mapTo: 'en-US',
     };
     await prepDirectory(settings);

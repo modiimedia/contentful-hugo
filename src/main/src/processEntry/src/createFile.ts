@@ -5,6 +5,35 @@ import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
 
+export const parseDirectoryPath = (
+    directory: string,
+    locale: string
+): {
+    path: string;
+    includesLocale: boolean;
+} => {
+    const dir = removeLeadingAndTrailingSlashes(directory);
+    if (dir.includes('[locale]')) {
+        const dirParts = dir.split('/');
+        const newDirParts: string[] = [];
+        for (const part of dirParts) {
+            if (part === '[locale]') {
+                newDirParts.push(locale.toLowerCase());
+            } else {
+                newDirParts.push(part);
+            }
+        }
+        return {
+            path: newDirParts.join('/'),
+            includesLocale: true,
+        };
+    }
+    return {
+        path: dir,
+        includesLocale: false,
+    };
+};
+
 export const determineFilePath = (
     contentSettings: ContentSettings,
     entryId: string
@@ -17,20 +46,22 @@ export const determineFilePath = (
         isTaxonomy,
         locale,
     } = contentSettings;
-    const directory = removeLeadingAndTrailingSlashes(
-        contentSettings.directory
+    const { path, includesLocale } = parseDirectoryPath(
+        contentSettings.directory,
+        locale.mapTo
     );
-    const ext = locale.mapTo
-        ? `${locale.mapTo.toLowerCase()}.${fileExtension}`
-        : fileExtension;
+    const ext =
+        locale.mapTo && !includesLocale
+            ? `${locale.mapTo.toLowerCase()}.${fileExtension}`
+            : fileExtension;
     if (isHeadless && !isSingle) {
-        return `./${directory}/${entryId}/index.${ext}`;
+        return `./${path}/${entryId}/index.${ext}`;
     } else if (isTaxonomy) {
-        return `./${directory}/${fileName || entryId}/_index.${ext}`;
+        return `./${path}/${fileName || entryId}/_index.${ext}`;
     } else if (isSingle) {
-        return `./${directory}/${fileName}.${ext}`;
+        return `./${path}/${fileName}.${ext}`;
     }
-    return `./${directory}/${entryId}.${ext}`;
+    return `./${path}/${entryId}.${ext}`;
 };
 
 export const createDirectoryForFile = async (
@@ -38,13 +69,16 @@ export const createDirectoryForFile = async (
     entryId: string
 ): Promise<void> => {
     const { fileName, isSingle, isHeadless, isTaxonomy } = contentSettings;
-    const directory = removeLeadingAndTrailingSlashes(
-        contentSettings.directory
-    );
+    const directory = parseDirectoryPath(
+        contentSettings.directory,
+        contentSettings.locale.mapTo
+    ).path;
     if (isHeadless && !isSingle) {
         await ensureDir(`./${directory}/${entryId}`);
     } else if (isTaxonomy) {
         await ensureDir(`./${directory}/${fileName || entryId}`);
+    } else {
+        await ensureDir(directory);
     }
 };
 
