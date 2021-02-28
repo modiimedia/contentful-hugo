@@ -78,7 +78,7 @@ export const createDirectoryForFile = async (
     } else if (isTaxonomy) {
         await ensureDir(`./${directory}/${fileName || entryId}`);
     } else {
-        await ensureDir(directory);
+        await ensureDir(`./${directory}`);
     }
 };
 
