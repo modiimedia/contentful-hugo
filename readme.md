@@ -182,7 +182,7 @@ You can also specify a custom config file using the `--config` flag. (Javascript
 
 module.exports = {
     // fetches from default locale if left blank
-    locales: ["en-US", "fr-FR"]
+    locales: ['en-US', 'fr-FR'],
 
     contentful: {
         // defaults to CONTENTFUL_SPACE env variable
