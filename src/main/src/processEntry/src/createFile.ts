@@ -13,7 +13,7 @@ export const parseDirectoryPath = (
     includesLocale: boolean;
 } => {
     const dir = removeLeadingAndTrailingSlashes(directory);
-    if (dir.includes('[locale]') || dir.includes('[ locale ]')) {
+    if (locale && (dir.includes('[locale]') || dir.includes('[ locale ]'))) {
         const dirParts = dir.split('/');
         const newDirParts: string[] = [];
         for (const part of dirParts) {
