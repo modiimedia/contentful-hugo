@@ -1,9 +1,9 @@
 import { ContentSettings } from '@main/index';
 import { ensureDir, writeFile } from 'fs-extra';
 import { createClient } from 'contentful';
-import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/src/types';
+import { parseDirectoryPath } from './processEntry/src/createFile';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -22,7 +22,11 @@ export const prepDirectory = async (
     settings: ContentSettings
 ): Promise<void> => {
     // create directory for file
-    const newDir = `./${removeLeadingAndTrailingSlashes(settings.directory)}`;
+    const parsedDir = parseDirectoryPath(
+        settings.directory,
+        settings.locale.mapTo
+    );
+    const newDir = parsedDir.path;
     await ensureDir(newDir);
     if (settings.isHeadless && !settings.isSingle) {
         const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
