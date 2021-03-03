@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { pathExists, readFile } from 'fs-extra';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import { determineFilePath } from '@/main/src/processEntry/src/createFile';
 
@@ -6,24 +6,48 @@ export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
     contentType: string
 ): ContentSettings[] => {
-    const fileData: ContentSettings[] = [];
+    const configs: ContentSettings[] = [];
     for (const item of config.singleTypes) {
         if (item.id === contentType) {
-            fileData.push({
+            const con = {
                 typeId: item.id,
+                locale: {
+                    code: '',
+                    mapTo: '',
+                },
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
                 fileName: item.fileName,
                 isHeadless: false,
                 isSingle: true,
                 isTaxonomy: false,
-                mainContent: item.mainContent || '',
-                overrides: item.overrides || [],
+                mainContent: item.mainContent,
+                overrides: item.overrides,
                 filters: item.filters,
-            });
+            };
+            if (
+                config.locales &&
+                config.locales.length &&
+                !item.ignoreLocales
+            ) {
+                for (const locale of config.locales) {
+                    const configWithLocale = { ...con };
+                    if (typeof locale === 'string') {
+                        configWithLocale.locale = {
+                            code: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        configWithLocale.locale = locale;
+                    }
+                    configs.push(configWithLocale);
+                }
+            } else {
+                configs.push(con);
+            }
         }
     }
-    return fileData;
+    return configs;
 };
 
 export const getRepeatableTypeConfigs = (
@@ -33,7 +57,7 @@ export const getRepeatableTypeConfigs = (
     const configs: ContentSettings[] = [];
     for (const item of config.repeatableTypes) {
         if (item.id === contentType) {
-            configs.push({
+            const con = {
                 typeId: item.id,
                 directory: item.directory,
                 fileExtension: item.fileExtension || 'md',
@@ -43,18 +67,42 @@ export const getRepeatableTypeConfigs = (
                 mainContent: item.mainContent || '',
                 overrides: item.overrides || [],
                 filters: item.filters,
-            });
+                locale: {
+                    code: '',
+                    mapTo: '',
+                },
+            };
+            if (
+                config.locales &&
+                config.locales.length &&
+                !item.ignoreLocales
+            ) {
+                for (const locale of config.locales) {
+                    const configWithLocale = { ...con };
+                    if (typeof locale === 'string') {
+                        configWithLocale.locale = {
+                            code: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        configWithLocale.locale = locale;
+                    }
+                    configs.push(configWithLocale);
+                }
+            } else {
+                configs.push(con);
+            }
         }
     }
     return configs;
 };
 
-const determineFileLocations = (
+const determineFileLocations = async (
     config: ContentfulHugoConfig,
     entryId: string,
     contentType: string,
     isDeleting = false
-): string[] => {
+): Promise<string[]> => {
     const singleConfigs: ContentSettings[] = getSingleTypeConfigs(
         config,
         contentType
@@ -63,9 +111,9 @@ const determineFileLocations = (
     for (const item of singleConfigs) {
         const location = determineFilePath(item, entryId);
         if (isDeleting) {
-            const fileExists = fs.existsSync(location);
+            const fileExists = await pathExists(location);
             if (fileExists) {
-                const data = fs.readFileSync(location);
+                const data = await readFile(location);
                 if (data.includes(`id: "${entryId}"`)) {
                     locations.push(location);
                 }

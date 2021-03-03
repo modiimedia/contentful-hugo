@@ -53,6 +53,7 @@ export interface TypeConfig {
      */
     overrides?: OverrideConfig[];
     filters?: { [key: string]: string | number | boolean };
+    ignoreLocales?: boolean;
 }
 
 export interface SingleTypeConfig extends TypeConfig {
@@ -71,7 +72,10 @@ export interface ConfigContentfulSettings {
     environment: string;
 }
 
+export type LocaleConfig = { code: string; mapTo: string };
+
 export interface ContentfulConfig {
+    locales: (string | LocaleConfig)[];
     contentful: ConfigContentfulSettings;
     singleTypes: SingleTypeConfig[];
     repeatableTypes: RepeatableTypeConfig[];

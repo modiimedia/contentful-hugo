@@ -1,7 +1,10 @@
 import { loadConfig, ContentfulConfig } from './src/config';
 import {
     ConfigContentfulSettings,
+    LocaleConfig,
     OverrideConfig,
+    RepeatableTypeConfig,
+    SingleTypeConfig,
 } from './src/config/src/types';
 import getContentType from './src/getContentType';
 import getContentTypeResultMessage from './src/getContentTypeResultMessage';
@@ -18,6 +21,7 @@ export interface ContentSettings {
     /**
      * The directory where the entries will be placed
      */
+    locale: LocaleConfig;
     directory: string;
     fileExtension?: string;
     fileName?: string;
@@ -55,7 +59,11 @@ const fetchType = (
     return getContentType(limit, skip, settings, contentfulSettings, preview)
         .then((result) => {
             console.log(
-                getContentTypeResultMessage(result.typeId, result.totalItems)
+                getContentTypeResultMessage(
+                    result.typeId,
+                    result.totalItems,
+                    settings.locale.code
+                )
             );
         })
         .catch((error: ContentfulError | string) => {
@@ -127,6 +135,8 @@ const fetchDataFromContentful = async (
     const isPreview = previewMode;
     const deliveryMode = previewMode ? 'Preview Data' : 'Published Data';
     configCheck(config);
+
+    // check for wait time (from the --wait flag)
     if (waitTime && typeof waitTime === 'number') {
         console.log(`waiting ${waitTime}ms...`);
         await new Promise((resolve) => {
@@ -138,108 +148,103 @@ const fetchDataFromContentful = async (
     console.log(
         `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
     );
-    // loop through repeatable content types
-    const types = config.repeatableTypes;
+
     const jobs: {
         limit: number;
         skip: number;
         contentSettings: ContentSettings;
         isPreview: boolean;
     }[] = [];
-    if (types) {
-        for (let i = 0; i < types.length; i++) {
-            // object to pass settings into the function
-            const {
-                id,
-                directory,
-                isHeadless,
-                fileExtension,
-                // title,
-                // dateField,
-                mainContent,
-                type,
-                isTaxonomy,
-                resolveEntries,
-                overrides,
-                filters,
-            } = types[i];
-            const contentSettings: ContentSettings = {
-                typeId: id,
-                directory: directory,
-                isHeadless: isHeadless,
-                fileExtension: fileExtension,
-                // titleField: title,
-                // dateField: dateField,
-                mainContent: mainContent,
-                type: type,
-                isTaxonomy,
-                resolveEntries,
-                overrides,
-                filters,
+    const addJob = (
+        item: SingleTypeConfig | RepeatableTypeConfig,
+        isSingle: boolean
+    ) => {
+        let settings: ContentSettings;
+        if (isSingle) {
+            settings = {
+                typeId: item.id,
+                directory: item.directory,
+                locale: {
+                    code: '',
+                    mapTo: '',
+                },
+                fileExtension: item.fileExtension,
+                fileName: (item as SingleTypeConfig).fileName,
+                mainContent: item.mainContent,
+                isSingle: true,
+                type: item.type,
+                resolveEntries: item.resolveEntries,
+                overrides: item.overrides,
+                filters: item.filters,
             };
-
-            // check file extension settings
-            if (isValidFileExtension(fileExtension)) {
+        } else {
+            settings = {
+                typeId: item.id,
+                locale: {
+                    code: '',
+                    mapTo: '',
+                },
+                directory: item.directory,
+                isHeadless: (item as RepeatableTypeConfig).isHeadless,
+                fileExtension: item.fileExtension,
+                mainContent: item.mainContent,
+                type: item.type,
+                isTaxonomy: (item as RepeatableTypeConfig).isTaxonomy,
+                resolveEntries: item.resolveEntries,
+                overrides: item.overrides,
+                filters: item.filters,
+            };
+        }
+        if (isValidFileExtension(settings.fileExtension)) {
+            if (config.locales.length && !item.ignoreLocales) {
+                // add a job for each locale
+                for (const locale of config.locales) {
+                    const newSettings = { ...settings };
+                    if (typeof locale === 'string') {
+                        newSettings.locale = {
+                            code: locale,
+                            mapTo: locale,
+                        };
+                    } else {
+                        newSettings.locale = locale;
+                    }
+                    const job = {
+                        limit: isSingle ? 1 : 1000,
+                        skip: 0,
+                        contentSettings: newSettings,
+                        isPreview,
+                    };
+                    jobs.push(job);
+                }
+            } else {
+                // add single job if no locales
                 const job = {
-                    limit: 1000,
+                    limit: isSingle ? 1 : 1000,
                     skip: 0,
-                    contentSettings: contentSettings,
+                    contentSettings: settings,
                     isPreview: isPreview,
                 };
                 jobs.push(job);
-            } else {
-                console.log(
-                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                );
             }
+        } else {
+            console.log(
+                `   ERROR: extension "${settings.fileExtension}" not supported`
+            );
+        }
+    };
+    // Loop through repeatable types
+    const repeatables = config.repeatableTypes;
+    if (repeatables) {
+        for (let i = 0; i < repeatables.length; i++) {
+            // object to pass settings into the function
+            addJob(repeatables[i], false);
         }
     }
     // loop through single content types
     const singles = config.singleTypes;
     if (singles) {
         for (let i = 0; i < singles.length; i++) {
-            const single = singles[i];
-            const {
-                id,
-                directory,
-                fileExtension,
-                fileName,
-                // title,
-                // dateField,
-                mainContent,
-                resolveEntries,
-                type,
-                overrides,
-                filters,
-            } = single;
-            const contentSettings: ContentSettings = {
-                typeId: id,
-                directory: directory,
-                fileExtension: fileExtension,
-                fileName: fileName,
-                // titleField: title,
-                // dateField: dateField,
-                mainContent: mainContent,
-                isSingle: true,
-                type: type,
-                resolveEntries,
-                overrides,
-                filters,
-            };
-
-            if (isValidFileExtension(contentSettings.fileExtension)) {
-                const job = {
-                    limit: 1,
-                    skip: 0,
-                    contentSettings: contentSettings,
-                    isPreview: isPreview,
-                };
-                jobs.push(job);
-            } else {
-                console.log(
-                    `   ERROR: extension "${contentSettings.fileExtension}" not supported`
-                );
-            }
+            addJob(singles[i], true);
         }
     }
     return new Promise((resolve) => {

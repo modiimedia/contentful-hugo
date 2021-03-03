@@ -1,10 +1,38 @@
-import fs from 'fs';
-import mkdirp from 'mkdirp';
+import { ensureDir, writeFile } from 'fs-extra';
 import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
+
+export const parseDirectoryPath = (
+    directory: string,
+    locale: string
+): {
+    path: string;
+    includesLocale: boolean;
+} => {
+    const dir = removeLeadingAndTrailingSlashes(directory);
+    if (locale && (dir.includes('[locale]') || dir.includes('[ locale ]'))) {
+        const dirParts = dir.split('/');
+        const newDirParts: string[] = [];
+        for (const part of dirParts) {
+            if (part === '[locale]' || part === '[ locale ]') {
+                newDirParts.push(locale.toLowerCase());
+            } else {
+                newDirParts.push(part);
+            }
+        }
+        return {
+            path: newDirParts.join('/'),
+            includesLocale: true,
+        };
+    }
+    return {
+        path: dir,
+        includesLocale: false,
+    };
+};
 
 export const determineFilePath = (
     contentSettings: ContentSettings,
@@ -16,33 +44,41 @@ export const determineFilePath = (
         isSingle,
         isHeadless,
         isTaxonomy,
+        locale,
     } = contentSettings;
-    const directory = removeLeadingAndTrailingSlashes(
-        contentSettings.directory
+    const { path, includesLocale } = parseDirectoryPath(
+        contentSettings.directory,
+        locale.mapTo
     );
+    const ext =
+        locale.mapTo && !includesLocale
+            ? `${locale.mapTo.toLowerCase()}.${fileExtension}`
+            : fileExtension;
     if (isHeadless && !isSingle) {
-        return `./${directory}/${entryId}/index.${fileExtension}`;
+        return `./${path}/${entryId}/index.${ext}`;
     } else if (isTaxonomy) {
-        mkdirp.sync(`./${directory}/${fileName || entryId}`);
-        return `./${directory}/${fileName || entryId}/_index.${fileExtension}`;
+        return `./${path}/${fileName || entryId}/_index.${ext}`;
     } else if (isSingle) {
-        return `./${directory}/${fileName}.${fileExtension}`;
+        return `./${path}/${fileName}.${ext}`;
     }
-    return `./${directory}/${entryId}.${fileExtension}`;
+    return `./${path}/${entryId}.${ext}`;
 };
 
-export const createDirectoryForFile = (
+export const createDirectoryForFile = async (
     contentSettings: ContentSettings,
     entryId: string
-): void => {
+): Promise<void> => {
     const { fileName, isSingle, isHeadless, isTaxonomy } = contentSettings;
-    const directory = removeLeadingAndTrailingSlashes(
-        contentSettings.directory
-    );
+    const directory = parseDirectoryPath(
+        contentSettings.directory,
+        contentSettings.locale.mapTo
+    ).path;
     if (isHeadless && !isSingle) {
-        mkdirp.sync(`./${directory}/${entryId}`);
+        await ensureDir(`./${directory}/${entryId}`);
     } else if (isTaxonomy) {
-        mkdirp.sync(`./${directory}/${fileName || entryId}`);
+        await ensureDir(`./${directory}/${fileName || entryId}`);
+    } else {
+        await ensureDir(`./${directory}`);
     }
 };
 
@@ -53,12 +89,12 @@ export const createDirectoryForFile = (
  * @param {Object} frontMatter - Object containing all the data for frontmatter
  * @param {String} mainContent - String data for the main content that will appear below the frontmatter
  */
-const createFile = (
+const createFile = async (
     contentSettings: ContentSettings,
     entryId: string,
     frontMatter: unknown = {},
     mainContent: string | null
-): void => {
+): Promise<void> => {
     let fileContent = '';
     const { fileExtension, isHeadless, isTaxonomy } = contentSettings;
     if (isHeadless && isTaxonomy) {
@@ -87,9 +123,9 @@ const createFile = (
     }
 
     // create file
-    createDirectoryForFile(contentSettings, entryId);
+    await createDirectoryForFile(contentSettings, entryId);
     const filePath = determineFilePath(contentSettings, entryId);
-    return fs.writeFile(filePath, fileContent, error => {
+    return writeFile(filePath, fileContent).catch((error) => {
         if (error) {
             console.log(error);
         }

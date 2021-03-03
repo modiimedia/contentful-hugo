@@ -32,6 +32,7 @@ const fetchEntryFromContentful = async (
             overrides: cf.overrides,
             mainContent: cf.mainContent,
             filters: { 'sys.id': entryId },
+            locale: cf.locale,
         };
         const contentfulSettings: ConfigContentfulSettings = config.contentful;
         tasks.push(

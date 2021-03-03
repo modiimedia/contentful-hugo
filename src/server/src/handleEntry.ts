@@ -19,8 +19,8 @@ const updateEntry = (
     previewMode: boolean
 ): Promise<EntryUpdatePayload> => {
     return fetchEntry(sys.id, sys.contentType.sys.id, config, previewMode).then(
-        () => {
-            const fileLocations = determineFileLocations(
+        async () => {
+            const fileLocations = await determineFileLocations(
                 config,
                 sys.id,
                 sys.contentType.sys.id,
@@ -44,11 +44,11 @@ const updateEntry = (
     );
 };
 
-const removeEntry = (
+const removeEntry = async (
     config: ContentfulHugoConfig,
     sys: Entry<unknown>['sys']
 ): Promise<EntryUpdatePayload> => {
-    const filePaths = determineFileLocations(
+    const filePaths = await determineFileLocations(
         config,
         sys.id,
         sys.contentType.sys.id,

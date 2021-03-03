@@ -9,6 +9,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   Markdown and YAML output
 -   Singleton support
 -   Rich text field support
+-   Multilingual Support
 -   Default shortcodes for rich text content
 -   Asset field resolution
 -   Customizable linked entry resolution
@@ -25,8 +26,13 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   [Configuration](#configuration)
     -   [Environenment Variables](#environment-variables)
     -   [Config File(s)](#config-file)
+        -   [Example JS Config](#example-javascript-config)
+        -   [Example YAML Config](#example-yaml-config)
+        -   [Config Fields](#config-fields)
+        -   [Advanced Config Examples](#advanced-config-examples)
+        -   [Config Autocomplete](#config-file-autocomplete)
 -   [Expected Output](#expected-output)
-    -   [Standard Fields](#default-date-and-time-fields)
+    -   [Standard Fields](#default-metadata-fields-and-date-field)
     -   [Richtext Fields](#rich-text-as-main-content)
     -   [Resolving Reference Fields](#the-resolve-entries-parameter)
     -   [Overriding Field Names & Field Values](#the-overrides-parameter)
@@ -180,6 +186,9 @@ You can also specify a custom config file using the `--config` flag. (Javascript
 // contentful-hugo.config.js
 
 module.exports = {
+    // fetches from default locale if left blank
+    locales: ['en-US', 'fr-FR'],
+
     contentful: {
         // defaults to CONTENTFUL_SPACE env variable
         space: 'space-id',
@@ -190,6 +199,7 @@ module.exports = {
         // defaults to "master"
         environment: 'master',
     },
+
     singleTypes: [
         {
             id: 'homepage',
@@ -204,6 +214,7 @@ module.exports = {
             fileExtension: 'yaml',
         },
     ],
+
     repeatableTypes: [
         {
             id: 'posts',
@@ -248,6 +259,10 @@ module.exports = {
 
 ```yaml
 # contentful-hugo.config.yaml
+
+locales: # fetches from default locale if left blank
+    - en-US
+    - fr-FR
 
 contentful:
     space: 'space-id' # defaults to CONTENTFUL_SPACE env variable
@@ -326,6 +341,7 @@ repeatableTypes:
 | resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                        |
 | overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                  |
 | filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator) |
+| ignoreLocales  | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                               |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -341,6 +357,96 @@ repeatableTypes:
 | resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
 | overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 | filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
+| ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
+
+#### <u>**Localization Options**</u>
+
+The config also has a `locales` field that allows you to specify what locales you want to pull from. This field can take an array of strings, an array of objects, or a combination.
+
+By default locale specific file extensions will be used for multiple translations.
+
+```js
+// produce en-us.md and fr-fr.md files
+module.exports = {
+    locales: ['en-US', 'fr-FR'];
+    // rest of config
+}
+
+// produce en.md and fr.md files
+module.exports = {
+    locales: [
+        {
+            code: 'en-US',
+            mapTo: 'en'
+        },
+        {
+            code: 'fr-FR',
+            mapTo: 'fr'
+        }
+    ]
+    // rest of config
+}
+
+// produce en-us.md files and fr.md files
+module.exports = {
+    locales: [
+        'en-US',
+        {
+            code: 'fr-FR',
+            mapTo: 'fr'
+        }
+    ]
+    // rest of config
+}
+```
+
+After configuring locales in Contentful Hugo you will need to update your Hugo config to account for these locales. Consult the [Hugo docs](https://gohugo.io/content-management/multilingual/) for more details.
+
+```toml
+# config.toml
+
+[languages]
+    [languages.en-us]
+    #language settings
+    [languages.fr-fr]
+    #language settings
+```
+
+##### Locale Specific Directories
+
+There are sometimes cases where you will want to place content in a directory based on it's locale rather than using a file extension based translation. In order to do this you simple include `[locale]` inside your directory file path.
+
+When using locale specific directories the locale specific file extensions (i.e. `en.md` or `fr.md`) get dropped
+
+```js
+module.exports = {
+    locales: ['en', 'fr']
+    singleTypes: [
+        {
+            id: 'settings',
+            fileName: 'settings',
+            fileExtension: 'yaml',
+            directory: 'data/[locale]'
+            /*
+                produces:
+                - data/en/settings.yaml
+                - data/fr/settings.yaml
+            */
+        }
+    ]
+    repeatableTypes: [
+        {
+            id: 'post',
+            directory: 'content/[locale]/post',
+            /*
+                produces:
+                - content/en/post/[entryId].md
+                - content/fr/post/[entryId].md
+            */
+        },
+    ],
+};
+```
 
 #### Advanced Config Examples
 
@@ -441,6 +547,7 @@ sys:
 
 # the following fields are depreciated and will be removed in a future version
 # migrate to using the sys.updatedAt and sys.createdAt iterations
+
 updated: # the last time the entry was updated in Contentful
 createdAt: # when the entry was created in Contentful
 ```

@@ -1,20 +1,21 @@
-import fs from 'fs';
+import { pathExists, unlink } from 'fs-extra';
 import { resolve as pathResolve } from 'path';
 
-const deleteFile = (filePath: string, quietMode = false): Promise<null> => {
-    return new Promise((resolve) => {
-        if (!filePath) {
-            return resolve(null);
+const deleteFile = async (
+    filePath: string,
+    quietMode = false
+): Promise<null> => {
+    if (!filePath) {
+        return null;
+    }
+    const path = pathResolve(filePath);
+    if (await pathExists(path)) {
+        await unlink(path);
+        if (!quietMode) {
+            console.log(`deleted ${path}`);
         }
-        const path = pathResolve(filePath);
-        if (fs.existsSync(path)) {
-            fs.unlinkSync(path);
-            if (!quietMode) {
-                console.log(`deleted ${path}`);
-            }
-        }
-        return resolve(null);
-    });
+    }
+    return null;
 };
 
 export default deleteFile;
