@@ -10,13 +10,13 @@
 {{- $assetType := .Get "assetType" -}}
 {{- $title := .Get "title" -}}
 {{- $description := .Get "description" -}}
-
+{{- $url := .Get "url" -}}
 
 <!-- default image block -->
 {{- if in $assetType "image" -}}
     <figure>
         <img
-            src='{{ .Get "url" }}?w=700&q=80'
+            src='{{ $url }}?w=700&q=80'
             alt='{{ if $description }}{{ $description }}{{ else }}{{ $title }}{{ end }}'
             width="700"
         />
@@ -26,7 +26,7 @@
 <!-- default video block -->
 {{- else if in $assetType "video" -}}
     <video width="100%" controls>
-        <source src='{{ .Get "url" }}' type='{{ $assetType }}'/>
+        <source src='{{ $url }}' type='{{ $assetType }}'/>
         Your browser doesn't support the video tag
     </video>
 
@@ -34,7 +34,7 @@
 <!-- default audio block -->
 {{- else if in $assetType "audio" -}}
     <audio controls>
-        <source src='{{ .Get "url" }}' type='{{ $assetType }}'/>
+        <source src='{{ $url }}' type='{{ $assetType }}'/>
         Your browser doesn't support the audio tag
     </audio>
 

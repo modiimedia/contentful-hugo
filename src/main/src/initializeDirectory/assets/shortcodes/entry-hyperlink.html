@@ -11,24 +11,24 @@
 
 <!-- use contentType and id to determine the href for the link -->
 {{- if eq $contentType "__custom-content-type__" -}}
-    {{- $path := print "__path-to-content-type__/" $entryId ".md" -}}
-    {{- with $.Site.GetPage $path -}}
+    {{- $path := print "__path-to-content-type__/" $entryId -}}
+    {{- with .Site.GetPage $path -}}
         <a href="{{ .RelPermalink }}">{{ $linkText }}</a>
     {{- else -}}
         <a href="">[[Error rendering entry hyperlink]] {{ $linkText }}</a>
     {{- end -}}
 
 
-<!-- hugo does a page find with entryId (Above method is probably more consistent and performant on large sites) -->
-{{- else if $.Site.GetPage $entryId -}}
+<!-- hugo does a page search with the entryId (Above method is probably more consistent and performant on large sites) -->
+{{- else if .Site.GetPage $entryId -}}
     <!--
-        this will throw an error if your entryId appears in more than one place in the /content director
+        this will throw an error if your entryId appears in more than one place in the /content directory
         (this can happen if the same contentType is listed twice in the config file for example)
 
         if this happens you will need to add custom logic for that specific contentType before
         this code block to prevent the error
     -->
-    <a href="{{ with $.Site.GetPage }}{{ .RelPermalink }}{{ end }}">{{ $linkText }}</a>
+    <a href="{{ with .Site.GetPage }}{{ .RelPermalink }}{{ end }}">{{ $linkText }}</a>
 
 
 <!-- fallback message -->

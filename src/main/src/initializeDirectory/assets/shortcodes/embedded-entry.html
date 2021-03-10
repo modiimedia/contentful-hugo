@@ -6,6 +6,7 @@
 
 {{- $entryId := .Get "id" -}}
 {{- $contentType := .Get "contentType" -}}
+{{- $parentContentType := .Get "parentContentType" -}}
 
 
 <!-- render custom block or call partial depending on the contentType and/or parentContentType -->
@@ -21,8 +22,8 @@
         border-radius: 5px;
         padding: 25px; margin-bottom: 1rem">
         <div><strong>Unconfigured Embedded Entry</strong></div>
-        <div>id: {{ .Get "id" }}</div>
-        <div>contentType: {{ .Get "contentType" }}</div>
-        <div>parentContentType: {{ .Get "parentContentType" }}</div>
+        <div>id: {{ $entryId }}</div>
+        <div>contentType: {{ $contentType }}</div>
+        <div>parentContentType: {{ $parentContentType }}</div>
     </div>
 {{- end -}}
