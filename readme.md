@@ -611,13 +611,27 @@ relatedArticles:
       typeId: 'articles'
 ```
 
-All files are named after their entry id in Contentful making it easy to retrieve it using .Site.GetPage in Hugo
+#### Accessing Linked Entry Data
+
+All files are named after their entry id in Contentful making it easy to retrieve it using `.Site.GetPage` in Hugo
 
 ```go
-{{ with .Site.GetPage "<path-to-file>/<entry-id>.md" }}
+// if you have access to the "Page" object
+{{ with .Site.GetPage "<path-to-file>/<entry-id>" }}
+    {{ .Title }}
+{{ end }}
+
+// if you don't have access to the "Page" object
+// for example in a nested partial
+{{ with site.GetPage "<path-to-file>/<entry-id>" }}
     {{ .Title }}
 {{ end }}
 ```
+
+Relevant Documentation:
+
+-   [GetPage Method](https://gohugo.io/functions/getpage/#readout)
+-   [Getting the Site object from a partial](https://gohugo.io/variables/site/#get-the-site-object-from-a-partial)
 
 ### Rich Text As Main Content
 
