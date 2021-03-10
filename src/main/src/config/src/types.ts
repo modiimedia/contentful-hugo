@@ -63,6 +63,7 @@ export interface SingleTypeConfig extends TypeConfig {
 export interface RepeatableTypeConfig extends TypeConfig {
     isHeadless?: boolean;
     isTaxonomy?: boolean;
+    fileName?: string;
 }
 
 export interface ConfigContentfulSettings {

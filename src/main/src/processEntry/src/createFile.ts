@@ -50,18 +50,22 @@ export const determineFilePath = (
         contentSettings.directory,
         locale.mapTo
     );
+    let fName = entryId;
+    if (fileName && isSingle) {
+        fName = fileName;
+    }
     const ext =
         locale.mapTo && !includesLocale
             ? `${locale.mapTo.toLowerCase()}.${fileExtension}`
             : fileExtension;
     if (isHeadless && !isSingle) {
-        return `./${path}/${entryId}/index.${ext}`;
+        return `./${path}/${fName}/index.${ext}`;
     } else if (isTaxonomy) {
-        return `./${path}/${fileName || entryId}/_index.${ext}`;
+        return `./${path}/${fName}/_index.${ext}`;
     } else if (isSingle) {
-        return `./${path}/${fileName}.${ext}`;
+        return `./${path}/${fName}.${ext}`;
     }
-    return `./${path}/${entryId}.${ext}`;
+    return `./${path}/${fName}.${ext}`;
 };
 
 export const createDirectoryForFile = async (
