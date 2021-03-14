@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 import express, { Response } from 'express';
 import { IncomingHttpHeaders, Server } from 'http';
-import bodyParser from 'body-parser';
 import { Entry, Asset, ContentType } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
 import { removeEntry, updateEntry } from './src/handleEntry';
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
-    bodyParser.json({
+    express.json({
         type: [
             'application/vnd.contentful.management.v1+json',
             'application/vnd.contentful.management.v1+json; charset=utf-8',
@@ -114,7 +113,8 @@ const startServer = (
             !sys.id ||
             (sys.type !== 'Asset' &&
                 sys.type !== 'Entry' &&
-                sys.type !== 'ContentType')
+                sys.type !== 'ContentType' &&
+                sys.type !== 'DeletedEntry')
         ) {
             return res.status(401).send('Invalid format');
         }
