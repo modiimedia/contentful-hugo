@@ -1,6 +1,6 @@
 {
     "name": "contentful-hugo",
-    "version": "1.14.2",
+    "version": "1.14.3",
     "description": "Node module that pulls data from Contentful and turns it into markdown files for Hugo. Can be used with other Static Site Generators, but has some Hugo specific features.",
     "main": "./dist/main/index.js",
     "repository": {
@@ -51,7 +51,7 @@
         "yargs": "^16.2.0"
     },
     "bin": {
-        "contentful-hugo": "./dist/cli.js"
+        "contentful-hugo": "dist/cli.js"
     },
     "files": [
         "dist",
