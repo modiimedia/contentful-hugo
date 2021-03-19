@@ -16,3 +16,4 @@ contentful-hugo.yaml
 coverage
 dist
 examples/multilingual-example
+.contentful-hugo

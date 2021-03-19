@@ -14,13 +14,16 @@ const shortcodes: {
 
 for (const name of codeNames) {
     const noExtension = name.replace('.html', '');
-    const camelCaseName: string = noExtension.replace(/-([a-z])/g, function(g) {
-        return g[1].toUpperCase();
-    });
+    const camelCaseName: string = noExtension.replace(
+        /-([a-z])/g,
+        function (g) {
+            return g[1].toUpperCase();
+        }
+    );
     shortcodes[camelCaseName] = {
         filename: name,
         template: fs
-            .readFileSync(resolve(__dirname, `../assets/shortcodes/${name}`))
+            .readFileSync(resolve(__dirname, `./assets/shortcodes/${name}`))
             .toString(),
     };
 }

@@ -1,4 +1,11 @@
-import { ensureDir, writeFile } from 'fs-extra';
+import {
+    ensureDir,
+    ensureFile,
+    pathExists,
+    readFile,
+    remove,
+    writeFile,
+} from 'fs-extra';
 import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
 
@@ -53,6 +60,8 @@ export const determineFilePath = (
     let fName = entryId;
     if (fileName && isSingle) {
         fName = fileName;
+    } else if (fileName) {
+        fName = fileName;
     }
     const ext =
         locale.mapTo && !includesLocale
@@ -77,15 +86,48 @@ export const createDirectoryForFile = async (
         contentSettings.directory,
         contentSettings.locale.mapTo
     ).path;
+    const fName = fileName || entryId;
     if (isHeadless && !isSingle) {
-        await ensureDir(`./${directory}/${entryId}`);
+        await ensureDir(`./${directory}/${fName}`);
     } else if (isTaxonomy) {
-        await ensureDir(`./${directory}/${fileName || entryId}`);
+        await ensureDir(`./${directory}/${fName}`);
     } else {
         await ensureDir(`./${directory}`);
     }
 };
 
+const cleanPreviousDynamicLocation = async (
+    contentSettings: ContentSettings,
+    entryId: string
+) => {
+    const settings = { ...contentSettings };
+    settings.fileName = '';
+    const tmpPath = determineFilePath(settings, entryId);
+    const tmpPathFinal = tmpPath.replace('./', './.contentful-hugo/');
+    if (await pathExists(tmpPathFinal)) {
+        const path = (await readFile(tmpPathFinal)).toString();
+        await remove(path);
+        if (path.includes('/index.md')) {
+            await remove(path.replace('/index.md', ''));
+        }
+        if (path.includes('/_index.md')) {
+            await remove(path.replace('/_index.md', ''));
+        }
+    }
+};
+
+const logDynamicLocation = async (
+    contentSettings: ContentSettings,
+    entryId: string,
+    filePath: string
+) => {
+    const settings = { ...contentSettings };
+    settings.fileName = '';
+    const tmpPath = determineFilePath(settings, entryId);
+    const tmpPathFinal = tmpPath.replace('./', './.contentful-hugo/');
+    await ensureFile(tmpPathFinal);
+    await writeFile(tmpPathFinal, filePath);
+};
 /**
  *
  * @param {Object} contentSettings - Content settings object
@@ -100,7 +142,7 @@ const createFile = async (
     mainContent: string | null
 ): Promise<void> => {
     let fileContent = '';
-    const { fileExtension, isHeadless, isTaxonomy } = contentSettings;
+    const { fileExtension, isHeadless, isTaxonomy, isSingle } = contentSettings;
     if (isHeadless && isTaxonomy) {
         throw new Error(
             'A content type cannot have both isHeadless and isTaxonomy set to true'
@@ -126,14 +168,26 @@ const createFile = async (
         fileContent += mainContent;
     }
 
+    const hasDynamicFilename = contentSettings.fileName && !isSingle;
+
+    if (hasDynamicFilename) {
+        // since filename can change we need to delete the previous instance
+        await cleanPreviousDynamicLocation(contentSettings, entryId);
+    }
+
     // create file
     await createDirectoryForFile(contentSettings, entryId);
     const filePath = determineFilePath(contentSettings, entryId);
-    return writeFile(filePath, fileContent).catch((error) => {
+    await writeFile(filePath, fileContent).catch((error) => {
         if (error) {
             console.log(error);
         }
     });
+
+    if (hasDynamicFilename) {
+        // write the new location to filesystem so we can delete if it changes
+        await logDynamicLocation(contentSettings, entryId, filePath);
+    }
 };
 
 export default createFile;
