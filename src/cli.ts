@@ -45,14 +45,15 @@ const initialize = (): Promise<unknown> | unknown => {
 Check your config for errors or run "contentful-hugo --init" to create a config file.\n`
             );
         }
-        if (argv.server) {
-            return startServer(config, argv.port, argv.preview || false);
-        }
-        return fetchDataFromContentful(
+        await fetchDataFromContentful(
             config,
             argv.preview || false,
             argv.wait || 0
         );
+        if (argv.server) {
+            return startServer(config, argv.port, argv.preview || false);
+        }
+        return null;
     });
 };
 
