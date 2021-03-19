@@ -52,9 +52,9 @@ const processEntry = (
     const settings = { ...contentSettings };
 
     // if has dynamic filename
-    if (!settings.isSingle && settings.fileName) {
+    if (!settings.isSingle && typeof settings.fileName === 'string') {
         const newFileName = overrideFileName(
-            settings.fileName || '',
+            settings.fileName,
             item,
             contentSettings.locale.code
         );

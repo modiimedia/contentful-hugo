@@ -168,7 +168,8 @@ const createFile = async (
         fileContent += mainContent;
     }
 
-    const hasDynamicFilename = contentSettings.fileName && !isSingle;
+    const hasDynamicFilename =
+        typeof contentSettings.fileName === 'string' && !isSingle;
 
     if (hasDynamicFilename) {
         // since filename can change we need to delete the previous instance
