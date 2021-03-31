@@ -31,6 +31,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
         -   [Config Fields](#config-fields)
         -   [Advanced Config Examples](#advanced-config-examples)
         -   [Config Autocomplete](#config-file-autocomplete)
+    -   [Gitignore Setup](#gitignore-setup)
 -   [Expected Output](#expected-output)
     -   [Standard Fields](#default-metadata-fields-and-date-field)
     -   [Richtext Fields](#rich-text-as-main-content)
@@ -524,6 +525,26 @@ For JS config files you can import a `ContentfulHugoConfig` type which will enab
 module.exports = {
     // rest of config
 };
+```
+
+### Gitignore Setup
+
+Example `.gitignore` setup
+
+```bash
+# general stuff
+.env
+node_modules
+public
+resources
+
+# Contenful Hugo stuff
+# temp folder that contentful uses to track files
+.contentful-hugo
+# since content and data is coming from Contentful
+# usually you'll want to ignore those directories
+content
+data
 ```
 
 ## Expected Output
