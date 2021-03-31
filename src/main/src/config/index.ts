@@ -36,7 +36,7 @@ const loadConfig = async (
     const tasks = [];
     const configList: ContentfulConfig[] = [];
     for (const config of defaultConfigs) {
-        const file = loadFile(rootDir, config).then(result => {
+        const file = loadFile(rootDir, config).then((result) => {
             if (result) {
                 const config = checkContentfulSettings(result);
                 configList.push(config);

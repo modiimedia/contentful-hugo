@@ -1,6 +1,6 @@
 import { Entry } from 'contentful';
 import { mapFields, getMainContent } from './mapper';
-import createFile from './src/createFile';
+import createFile from './createFile';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const overrideFileName = (

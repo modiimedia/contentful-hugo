@@ -1,5 +1,5 @@
-import { ContentSettings } from '../../../index';
-import { LocaleConfig } from '../../config/src/types';
+import { ContentSettings } from '../../index';
+import { LocaleConfig } from '../config/src/types';
 import { determineFilePath, parseDirectoryPath } from './createFile';
 
 const settingsFactory = (
