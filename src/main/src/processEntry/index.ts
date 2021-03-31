@@ -5,6 +5,7 @@ import createFile from './createFile';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const overrideFileName = (
     nameStr: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     entry: any = {},
     locale: string
 ): string | null => {
