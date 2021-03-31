@@ -110,15 +110,13 @@ contentful-hugo --wait 2000 --preview --config my_custom_config.js
 {
   "name": "my-hugo-project",
   "scripts": {
-    "prestart": "contentful-hugo",
-    "start": "hugo server",
-    "prebuild": "contentful-hugo",
-    "build": "hugo --minify"
+    "dev": "contentful-hugo --preview && hugo server",
+    "build": "contentful-hugo && hugo --minify"
   }
 }
 ```
 
-In this example when you run `npm start` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
+In this example when you run `npm run dev` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
 
 ### Error Messages
 
