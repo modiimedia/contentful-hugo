@@ -193,6 +193,7 @@ const fetchDataFromContentful = async (
                 resolveEntries: item.resolveEntries,
                 overrides: item.overrides,
                 filters: item.filters,
+                fileName: item.fileName,
             };
         }
         if (isValidFileExtension(settings.fileExtension)) {

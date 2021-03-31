@@ -110,15 +110,13 @@ contentful-hugo --wait 2000 --preview --config my_custom_config.js
 {
   "name": "my-hugo-project",
   "scripts": {
-    "prestart": "contentful-hugo",
-    "start": "hugo server",
-    "prebuild": "contentful-hugo",
-    "build": "hugo --minify"
+    "dev": "contentful-hugo --preview && hugo server",
+    "build": "contentful-hugo && hugo --minify"
   }
 }
 ```
 
-In this example when you run `npm start` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
+In this example when you run `npm run dev` it will first use contentful-hugo to pull Contentful data then start hugo server. In the same way when you do the command `npm run build` it will first use contentful-hugo to pull Contentful data then run `hugo --minify` to build a minified version of your hugo site.
 
 ### Error Messages
 
@@ -349,6 +347,7 @@ repeatableTypes:
 | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | id                        | required | Contentful content type ID                                                                                                                                                                                                                 |
 | directory                 | required | Directory where you want the files to be generated                                                                                                                                                                                         |
+| fileName                  | optional | Entry property that will dicatate the filename. (By default this will be `sys.id`)                                                                                                                                                         |
 | fileExtension             | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
 | isHeadless                | optional | Turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
 | isTaxonomy (Experimental) | optional | Organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |

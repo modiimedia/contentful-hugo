@@ -22,6 +22,6 @@ module.exports = {
     rules: {
         'no-console': 0,
         semi: [2, 'always'],
-        '@typescript-eslint/no-explicit-any': 1,
+        '@typescript-eslint/no-explicit-any': 2,
     },
 };

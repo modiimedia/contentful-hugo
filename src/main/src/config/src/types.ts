@@ -11,7 +11,7 @@ export interface OverrideConfig {
          */
         fieldName?: string;
         /**
-         * Transforms the value of the field.
+         * Method that transforms the value of the field.
          */
         valueTransformer?: (fieldValue: unknown) => unknown;
     };
@@ -37,8 +37,6 @@ export interface TypeConfig {
      */
     directory: string;
     type?: string;
-    // title?: string;
-    // dateField?: string;
     /**
      * The field that will act as the main content of the .md file
      */
@@ -49,9 +47,12 @@ export interface TypeConfig {
      */
     resolveEntries?: ResolveEntryConfig[];
     /**
-     * Options that allow you to override field names and modify field values before rendering the content file
+     * Options that allow you to override field names and modify field values before rendering the content file.
      */
     overrides?: OverrideConfig[];
+    /**
+     * Object of Contentful search filters. See https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters.
+     */
     filters?: { [key: string]: string | number | boolean };
     ignoreLocales?: boolean;
 }
@@ -63,16 +64,38 @@ export interface SingleTypeConfig extends TypeConfig {
 export interface RepeatableTypeConfig extends TypeConfig {
     isHeadless?: boolean;
     isTaxonomy?: boolean;
+    /**
+     * Entry property that will dictate the filename. Default is "sys.id".
+     */
+    fileName?: string;
 }
 
 export interface ConfigContentfulSettings {
+    /**
+     * Contentful Space ID
+     */
     space: string;
+    /**
+     * Contentful Content Delivery Token
+     */
     token: string;
+    /**
+     * Contentful Content Preview Token
+     */
     previewToken?: string;
+    /**
+     * Contentful environment ID
+     */
     environment: string;
 }
 
-export type LocaleConfig = { code: string; mapTo: string };
+export type LocaleConfig = {
+    /**
+     * The Locale Code (Ex: en-US). This is case sensitive.
+     */
+    code: string;
+    mapTo: string;
+};
 
 export interface ContentfulConfig {
     locales: (string | LocaleConfig)[];

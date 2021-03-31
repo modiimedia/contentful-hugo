@@ -1,6 +1,31 @@
 import { Entry } from 'contentful';
 import { mapFields, getMainContent } from './mapper';
-import createFile from './src/createFile';
+import createFile from './createFile';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const overrideFileName = (
+    nameStr: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entry: any = {},
+    locale: string
+): string | null => {
+    const strParts = nameStr.split('.');
+    if (typeof entry !== 'object') {
+        return '';
+    }
+    let result = entry;
+    for (const part of strParts) {
+        if (result[part]) {
+            result = result[part];
+        } else if (result[locale]) {
+            result = result[locale];
+        }
+    }
+    if (typeof result === 'string') {
+        return result;
+    }
+    return null;
+};
 
 const processEntry = (
     item: Entry<unknown>,
@@ -24,7 +49,24 @@ const processEntry = (
     const content = contentSettings.mainContent
         ? getMainContent(item, contentSettings.mainContent)
         : '';
-    return createFile(contentSettings, item.sys.id, frontMatter, content);
+
+    const settings = { ...contentSettings };
+
+    // if has dynamic filename
+    if (!settings.isSingle && typeof settings.fileName === 'string') {
+        const newFileName = overrideFileName(
+            settings.fileName,
+            item,
+            contentSettings.locale.code
+        );
+        if (newFileName && typeof newFileName === 'string') {
+            settings.fileName = newFileName;
+        } else {
+            settings.fileName = item.sys.id;
+        }
+    }
+
+    return createFile(settings, item.sys.id, frontMatter, content);
 };
 
 export default processEntry;

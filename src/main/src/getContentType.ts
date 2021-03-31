@@ -3,7 +3,7 @@ import { ensureDir, writeFile } from 'fs-extra';
 import { createClient } from 'contentful';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/src/types';
-import { parseDirectoryPath } from './processEntry/src/createFile';
+import { parseDirectoryPath } from './processEntry/createFile';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();

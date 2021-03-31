@@ -12,13 +12,12 @@ npm i --save concurrently
 
 ## 2) Update your package.json scripts
 
-Add a new script that runs `contentful-hugo --preview && hugo server` and `contentful-hugo --preview --server` simultaneously using concurrently.
+Add a new script that runs `contentful-hugo --preview --server` and `hugo server` simultaneously using concurrently.
 
 ```json
 {
     "scripts": {
-        "hugo-server": "contentful-hugo --preview && hugo server",
-        "dev": "concurrently \"npm run hugo-server\" && \"contentful-hugo --preview --server\""
+        "dev": "concurrently \"contentful-hugo --preview --server\" \"hugo server\""
     }
 }
 ```

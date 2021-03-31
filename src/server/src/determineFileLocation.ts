@@ -1,6 +1,6 @@
 import { pathExists, readFile } from 'fs-extra';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
-import { determineFilePath } from '@/main/src/processEntry/src/createFile';
+import { determineFilePath } from '@/main/src/processEntry/createFile';
 
 export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
@@ -67,6 +67,7 @@ export const getRepeatableTypeConfigs = (
                 mainContent: item.mainContent || '',
                 overrides: item.overrides || [],
                 filters: item.filters,
+                fileName: item.fileName,
                 locale: {
                     code: '',
                     mapTo: '',
@@ -127,7 +128,11 @@ const determineFileLocations = async (
         contentType
     );
     for (const item of repeatableConfigs) {
-        locations.push(determineFilePath(item, entryId));
+        let path = determineFilePath(item, entryId);
+        if (!isDeleting && path.includes(`/${item.fileName}`)) {
+            path = path.replace(`/${item.fileName}`, `/[${item.fileName}]`);
+        }
+        locations.push(path);
     }
     return locations;
 };

@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const ncp = require('ncp').ncp;
-const mkdirp = require('mkdirp');
+const { copy, mkdirp } = require('fs-extra');
 
-mkdirp.sync('./dist/main/src/initializeDirectory/assets/partials');
-
-ncp(
-    './src/main/src/initializeDirectory/assets/partials',
-    './dist/main/src/initializeDirectory/assets/partials',
-    err => {
-        if (err) {
-            throw err;
-        }
-    }
-);
-
-ncp(
-    './src/main/src/initializeDirectory/assets/shortcodes',
-    './dist/main/src/initializeDirectory/assets/shortcodes',
-    err => {
-        if (err) {
-            throw err;
-        }
-    }
-);
+mkdirp('./dist/main/src/initializeDirectory/assets/partials')
+    .then(async () => {
+        await copy(
+            './src/main/src/initializeDirectory/assets/partials',
+            './dist/main/src/initializeDirectory/assets/partials'
+        );
+        copy(
+            './src/main/src/initializeDirectory/assets/shortcodes',
+            './dist/main/src/initializeDirectory/assets/shortcodes'
+        );
+    })
+    .catch((err) => {
+        throw err;
+    });

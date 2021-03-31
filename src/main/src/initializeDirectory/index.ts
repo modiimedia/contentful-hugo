@@ -1,5 +1,5 @@
 import { ensureDir, pathExists, writeFile } from 'fs-extra';
-import shortcodes from './src/shortcodes';
+import shortcodes from './shortcodes';
 import { loadConfig } from '@main/src/config';
 
 const wait = (milli = 1000): Promise<void> => {

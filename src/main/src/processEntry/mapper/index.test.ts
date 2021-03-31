@@ -1,11 +1,6 @@
 import { Entry } from 'contentful';
-import { OverrideConfig } from '../config/src/types';
-import {
-    mapArrayField,
-    resolveField,
-    shouldOverride,
-    mapFields,
-} from './mapper';
+import { OverrideConfig } from '../../config/src/types';
+import { mapArrayField, resolveField, shouldOverride, mapFields } from '.';
 
 const assetFactory = (
     title: string,
