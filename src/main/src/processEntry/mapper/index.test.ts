@@ -1,6 +1,12 @@
 import { Entry } from 'contentful';
 import { OverrideConfig } from '../../config/src/types';
-import { mapArrayField, resolveField, shouldOverride, mapFields } from '.';
+import {
+    mapArrayField,
+    resolveField,
+    shouldOverride,
+    mapFields,
+    isDateField,
+} from '.';
 
 const assetFactory = (
     title: string,
@@ -250,4 +256,18 @@ describe('Override Tests', () => {
         expect(result.title).toBe(undefined);
         expect(result.name).toBe('My Title');
     });
+});
+
+test('Date Fields', () => {
+    // date and time with timezone
+    expect(isDateField('2021-07-08T18:00-05:00')).toBe(true);
+    expect(isDateField('2021-07-01T10:30-05:00')).toBe(true);
+    // date and time without timezone
+    expect(isDateField('2021-07-08T19:00')).toBe(true);
+    // date only
+    expect(isDateField('2021-07-08')).toBe(true);
+    expect(isDateField('2000-01-10')).toBe(true);
+    // should fail
+    expect(isDateField(12941241024)).toBe(false);
+    expect(isDateField('june')).toBe(false);
 });

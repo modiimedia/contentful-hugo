@@ -105,6 +105,17 @@ const resolveEntry = (entry: any = {}, resolvesToString = ''): any => {
     return value;
 };
 
+export const isDateField = (input: unknown): boolean => {
+    if (typeof input === 'string') {
+        const date = Date.parse(input);
+        if (isNaN(date)) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+};
+
 /**
  *
  * @param {Object} fieldContent - contentful entry or array of contentful entries
@@ -206,6 +217,16 @@ const mapFields = (
                 }
                 break;
             default:
+                if (isDateField(fieldContent)) {
+                    // don't convert dates with no time info
+                    // i.e. 2021-01-05
+                    if (fieldContent.length > 10) {
+                        frontMatter[fieldName] = new Date(
+                            fieldContent
+                        ).toISOString();
+                        break;
+                    }
+                }
                 frontMatter[fieldName] = fieldContent;
                 break;
         }
