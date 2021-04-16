@@ -264,10 +264,11 @@ test('Date Fields', () => {
     expect(isDateField('2021-07-01T10:30-05:00')).toBe(true);
     // date and time without timezone
     expect(isDateField('2021-07-08T19:00')).toBe(true);
-    // date only
-    expect(isDateField('2021-07-08')).toBe(true);
-    expect(isDateField('2000-01-10')).toBe(true);
     // should fail
+    expect(isDateField('2021-07-08')).toBe(false);
+    expect(isDateField('2000-01-10')).toBe(false);
     expect(isDateField(12941241024)).toBe(false);
     expect(isDateField('june')).toBe(false);
+    expect(isDateField('My Awesome Con Jun 2021')).toBe(false);
+    expect(isDateField('June 14, 2021')).toBe(false);
 });

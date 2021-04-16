@@ -106,6 +106,19 @@ const resolveEntry = (entry: any = {}, resolvesToString = ''): any => {
 };
 
 export const isDateField = (input: unknown): boolean => {
+    const requiredSymbols = ['-', ':', 'T'];
+    if (typeof input !== 'string') {
+        return false;
+    }
+    for (const symbol of requiredSymbols) {
+        if (!input.includes(symbol)) {
+            return false;
+        }
+    }
+    const year = input.split('-')[0];
+    if (isNaN(Number(year))) {
+        return false;
+    }
     if (typeof input === 'string') {
         const date = Date.parse(input);
         if (isNaN(date)) {
@@ -217,15 +230,13 @@ const mapFields = (
                 }
                 break;
             default:
-                if (isDateField(fieldContent)) {
+                if (isDateField(fieldContent) && fieldContent.length > 10) {
                     // don't convert dates with no time info
                     // i.e. 2021-01-05
-                    if (fieldContent.length > 10) {
-                        frontMatter[fieldName] = new Date(
-                            fieldContent
-                        ).toISOString();
-                        break;
-                    }
+                    frontMatter[fieldName] = new Date(
+                        fieldContent
+                    ).toISOString();
+                    break;
                 }
                 frontMatter[fieldName] = fieldContent;
                 break;
