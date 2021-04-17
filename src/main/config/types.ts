@@ -97,9 +97,15 @@ export type LocaleConfig = {
     mapTo: string;
 };
 
-export interface ContentfulConfig {
+export type StaticContentConfig = {
+    inputDir: string;
+    outputDir: string;
+};
+
+export interface ContentfulHugoConfig {
     locales: (string | LocaleConfig)[];
     contentful: ConfigContentfulSettings;
     singleTypes: SingleTypeConfig[];
     repeatableTypes: RepeatableTypeConfig[];
+    staticContent: StaticContentConfig[];
 }

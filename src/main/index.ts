@@ -1,4 +1,4 @@
-import { loadConfig, ContentfulConfig } from './config';
+import { loadConfig, ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
     LocaleConfig,
@@ -86,7 +86,7 @@ const fetchType = (
         });
 };
 
-const configCheck = (config: ContentfulConfig) => {
+const configCheck = (config: ContentfulHugoConfig) => {
     const { space, token, environment } = config.contentful;
     const missingParams: string[] = [];
     if (!space) {
@@ -122,7 +122,7 @@ const fetchDataFromContentful = async (
     /**
      * Contentful Hugo Config Object
      */
-    config: ContentfulConfig,
+    config: ContentfulHugoConfig,
     /**
      * Fetch from the Content Preview API
      */
@@ -274,5 +274,5 @@ export {
     fetchDataFromContentful,
     loadConfig,
     initializeDirectory,
-    ContentfulConfig as ContentfulHugoConfig,
+    ContentfulHugoConfig,
 };

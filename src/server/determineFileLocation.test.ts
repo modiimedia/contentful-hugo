@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { ensureDir, unlink, writeFile } from 'fs-extra';
-import { ContentfulConfig } from '../main/config/types';
+import { ContentfulHugoConfig } from '../main/config/types';
 import determineFileLocations from './determineFileLocation';
 
 const YAML = require('json-to-pretty-yaml');
 
-const testConfig: ContentfulConfig = {
+const testConfig: ContentfulHugoConfig = {
     locales: [],
     contentful: {
         space: '',
@@ -57,6 +57,7 @@ const testConfig: ContentfulConfig = {
             fileExtension: 'md',
         },
     ],
+    staticContent: [],
 };
 
 const testEntryId = 'my-test-entry-id';
