@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { ContentfulHugoConfig } from '@/main';
+import { ContentfulHugoConfig } from '@main/index';
 import { Entry } from 'contentful';
 import determineFileLocations from './determineFileLocation';
 import fetchEntry from './fetchEntryFromContentful';

@@ -1,5 +1,5 @@
 import { pathExists, remove } from 'fs-extra';
-import { ContentSettings } from '../index';
+import { ContentSettings } from './index';
 import { prepDirectory } from './getContentType';
 
 afterAll(async () => {

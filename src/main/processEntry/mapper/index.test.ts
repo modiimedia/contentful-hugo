@@ -1,5 +1,5 @@
 import { Entry } from 'contentful';
-import { OverrideConfig } from '../../config/src/types';
+import { OverrideConfig } from '../../config/types';
 import {
     mapArrayField,
     resolveField,

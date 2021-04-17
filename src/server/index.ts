@@ -3,7 +3,7 @@ import express, { Response } from 'express';
 import { IncomingHttpHeaders, Server } from 'http';
 import { Entry, Asset, ContentType } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
-import { removeEntry, updateEntry } from './src/handleEntry';
+import { removeEntry, updateEntry } from './handleEntry';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));

@@ -1,6 +1,6 @@
 import { pathExists, readFile } from 'fs-extra';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
-import { determineFilePath } from '@/main/src/processEntry/createFile';
+import { determineFilePath } from '@main/processEntry/createFile';
 
 export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,

@@ -136,17 +136,20 @@ const optionsRenderNode = (parentContentType = ''): any => {
 
             return `{{< contentful-hugo/embedded-asset title="${handleQuotes(
                 title
-            )}" description="${handleQuotes(description || '') ||
-                ''}" url="${url || ''}" filename="${fileName ||
-                ''}" assetType="${assetType || ''}" size="${size ||
-                ''}" width="${width || ''}" height="${height ||
-                ''}" parentContentType="${parentContentType || ''}" >}}\n\n`;
+            )}" description="${handleQuotes(description || '') || ''}" url="${
+                url || ''
+            }" filename="${fileName || ''}" assetType="${
+                assetType || ''
+            }" size="${size || ''}" width="${width || ''}" height="${
+                height || ''
+            }" parentContentType="${parentContentType || ''}" >}}\n\n`;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [BLOCKS.EMBEDDED_ENTRY]: (node: any, next: Next) => {
             const { id, contentType } = mapEntry(node.data.target);
-            return `{{< contentful-hugo/embedded-entry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
-                ''}" >}}\n\n`;
+            return `{{< contentful-hugo/embedded-entry id="${id}" contentType="${contentType}" parentContentType="${
+                parentContentType || ''
+            }" >}}\n\n`;
         },
         [INLINES.HYPERLINK]: (node: Hyperlink, next: Next) => {
             return `[${next(node.content)}](${node.data.uri})`;
@@ -162,26 +165,30 @@ const optionsRenderNode = (parentContentType = ''): any => {
                 width,
                 height,
             } = mapAsset(node.data.target);
-            return `{{< contentful-hugo/asset-hyperlink title="${title}" description="${description ||
-                ''}" url="${url || ''}" filename="${fileName ||
-                ''}" assetType="${assetType || ''}" size="${size ||
-                ''}" width="${width || ''}" height="${height ||
-                ''}" parentContentType="${parentContentType || ''}" >}}${next(
+            return `{{< contentful-hugo/asset-hyperlink title="${title}" description="${
+                description || ''
+            }" url="${url || ''}" filename="${fileName || ''}" assetType="${
+                assetType || ''
+            }" size="${size || ''}" width="${width || ''}" height="${
+                height || ''
+            }" parentContentType="${parentContentType || ''}" >}}${next(
                 node.content
             )}{{< /contentful-hugo/asset-hyperlink >}}`;
         },
         [INLINES.ENTRY_HYPERLINK]: (node: any, next: Next) => {
             const { id, contentType } = mapEntry(node.data.target);
-            return `{{< contentful-hugo/entry-hyperlink id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
-                ''}" >}}${next(
+            return `{{< contentful-hugo/entry-hyperlink id="${id}" contentType="${contentType}" parentContentType="${
+                parentContentType || ''
+            }" >}}${next(
                 node.content
             )}{{< /contentful-hugo/entry-hyperlink >}}`;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [INLINES.EMBEDDED_ENTRY]: (node: any, next: Next) => {
             const { id, contentType } = mapEntry(node.data.target);
-            return `{{< contentful-hugo/inline-entry id="${id}" contentType="${contentType}" parentContentType="${parentContentType ||
-                ''}" >}}`;
+            return `{{< contentful-hugo/inline-entry id="${id}" contentType="${contentType}" parentContentType="${
+                parentContentType || ''
+            }" >}}`;
         },
     };
 };

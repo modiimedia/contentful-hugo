@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { documentToPlainTextString as richTextToPlain } from '@contentful/rich-text-plain-text-renderer';
 import { Asset, Entry } from 'contentful';
-import { ResolveEntryConfig } from '@main/src/config';
+import { ResolveEntryConfig } from '@/main/config';
 import getEntryFields from './getEntryFields';
 import getAssetFields from './getAssetFields';
 import richTextToMarkdown from './richTextToMarkdown';
 import richTextNodes from './richTextNodes';
-import { OverrideConfig } from '../../config/src/types';
+import { OverrideConfig } from '../../config/types';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[]

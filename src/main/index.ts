@@ -1,15 +1,15 @@
-import { loadConfig, ContentfulConfig } from './src/config';
+import { loadConfig, ContentfulConfig } from './config';
 import {
     ConfigContentfulSettings,
     LocaleConfig,
     OverrideConfig,
     RepeatableTypeConfig,
     SingleTypeConfig,
-} from './src/config/src/types';
-import getContentType from './src/getContentType';
-import getContentTypeResultMessage from './src/getContentTypeResultMessage';
-import initializeDirectory from './src/initializeDirectory';
-import { isValidFileExtension } from './src/config/src/utilities';
+} from './config/types';
+import getContentType from './getContentType';
+import getContentTypeResultMessage from './getContentTypeResultMessage';
+import initializeDirectory from './initializeDirectory';
+import { isValidFileExtension } from './config/utilities';
 
 import Limiter = require('async-limiter');
 

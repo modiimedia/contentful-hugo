@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ensureDir, unlink, writeFile } from 'fs-extra';
-import { ContentfulConfig } from '../../main/src/config/src/types';
+import { ContentfulConfig } from '../main/config/types';
 import determineFileLocations from './determineFileLocation';
 
 const YAML = require('json-to-pretty-yaml');

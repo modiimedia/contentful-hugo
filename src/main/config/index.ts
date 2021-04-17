@@ -1,6 +1,6 @@
 import path from 'path';
-import { loadFile, checkContentfulSettings } from './src/fileLoader';
-import { ContentfulConfig, ResolveEntryConfig } from './src/types';
+import { loadFile, checkContentfulSettings } from './fileLoader';
+import { ContentfulConfig, ResolveEntryConfig } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
