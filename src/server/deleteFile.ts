@@ -12,7 +12,7 @@ const deleteFile = async (
     if (await pathExists(path)) {
         await unlink(path);
         if (!quietMode) {
-            console.log(`deleted ${path}`);
+            console.log(`[contentful hugo] deleted ${path}`);
         }
     }
     return null;

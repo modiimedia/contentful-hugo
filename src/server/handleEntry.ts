@@ -27,7 +27,7 @@ const updateEntry = (
                 false
             );
             for (const location of fileLocations) {
-                console.log(`created ${resolve(location)}`);
+                console.log(`[contentful hugo] created ${resolve(location)}`);
             }
             const message = `Created ${fileLocations.length} file${
                 fileLocations.length === 1 ? '' : 's'

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import express, { Response } from 'express';
-import { IncomingHttpHeaders, Server } from 'http';
+import { IncomingHttpHeaders } from 'http';
 import { Entry, Asset, ContentType } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
 import { removeEntry, updateEntry } from './handleEntry';
+import createWatcher from '@/main/staticContent/watcher';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -99,7 +100,7 @@ const startServer = (
     config: ContentfulHugoConfig,
     port = 1414,
     previewMode = false
-): Server => {
+): void => {
     if (!config) {
         throw new Error('Missing contentful hugo config');
     }
@@ -164,9 +165,13 @@ const startServer = (
         });
     });
 
-    return app.listen(port, () => {
-        console.log(`server started at http://localhost:${port}`);
+    app.listen(port, () => {
+        console.log(
+            `[contentful hugo] server started at http://localhost:${port}`
+        );
     });
+
+    createWatcher(config);
 };
 
 export default startServer;

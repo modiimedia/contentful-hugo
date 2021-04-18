@@ -10,6 +10,7 @@ import getContentType from './getContentType';
 import getContentTypeResultMessage from './getContentTypeResultMessage';
 import initializeDirectory from './initializeDirectory';
 import { isValidFileExtension } from './config/utilities';
+import { copyStaticContent } from './staticContent/fileManager';
 
 import Limiter = require('async-limiter');
 
@@ -274,5 +275,6 @@ export {
     fetchDataFromContentful,
     loadConfig,
     initializeDirectory,
+    copyStaticContent,
     ContentfulHugoConfig,
 };
