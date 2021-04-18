@@ -3,7 +3,10 @@ import path from 'path';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { ContentfulHugoConfig } from '../config';
 
-export const cleanInputAndOutput = (inputDir: string, outputDir: string) => {
+export const cleanInputAndOutput = (
+    inputDir: string,
+    outputDir: string
+): { input: string; output: string } => {
     const input = removeLeadingAndTrailingSlashes(inputDir.replace('./', ''));
     const output = removeLeadingAndTrailingSlashes(outputDir.replace('./', ''));
     return {
