@@ -1,4 +1,4 @@
-import { copyFile, unlink, copy } from 'fs-extra';
+import { copyFile, unlink, copy, ensureDir } from 'fs-extra';
 import path from 'path';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { ContentfulHugoConfig } from '../config';
@@ -32,10 +32,11 @@ export const deleteFileFromOutputDirectory = (
     return unlink(newFilePath);
 };
 
-export const copyInputDirectoryToOutputDirectory = (
+export const copyInputDirectoryToOutputDirectory = async (
     inputDir: string,
     outputDir: string
 ): Promise<void> => {
+    await ensureDir(inputDir);
     const srcPath = path.resolve(inputDir);
     const outPath = path.resolve(outputDir);
     return copy(srcPath, outPath);
