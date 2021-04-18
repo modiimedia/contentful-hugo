@@ -89,6 +89,10 @@ const endsWith = (str: string | undefined | null, ext: string): boolean => {
     return new RegExp(`${ext}$`).test(str || '');
 };
 
+const replaceBackslashesWithForwardSlashes = (input: string): string => {
+    return input.replace(/\\/g, '/');
+};
+
 export {
     characterIsWhiteSpace,
     isMultilineString,
@@ -98,4 +102,5 @@ export {
     leadingSpaces,
     trailingSpaces,
     endsWith,
+    replaceBackslashesWithForwardSlashes,
 };

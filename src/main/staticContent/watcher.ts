@@ -5,7 +5,10 @@ import {
     deleteFileFromOutputDirectory,
 } from './fileManager';
 import { ContentfulHugoConfig } from '../config';
-import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import {
+    removeLeadingAndTrailingSlashes,
+    replaceBackslashesWithForwardSlashes,
+} from '@helpers/strings';
 
 const createWatcher = (config: ContentfulHugoConfig): void => {
     if (!config.singleTypes || !config.staticContent.length) {
@@ -24,7 +27,7 @@ const createWatcher = (config: ContentfulHugoConfig): void => {
 
     const getRootDir = (path: string) => {
         const filePath = removeLeadingAndTrailingSlashes(path);
-        const pathParts = filePath.split('\\');
+        const pathParts = filePath.split('/');
         return pathParts[0];
     };
     const handleCopy = (path: string) => {
@@ -45,18 +48,20 @@ const createWatcher = (config: ContentfulHugoConfig): void => {
         return deleteFileFromOutputDirectory(path, rootDir, outDir);
     };
 
-    const watcher = chokidar.watch(watchPaths);
+    const watcher = chokidar.watch(watchPaths, {
+        persistent: true,
+    });
     watcher.on('add', (path) => {
         console.log(`[contentful hugo] ${path} added`);
-        return handleCopy(path);
+        return handleCopy(replaceBackslashesWithForwardSlashes(path));
     });
     watcher.on('change', (path) => {
         console.log(`[contentful hugo] ${path} changed`);
-        return handleCopy(path);
+        return handleCopy(replaceBackslashesWithForwardSlashes(path));
     });
     watcher.on('unlink', (path) => {
         console.log(`[contentful hugo] ${path} deleted`);
-        return handleDelete(path);
+        return handleDelete(replaceBackslashesWithForwardSlashes(path));
     });
 };
 
