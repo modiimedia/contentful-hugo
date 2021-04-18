@@ -1,4 +1,4 @@
-import { copyFile, unlink, copy, ensureDir } from 'fs-extra';
+import { copyFile, unlink, copy, ensureDir, ensureFile } from 'fs-extra';
 import path from 'path';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { ContentfulHugoConfig } from '../config';
@@ -12,13 +12,14 @@ export const cleanInputAndOutput = (inputDir: string, outputDir: string) => {
     };
 };
 
-export const copyFileToOutputDirectory = (
+export const copyFileToOutputDirectory = async (
     filePath: string,
     inputDir: string,
     outputDir: string
 ): Promise<void> => {
     const { input, output } = cleanInputAndOutput(inputDir, outputDir);
     const newFilePath = filePath.replace(`${input}/`, `${output}/`);
+    await ensureFile(newFilePath);
     return copyFile(filePath, newFilePath);
 };
 
