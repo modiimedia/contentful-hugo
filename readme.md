@@ -92,6 +92,7 @@ npx contentful-hugo [flags]
 | --config  | -C      | Specify the path to a config file.                                                                       |
 | --server  | -S      | Run in server mode to recieve webhooks from Contentful (BETA)                                            |
 | --port    |         | Specify port for server mode (Default 1414)                                                              |
+| --clean   |         | Delete any directories specified in singleTypes and repeatableTypes                                      |
 | --help    |         | Show help                                                                                                |
 | --version |         | Show version number                                                                                      |
 
@@ -251,6 +252,13 @@ module.exports = {
             isTaxonomy: true, // Experimental Feature
         },
     ],
+
+    staticContent: [
+        {
+            inputDir: 'static_content',
+            ouputDir: 'content',
+        },
+    ],
 };
 ```
 
@@ -359,7 +367,7 @@ repeatableTypes:
 | filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
 | ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
 
-#### <u>**Localization Options**</u>
+##### <u>**Localization Options**</u>
 
 The config also has a `locales` field that allows you to specify what locales you want to pull from. This field can take an array of strings, an array of objects, or a combination.
 
@@ -412,7 +420,7 @@ After configuring locales in Contentful Hugo you will need to update your Hugo c
     #language settings
 ```
 
-##### Locale Specific Directories
+###### Locale Specific Directories
 
 There are sometimes cases where you will want to place content in a directory based on it's locale rather than using a file extension based translation. In order to do this you simple include `[locale]` inside your directory file path.
 
@@ -447,6 +455,34 @@ module.exports = {
     ],
 };
 ```
+
+##### <u>**Static Content Options**</u>
+
+The recommended setup for Contentful Hugo is to have your content (usually `./content`) and data (usually `./data`) directories ignored in version control. This is because contentful-hugo will generate these directories at build time. However, this creates trouble for instances where you have pages that are not managed in Contentful and aren't generated at build time by another source.
+
+To deal with this problem Contentful-Hugo has a `staticContent` parameter. This paramter accepts an input directory (`inputDir`) that can be commited to git, and an output directory (`outputDir`) which would be your standard content or data directory. All items in the inputDir will get copied into the outputDir at build time and will retain their folder structure.abs
+
+For example in the config below `./static_content/posts/my-post.md` will get copied to `./content/posts/my-post.md`, and `./static_data/global-settings.yaml` will be copied to `./data/global-settings.yaml`.
+
+```js
+module.exports = {
+    // rest of config
+    staticContent: [
+        {
+            // all items in ./static_content will be copied to ./content
+            inputDir: 'static_content',
+            outputDir: 'content',
+        },
+        {
+            // all items in ./static_data will be copied to ./data
+            inputDir: 'static_data',
+            outputDir: 'data',
+        },
+    ],
+};
+```
+
+Contentful-Hugo will also watch for file changes in the inputDir's while running in server mode.
 
 #### Advanced Config Examples
 
