@@ -24,7 +24,7 @@ const createWatcher = (config: ContentfulHugoConfig): void => {
 
     const getRootDir = (path: string) => {
         const filePath = removeLeadingAndTrailingSlashes(path);
-        const pathParts = filePath.split('/');
+        const pathParts = filePath.split('\\');
         return pathParts[0];
     };
     const handleCopy = (path: string) => {
