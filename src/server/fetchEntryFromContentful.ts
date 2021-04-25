@@ -17,7 +17,7 @@ const fetchEntryFromContentful = async (
     );
     const tasks = [];
     for (const cf of configs) {
-        const contentSettings: ContentSettings = {
+        const contentSettings = {
             typeId: cf.typeId,
             directory: cf.directory,
             fileExtension: cf.fileExtension,
@@ -31,9 +31,10 @@ const fetchEntryFromContentful = async (
             resolveEntries: cf.resolveEntries,
             overrides: cf.overrides,
             mainContent: cf.mainContent,
-            filters: { 'sys.id': entryId },
+            filters: cf.filters || {},
             locale: cf.locale,
         };
+        contentSettings.filters['sys.id'] = entryId;
         const contentfulSettings: ConfigContentfulSettings = config.contentful;
         tasks.push(
             getContentType(
