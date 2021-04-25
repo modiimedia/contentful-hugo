@@ -1,4 +1,4 @@
-import { loadConfig, ContentfulConfig } from './config';
+import { loadConfig, ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
     LocaleConfig,
@@ -10,6 +10,7 @@ import getContentType from './getContentType';
 import getContentTypeResultMessage from './getContentTypeResultMessage';
 import initializeDirectory from './initializeDirectory';
 import { isValidFileExtension } from './config/utilities';
+import { copyStaticContent } from './staticContent/fileManager';
 
 import Limiter = require('async-limiter');
 
@@ -86,7 +87,7 @@ const fetchType = (
         });
 };
 
-const configCheck = (config: ContentfulConfig) => {
+const configCheck = (config: ContentfulHugoConfig) => {
     const { space, token, environment } = config.contentful;
     const missingParams: string[] = [];
     if (!space) {
@@ -122,7 +123,7 @@ const fetchDataFromContentful = async (
     /**
      * Contentful Hugo Config Object
      */
-    config: ContentfulConfig,
+    config: ContentfulHugoConfig,
     /**
      * Fetch from the Content Preview API
      */
@@ -274,5 +275,6 @@ export {
     fetchDataFromContentful,
     loadConfig,
     initializeDirectory,
-    ContentfulConfig as ContentfulHugoConfig,
+    copyStaticContent,
+    ContentfulHugoConfig,
 };

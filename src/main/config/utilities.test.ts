@@ -1,6 +1,6 @@
 import {
     determineFileType,
-    isContentfulConfig,
+    isContentfulHugoConfig,
     isValidFileExtension,
 } from './utilities';
 
@@ -46,16 +46,16 @@ describe('Validate fileExtension checks', () => {
 
 describe('Contentful Config Checker', () => {
     test('Should Fail', () => {
-        expect(isContentfulConfig({ somekey: 'somestring' })).toBe(false);
+        expect(isContentfulHugoConfig({ somekey: 'somestring' })).toBe(false);
         expect(
-            isContentfulConfig({
+            isContentfulHugoConfig({
                 contentful: null,
                 singleTypes: [],
                 repeatableTypes: [],
             })
         ).toBe(false);
         expect(
-            isContentfulConfig({
+            isContentfulHugoConfig({
                 contentful: {
                     space: 'myspace',
                     token: 'my-token',
@@ -82,6 +82,6 @@ describe('Contentful Config Checker', () => {
             singleTypes: [],
             repeatableTypes: [],
         };
-        expect(isContentfulConfig(config)).toBe(true);
+        expect(isContentfulHugoConfig(config)).toBe(true);
     });
 });

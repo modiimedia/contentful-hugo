@@ -4,7 +4,9 @@ import {
     initializeDirectory,
     loadConfig,
     fetchDataFromContentful,
+    copyStaticContent,
 } from './main';
+import cleanDirectories from './main/clean';
 import startServer from './server';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -18,6 +20,7 @@ yargs
         config: { type: 'string', default: null, alias: 'C' },
         server: { type: 'boolean', default: false, alias: 'S' },
         port: { type: 'number', default: 1414 },
+        clean: { type: 'boolean', default: false },
     })
     .describe({
         preview: 'Pulls published and unplublished entries',
@@ -27,13 +30,24 @@ yargs
         server:
             'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
         port: 'Specify server port',
+        clean: 'Delete all output directories',
     })
     .usage('Usage: contentful-hugo [flags]');
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const argv: { [key: string]: any } = yargs.argv;
+interface CliArgs {
+    preview: boolean;
+    init: boolean;
+    wait: number;
+    config: string | null;
+    server: boolean;
+    port: number;
+    clean: boolean;
+}
+
+const argv = (yargs.argv as unknown) as CliArgs;
 
 const initialize = (): Promise<unknown> | unknown => {
+    // contentful-hugo --init
     if (argv.init) {
         return initializeDirectory();
     }
@@ -45,6 +59,16 @@ const initialize = (): Promise<unknown> | unknown => {
 Check your config for errors or run "contentful-hugo --init" to create a config file.\n`
             );
         }
+
+        if (argv.clean) {
+            return cleanDirectories(config);
+        }
+
+        if (config.staticContent && config.staticContent.length) {
+            console.log('Copying static content...');
+            await copyStaticContent(config);
+        }
+
         await fetchDataFromContentful(
             config,
             argv.preview || false,

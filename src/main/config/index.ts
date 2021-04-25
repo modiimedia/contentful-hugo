@@ -1,6 +1,6 @@
 import path from 'path';
 import { loadFile, checkContentfulSettings } from './fileLoader';
-import { ContentfulConfig, ResolveEntryConfig } from './types';
+import { ContentfulHugoConfig, ResolveEntryConfig } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -17,7 +17,7 @@ const loadConfig = async (
      * Config filename with extension.
      */
     fileName: string | null = null
-): Promise<ContentfulConfig | false> => {
+): Promise<ContentfulHugoConfig | false> => {
     rootDir = path.resolve(rootDir);
     if (fileName) {
         const result = await loadFile(rootDir, fileName);
@@ -34,7 +34,7 @@ const loadConfig = async (
         'contentful-settings.yaml',
     ];
     const tasks = [];
-    const configList: ContentfulConfig[] = [];
+    const configList: ContentfulHugoConfig[] = [];
     for (const config of defaultConfigs) {
         const file = loadFile(rootDir, config).then((result) => {
             if (result) {
@@ -56,6 +56,6 @@ const loadConfig = async (
 export {
     loadConfig,
     checkContentfulSettings,
-    ContentfulConfig,
+    ContentfulHugoConfig,
     ResolveEntryConfig,
 };

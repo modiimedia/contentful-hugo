@@ -1,5 +1,5 @@
 import { endsWith } from '@/helpers/strings';
-import { ContentfulConfig, TypeConfig } from './types';
+import { ContentfulHugoConfig, TypeConfig } from './types';
 
 /**
  * Determine if a file is yaml or js depending on the file extension
@@ -40,8 +40,10 @@ const isTypeConfig = (input: unknown): input is TypeConfig[] => {
     return true;
 };
 
-const isContentfulConfig = (input: unknown): input is ContentfulConfig => {
-    const mappedInput = input as ContentfulConfig;
+const isContentfulHugoConfig = (
+    input: unknown
+): input is ContentfulHugoConfig => {
+    const mappedInput = input as ContentfulHugoConfig;
     const { contentful, singleTypes, repeatableTypes } = mappedInput;
     if (!contentful) {
         return false;
@@ -62,4 +64,4 @@ const isContentfulConfig = (input: unknown): input is ContentfulConfig => {
     return true;
 };
 
-export { determineFileType, isContentfulConfig, isValidFileExtension };
+export { determineFileType, isContentfulHugoConfig, isValidFileExtension };
