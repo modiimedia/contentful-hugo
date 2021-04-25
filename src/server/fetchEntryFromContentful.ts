@@ -1,4 +1,4 @@
-import { ContentfulHugoConfig, ContentSettings } from '@/main';
+import { ContentfulHugoConfig } from '@/main';
 import { ConfigContentfulSettings } from '@/main/config/types';
 import getContentType from '@main/getContentType';
 import {

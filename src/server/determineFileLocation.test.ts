@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { ensureDir, unlink, writeFile } from 'fs-extra';
 import { ContentfulHugoConfig } from '../main/config/types';
 import determineFileLocations from './determineFileLocation';
