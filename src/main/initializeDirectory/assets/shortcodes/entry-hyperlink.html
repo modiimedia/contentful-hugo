@@ -28,7 +28,7 @@
         if this happens you will need to add custom logic for that specific contentType before
         this code block to prevent the error
     -->
-    <a href="{{ with .Site.GetPage }}{{ .RelPermalink }}{{ end }}">{{ $linkText }}</a>
+    <a href="{{ with .Site.GetPage $entryId }}{{ .RelPermalink }}{{ end }}">{{ $linkText }}</a>
 
 
 <!-- fallback message -->
