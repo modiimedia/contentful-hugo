@@ -11,7 +11,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   Rich text field support
 -   Multilingual Support
 -   Default shortcodes for rich text content
--   Asset field resolution
+-   Automatic Asset field resolution
 -   Customizable linked entry resolution
 -   Content Filters
 -   Supports the Content Preview API
