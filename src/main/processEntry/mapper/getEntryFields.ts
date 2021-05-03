@@ -7,7 +7,8 @@ const getEntryFields = (
     if (entry.sys) {
         obj = {
             id: entry.sys.id,
-            contentType: entry.sys.contentType.sys.id,
+            // contentType is missing if an deleted entry get's referenced
+            contentType: entry.sys.contentType?.sys.id,
         };
     }
     return obj;

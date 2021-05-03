@@ -33,7 +33,8 @@ import { AssetObject } from './getAssetFields';
 const mapEntry = (target: Entry<any>) => {
     return {
         id: target.sys.id,
-        contentType: target.sys.contentType.sys.id,
+        // contentType doesn't exist if the entry is "missing or inaccessible"
+        contentType: target.sys.contentType?.sys?.id,
     };
 };
 
