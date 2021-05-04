@@ -266,7 +266,7 @@ const getMainContent = (
         );
     }
     if (mainContentField) {
-        return mainContentField;
+        return `\n${mainContentField}`;
     }
     return null;
 };
