@@ -81,7 +81,8 @@ const addShortcodes = async (override = false) => {
     await wait(1000);
     const directory = './layouts/shortcodes/contentful-hugo';
     await ensureDir(directory);
-    Object.keys(shortcodes).forEach(async (key) => {
+
+    const handleShortCode = async (key: string) => {
         const { filename, template } = shortcodes[key];
         const finalTemplate = replaceVariablesWithValues(template);
         const filepath = `${directory}/${filename}`;
@@ -91,8 +92,16 @@ const addShortcodes = async (override = false) => {
             await writeFile(filepath, finalTemplate);
             console.log(`created ${filepath}`);
         }
+    };
+    const tasks: Promise<unknown>[] = [];
+    Object.keys(shortcodes).forEach(async (key) => {
+        tasks.push(handleShortCode(key));
     });
-    console.log('\n');
+
+    await Promise.all(tasks).then(() => {
+        console.log('\n');
+    });
+
     return null;
 };
 
