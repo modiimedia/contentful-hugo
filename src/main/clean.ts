@@ -1,5 +1,6 @@
 import { remove } from 'fs-extra';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import { LOG_PREFIX } from '@helpers/contants';
 import { ContentfulHugoConfig } from './config';
 
 const cleanDirectories = async (
@@ -31,7 +32,11 @@ const cleanDirectories = async (
 
     const tasks: Promise<void>[] = [];
     for (const dir of dirs) {
-        tasks.push(remove(dir));
+        tasks.push(
+            remove(dir).then(() => {
+                console.log(`${LOG_PREFIX} cleaned ./${dir}`);
+            })
+        );
     }
     await Promise.all(tasks);
 };

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
+import { LOG_PREFIX } from './helpers/contants';
 import {
     initializeDirectory,
     loadConfig,
@@ -65,7 +66,7 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
         }
 
         if (config.staticContent && config.staticContent.length) {
-            console.log('Copying static content...');
+            console.log(`${LOG_PREFIX} Copying static content...`);
             await copyStaticContent(config);
         }
 
