@@ -11,23 +11,23 @@ const wait = (milli = 1000): Promise<void> => {
 };
 
 const generateConfig = async (filepath: string) => {
-    console.log('creating contentful-hugo.config.js');
+    console.log(`creating ./contentful-hugo.config.js`);
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo#configuration for configuration instructions
 
 /**
  * @type {import('contentful-hugo').ContentfulHugoConfig}
  */
 module.exports = {
-    locales: [],
+    locales: [], // uses default locale if left empty
     singleTypes: [],
-    repeatableTypes: []
+    repeatableTypes: [],
 };`;
     await writeFile(filepath, configContent);
     console.log('config file created\n');
 };
 
 const checkForConfig = async () => {
-    console.log('checking for config...');
+    console.log(`checking for config...`);
     await wait(1000);
     const config = await loadConfig();
     const filepath = './contentful-hugo.config.js';
@@ -36,7 +36,7 @@ const checkForConfig = async () => {
     }
     const { singleTypes, repeatableTypes } = config;
     if (singleTypes || repeatableTypes) {
-        console.log('config already exists\n');
+        console.log(`config already exists\n`);
         return null;
     }
     return generateConfig(filepath);
