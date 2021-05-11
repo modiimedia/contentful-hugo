@@ -23,6 +23,7 @@ export const getSingleTypeConfigs = (
                 isTaxonomy: false,
                 mainContent: item.mainContent,
                 overrides: item.overrides,
+                resolveEntries: item.resolveEntries,
                 filters: item.filters,
             };
             if (
@@ -68,6 +69,7 @@ export const getRepeatableTypeConfigs = (
                 overrides: item.overrides || [],
                 filters: item.filters,
                 fileName: item.fileName,
+                resolveEntries: item.resolveEntries,
                 locale: {
                     code: '',
                     mapTo: '',
