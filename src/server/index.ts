@@ -104,7 +104,7 @@ const startServer = (
     if (!config) {
         throw new Error('Missing contentful hugo config');
     }
-    app.get('/_status', (_req, res: Response) => {
+    app.get('/status', (_req, res: Response) => {
         return res.status(200).send('ok');
     });
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
