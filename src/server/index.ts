@@ -148,6 +148,7 @@ const startServer = (
         if (shouldDelete(triggerType, previewMode)) {
             switch (sys.type) {
                 case 'Entry':
+                case 'DeletedEntry':
                     return removeEntry(config, sys).then((payload) => {
                         return res.status(200).send(payload);
                     });
