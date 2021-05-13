@@ -128,6 +128,18 @@ const logDynamicLocation = async (
     await ensureFile(tmpPathFinal);
     await writeFile(tmpPathFinal, filePath);
 };
+
+export const determineDynamicLocation = async (
+    filePath: string
+): Promise<string> => {
+    const path = filePath.replace('./', './.contentful-hugo/');
+    if (await pathExists(path)) {
+        const newPath = (await readFile(path)).toString();
+        return newPath;
+    }
+    return filePath;
+};
+
 /**
  *
  * @param {Object} contentSettings - Content settings object

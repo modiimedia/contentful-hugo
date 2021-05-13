@@ -55,6 +55,11 @@ const testConfig: ContentfulHugoConfig = {
             isHeadless: true,
             fileExtension: 'md',
         },
+        {
+            id: 'manual-slug',
+            directory: 'content/manual-slug',
+            fileName: 'fields.slug',
+        },
     ],
     staticContent: [],
 };

@@ -1,6 +1,9 @@
 import { pathExists, readFile } from 'fs-extra';
 import { ContentfulHugoConfig, ContentSettings } from '@/main';
-import { determineFilePath } from '@main/processEntry/createFile';
+import {
+    determineDynamicLocation,
+    determineFilePath,
+} from '@main/processEntry/createFile';
 
 export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
@@ -130,7 +133,12 @@ const determineFileLocations = async (
         contentType
     );
     for (const item of repeatableConfigs) {
-        let path = determineFilePath(item, entryId);
+        const itemCopy = { ...item };
+        itemCopy.fileName = entryId;
+        let path = determineFilePath(itemCopy, entryId);
+        if (item.fileName) {
+            path = await determineDynamicLocation(path);
+        }
         if (!isDeleting && path.includes(`/${item.fileName}`)) {
             path = path.replace(`/${item.fileName}`, `/[${item.fileName}]`);
         }
