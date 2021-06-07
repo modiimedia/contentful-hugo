@@ -140,6 +140,32 @@ export const determineDynamicLocation = async (
     return filePath;
 };
 
+const setFileContent = (
+    frontMatter: unknown = {},
+    fileExtension: string | null,
+    mainContent: string | null
+) => {
+    let fileContent = '';
+    switch (fileExtension) {
+        case 'yaml':
+        case 'yml':
+            fileContent += YAML.stringify(frontMatter);
+            break;
+        case 'json':
+            fileContent += JSON.stringify(frontMatter);
+            break;
+        default:
+            fileContent += `---\n`;
+            fileContent += YAML.stringify(frontMatter);
+            fileContent += `---\n`;
+            if (mainContent) {
+                fileContent += mainContent;
+            }
+            break;
+    }
+    return fileContent;
+};
+
 /**
  *
  * @param {Object} contentSettings - Content settings object
@@ -153,32 +179,17 @@ const createFile = async (
     frontMatter: unknown = {},
     mainContent: string | null
 ): Promise<void> => {
-    let fileContent = '';
     const { fileExtension, isHeadless, isTaxonomy, isSingle } = contentSettings;
     if (isHeadless && isTaxonomy) {
         throw new Error(
             'A content type cannot have both isHeadless and isTaxonomy set to true'
         );
     }
-
-    if (
-        fileExtension === null ||
-        fileExtension === undefined ||
-        endsWith(fileExtension, 'md')
-    ) {
-        fileContent += `---\n`;
-    }
-
-    // add current item to filecontent
-    fileContent += YAML.stringify(frontMatter);
-    if (!endsWith(fileExtension, 'yaml') && !endsWith(fileExtension, 'yml')) {
-        fileContent += `---\n`;
-    }
-
-    // if set add the main content below the front matter
-    if (mainContent) {
-        fileContent += mainContent;
-    }
+    const fileContent = setFileContent(
+        frontMatter,
+        fileExtension || null,
+        mainContent
+    );
 
     const hasDynamicFilename =
         typeof contentSettings.fileName === 'string' && !isSingle;

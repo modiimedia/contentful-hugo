@@ -32,14 +32,14 @@ describe('Validate fileExtension checks', () => {
         expect(isValidFileExtension('de.md')).toBe(true);
         expect(isValidFileExtension('en.yaml')).toBe(true);
         expect(isValidFileExtension('fr.yml')).toBe(true);
+        expect(isValidFileExtension('json')).toBe(true);
+        expect(isValidFileExtension('en.json')).toBe(true);
     });
 
     test('Invalid fileExtension', () => {
         expect(isValidFileExtension('js')).toBe(false);
-        expect(isValidFileExtension('json')).toBe(false);
         expect(isValidFileExtension('txt')).toBe(false);
         expect(isValidFileExtension('md.js')).toBe(false);
-        expect(isValidFileExtension('yml.json')).toBe(false);
         expect(isValidFileExtension('yaml.txt')).toBe(false);
     });
 });

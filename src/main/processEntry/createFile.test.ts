@@ -40,6 +40,10 @@ describe('Determine File Path', () => {
         expect(determineFilePath(settings, '12345')).toBe(
             './data/settings.yaml'
         );
+        settings.fileExtension = 'json';
+        expect(determineFilePath(settings, '12345')).toBe(
+            './data/settings.json'
+        );
     });
     test('Repeatable Type', () => {
         const settings = settingsFactory(
