@@ -5,6 +5,9 @@ import { Entry, Asset, ContentType } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
 import { removeEntry, updateEntry } from './handleEntry';
 import createWatcher from '@/main/staticContent/watcher';
+import fetchEntriesLinkedToAsset, {
+    AssetUpdatePayload,
+} from './fetchEntriesLinkToAsset';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -53,6 +56,30 @@ interface ContentfulWebhookRequest {
     headers: IncomingHttpHeaders;
     body: Entry<unknown> | Asset | ContentType;
 }
+
+export const isAssetTrigger = (
+    triggerType: ContentfulWebhookRequest['headers']['x-contentful-topic'],
+    previewMode: boolean
+): boolean => {
+    if (previewMode) {
+        return (
+            triggerType === 'ContentManagement.Asset.archive' ||
+            triggerType === 'ContentManagement.Asset.auto_save' ||
+            triggerType === 'ContentManagement.Asset.create' ||
+            triggerType === 'ContentManagement.Asset.delete' ||
+            triggerType === 'ContentManagement.Asset.publish' ||
+            triggerType === 'ContentManagement.Asset.save' ||
+            triggerType === 'ContentManagement.Asset.unarchive' ||
+            triggerType === 'ContentManagement.Asset.unpublish'
+        );
+    }
+    return (
+        triggerType === 'ContentManagement.Asset.unpublish' ||
+        triggerType === 'ContentManagement.Asset.unarchive' ||
+        triggerType === 'ContentManagement.Asset.delete' ||
+        triggerType === 'ContentManagement.Asset.publish'
+    );
+};
 
 export const shouldCreate = (
     triggerType: ContentfulWebhookRequest['headers']['x-contentful-topic'],
@@ -125,6 +152,19 @@ const startServer = (
         const triggerType = req.headers['x-contentful-topic'];
         if (typeof triggerType !== 'string') {
             return res.status(401).send('Invalid format');
+        }
+        if (isAssetTrigger(triggerType, previewMode)) {
+            return fetchEntriesLinkedToAsset(sys.id, config, previewMode).then(
+                () => {
+                    const payload: AssetUpdatePayload = {
+                        assetId: sys.id,
+                        date: new Date(),
+                        message: `Updated entries linked to asset ${sys.id}`,
+                        files: [],
+                    };
+                    return res.status(200).send(payload);
+                }
+            );
         }
         if (shouldCreate(triggerType, previewMode)) {
             switch (sys.type) {

@@ -47,6 +47,9 @@ const assetFactory = (
 
 const entryFactory = (fields: { [key: string]: any } = {}): Entry<any> => {
     const entry: Entry<any> = {
+        metadata: {
+            tags: [],
+        },
         sys: {
             id: 'my-id',
             createdAt: '2016-01-10',
