@@ -49,7 +49,8 @@ const loadJavascriptConfigFile = (
 const loadYamlConfigFile = async (
     filePath: string
 ): Promise<ContentfulHugoConfig | false> => {
-    let configObject = yaml.load(await readFile(filePath).toString());
+    const file = await readFile(filePath);
+    let configObject = yaml.load(file.toString());
     if (configObject && typeof configObject === 'object') {
         configObject = checkContentfulSettings(configObject);
         if (isContentfulHugoConfig(configObject)) {
