@@ -55,6 +55,16 @@ export const copyStaticContent = async (
     const tasks: Promise<void>[] = [];
     for (const item of config.staticContent) {
         const { inputDir, outputDir } = item;
+        if (!inputDir) {
+            throw new Error(
+                `staticContent item config is missing required field "inputDir"`
+            );
+        }
+        if (!outputDir) {
+            throw new Error(
+                `staticContent item config is missing required field "outputDir"`
+            );
+        }
         tasks.push(copyInputDirectoryToOutputDirectory(inputDir, outputDir));
     }
     await Promise.all(tasks);
