@@ -17,7 +17,9 @@ const mapArrayField = (
     const array = [];
     for (let i = 0; i < fieldContent.length; i++) {
         const arrayNode = fieldContent[i];
-        if ( typeof arrayNode !== "string" ) {
+        switch (typeof arrayNode) {
+          case "object":
+            if (arrayNode?.sys){
                 let arrayObject = {};
                 switch (arrayNode.sys.type) {
                     case 'Asset':
@@ -32,10 +34,14 @@ const mapArrayField = (
                         array.push(arrayNode);
                         break;
                 }
-        }
-        else {
+            }
+            else {
+              array.push(arrayNode)
+            }
+            break;
+          default:
             array.push(arrayNode);
-        }
+            break;
     }
     return array;
 };
