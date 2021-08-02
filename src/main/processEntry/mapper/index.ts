@@ -9,7 +9,7 @@ import richTextNodes from './richTextNodes';
 import { OverrideConfig } from '../../config/types';
 
 const mapArrayField = (
-    fieldContent:  Entry<any>[] | Asset[] | string[]
+    fieldContent:  Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
 ): any[] => {
     if (!fieldContent.length) {
         return fieldContent;
@@ -23,11 +23,11 @@ const mapArrayField = (
                 let arrayObject = {};
                 switch (arrayNode.sys.type) {
                     case 'Asset':
-                        arrayObject = getAssetFields(arrayNode);
+                        arrayObject = getAssetFields(arrayNode as Asset);
                         array.push(arrayObject);
                         break;
                     case 'Entry':
-                        arrayObject = getEntryFields(arrayNode);
+                        arrayObject = getEntryFields(arrayNode as Entry<any>);
                         array.push(arrayObject);
                         break;
                     default:
