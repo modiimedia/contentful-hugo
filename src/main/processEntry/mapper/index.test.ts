@@ -113,6 +113,21 @@ describe('Array Fields', () => {
         expect(fieldValue[1].assetType).toBe('image/jpeg');
         expect(fieldValue[1].width).toBe(100);
     });
+    test('Array of Custom Objects', () => {
+        const json = [
+            {
+                firstName: 'Jim',
+                lastName: 'Johnson',
+            },
+            {
+                firstName: 'Rebecca',
+                lastName: 'Johnson',
+            },
+        ];
+        const fieldValue = mapArrayField(json);
+        expect(fieldValue[0].firstName).toBe('Jim');
+        expect(fieldValue[1].firstName).toBe('Rebecca');
+    });
 });
 
 describe('resolveable entries', () => {
