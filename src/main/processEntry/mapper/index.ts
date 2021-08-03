@@ -9,39 +9,36 @@ import richTextNodes from './richTextNodes';
 import { OverrideConfig } from '../../config/types';
 
 const mapArrayField = (
-    fieldContent:  Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
+    fieldContent: Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
 ): any[] => {
     if (!fieldContent.length) {
-        return fieldContent;
+        return [];
     }
-    const array = [];
+    const array: any[] = [];
     for (let i = 0; i < fieldContent.length; i++) {
         const arrayNode = fieldContent[i];
         switch (typeof arrayNode) {
-          case "object":
-            if (arrayNode?.sys){
-                let arrayObject = {};
-                switch (arrayNode.sys.type) {
-                    case 'Asset':
-                        arrayObject = getAssetFields(arrayNode as Asset);
-                        array.push(arrayObject);
-                        break;
-                    case 'Entry':
-                        arrayObject = getEntryFields(arrayNode as Entry<any>);
-                        array.push(arrayObject);
-                        break;
-                    default:
-                        array.push(arrayNode);
-                        break;
+            case 'object':
+                if (arrayNode?.sys) {
+                    switch (arrayNode.sys.type) {
+                        case 'Asset':
+                            array.push(getAssetFields(arrayNode as Asset));
+                            break;
+                        case 'Entry':
+                            array.push(getEntryFields(arrayNode as Entry<any>));
+                            break;
+                        default:
+                            array.push(arrayNode);
+                            break;
+                    }
+                } else {
+                    array.push(arrayNode);
                 }
-            }
-            else {
-              array.push(arrayNode)
-            }
-            break;
-          default:
-            array.push(arrayNode);
-            break;
+                break;
+            default:
+                array.push(arrayNode);
+                break;
+        }
     }
     return array;
 };
@@ -220,12 +217,10 @@ const mapFields = (
                 }
                 // rich text (see rich text function)
                 else if ('nodeType' in fieldContent) {
-                    frontMatter[fieldName] = mapRichTextField(
-                        fieldContent
-                    ).richText;
-                    frontMatter[`${field}_plaintext`] = mapRichTextField(
-                        fieldContent
-                    ).plainText;
+                    frontMatter[fieldName] =
+                        mapRichTextField(fieldContent).richText;
+                    frontMatter[`${field}_plaintext`] =
+                        mapRichTextField(fieldContent).plainText;
                 }
                 // arrays
                 else {
