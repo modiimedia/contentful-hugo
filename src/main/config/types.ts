@@ -1,3 +1,5 @@
+import { Entry } from 'contentful';
+
 export interface ResolveEntryConfig {
     field: string;
     resolveTo: string;
@@ -15,6 +17,10 @@ export interface OverrideConfig {
          */
         valueTransformer?: (fieldValue: unknown) => unknown;
     };
+}
+
+export interface AppendableFields {
+    [fieldName: string]: unknown | ((entry: Entry<unknown>) => unknown);
 }
 
 type fileExtensionBase = 'md' | 'yaml' | 'yml';
@@ -55,6 +61,7 @@ export interface TypeConfig {
      */
     filters?: { [key: string]: string | number | boolean };
     ignoreLocales?: boolean;
+    appendFields?: AppendableFields;
 }
 
 export interface SingleTypeConfig extends TypeConfig {

@@ -7,7 +7,7 @@ import { removeEntry, updateEntry } from './handleEntry';
 import createWatcher from '@/main/staticContent/watcher';
 import fetchEntriesLinkedToAsset, {
     AssetUpdatePayload,
-} from './fetchEntriesLinkToAsset';
+} from './fetchEntriesLinkedToAsset';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
