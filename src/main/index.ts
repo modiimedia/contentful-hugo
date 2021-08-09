@@ -1,7 +1,7 @@
 import { loadConfig, ContentfulHugoConfig } from './config';
 import {
-    AppendableFields,
     ConfigContentfulSettings,
+    CustomFieldsConfig,
     LocaleConfig,
     OverrideConfig,
     RepeatableTypeConfig,
@@ -40,7 +40,7 @@ export interface ContentSettings {
     resolveEntries?: { field: string; resolveTo: string }[];
     overrides?: OverrideConfig[];
     filters?: { [key: string]: string | number | boolean };
-    appendFields: AppendableFields;
+    customFields: CustomFieldsConfig;
 }
 
 interface ContentfulError {
@@ -179,7 +179,7 @@ const fetchDataFromContentful = async (
                 resolveEntries: item.resolveEntries,
                 overrides: item.overrides,
                 filters: item.filters,
-                appendFields: item.appendFields || {},
+                customFields: item.customFields || {},
             };
         } else {
             settings = {
@@ -198,7 +198,7 @@ const fetchDataFromContentful = async (
                 overrides: item.overrides,
                 filters: item.filters,
                 fileName: item.fileName,
-                appendFields: item.appendFields || {},
+                customFields: item.customFields || {},
             };
         }
         if (isValidFileExtension(settings.fileExtension)) {

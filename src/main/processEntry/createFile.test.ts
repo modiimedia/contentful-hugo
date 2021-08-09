@@ -25,7 +25,7 @@ const settingsFactory = (
         fileExtension: fileExtension || 'md',
         filters,
         resolveEntries,
-        appendFields: {},
+        customFields: {},
     };
 };
 

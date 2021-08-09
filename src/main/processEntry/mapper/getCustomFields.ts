@@ -1,12 +1,12 @@
-import { AppendableFields } from '@/main/config/types';
+import { CustomFieldsConfig } from '@/main/config/types';
 import { Entry } from 'contentful';
 
 interface AppendableFieldsResult {
     [key: string]: unknown;
 }
 
-const getAppendableFields = (
-    appendFields: AppendableFields = {},
+const getCustomFields = (
+    appendFields: CustomFieldsConfig = {},
     entry: Entry<unknown>
 ): AppendableFieldsResult => {
     const fields: AppendableFieldsResult = {};
@@ -24,4 +24,4 @@ const getAppendableFields = (
     return fields;
 };
 
-export default getAppendableFields;
+export default getCustomFields;

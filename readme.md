@@ -240,7 +240,7 @@ module.exports = {
             id: 'seoFields',
             isHeadless: true,
             directory: 'content/seo-fields',
-            appendFields: {
+            customFields: {
                 // these fields will be added to the frontmatter
                 myCustomField: 'myCustomFieldVal',
                 myOtherCustomField: (entry) => {
@@ -317,7 +317,7 @@ repeatableTypes:
     - id: seoFields
       isHeadless: true
       directory: content/seo-fields
-      appendFields:
+      customFields:
           # will be added to the frontmatter
           myCustomFields: 'myCustomFieldValue'
 
@@ -359,7 +359,7 @@ repeatableTypes:
 | overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                  |
 | filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator) |
 | ignoreLocales  | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                               |
-| appendFields   | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                 |
+| customFields   | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                 |
 
 ##### <u>**Repeatable Type Options**</u>
 
@@ -377,7 +377,7 @@ repeatableTypes:
 | overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 | filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
 | ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
-| appendFields              | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                                       |
+| customFields              | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                                       |
 
 ##### <u>**Localization Options**</u>
 
@@ -954,9 +954,9 @@ module.exports = {
 }
 ```
 
-### Appending Fields To Frontmatter
+### Adding Custom Fields To Frontmatter
 
-You can use the `appendFields` parameter to add additional custom fields to your entries. The config for appended fields can be a static value or a method that accepts a Contentful entry as a parameter and returns a value.
+You can use the `customFields` parameter to add additional fields to your entries. The config for custom fields can be a static value or a method that accepts a Contentful entry as a parameter and returns a value.
 
 ### Examples
 
@@ -975,9 +975,9 @@ module.exports = {
         {
             id: 'author',
             directory: 'content/authors',
-            appendFields: {
+            customFields: {
                 // both "myCustomField" and "fullName"
-                // will be added to the author frontmatter
+                // will be appended to the frontmatter for author entries
                 myCustomField: 'myCustomFieldValue',
                 fullName: (entry) => {
                     const { firstName, lastName } = entry.fields;
@@ -996,8 +996,8 @@ Here's what that config will result in
 firstName: 'John'
 lastName: 'Doe'
 slug: 'john-doe'
-myCustomField: 'myCustomFieldValue' # appended field
-fullName: 'John Doe' # appended field
+myCustomField: 'myCustomFieldValue' # custom field
+fullName: 'John Doe' # custom field
 ---
 ```
 
@@ -1006,7 +1006,7 @@ You could also use this for Hugo specific fields like [Build Options](https://go
 ```js
 // prevent a content type from appearing in list pages
 {
-    appendFields: {
+    customFields: {
         _build: {
             render: 'alway',
             list: 'never',
@@ -1017,7 +1017,7 @@ You could also use this for Hugo specific fields like [Build Options](https://go
 
 // prevent a content type from rendering a single page
 {
-    appendFields: {
+    customFields: {
         _build: {
             render: 'never',
             list: 'always',
