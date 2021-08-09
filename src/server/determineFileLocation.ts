@@ -28,6 +28,7 @@ export const getSingleTypeConfigs = (
                 overrides: item.overrides,
                 resolveEntries: item.resolveEntries,
                 filters: item.filters,
+                appendFields: item.appendFields || {},
             };
             if (
                 config.locales &&
@@ -77,6 +78,7 @@ export const getRepeatableTypeConfigs = (
                     code: '',
                     mapTo: '',
                 },
+                appendFields: item.appendFields || {},
             };
             if (
                 config.locales &&

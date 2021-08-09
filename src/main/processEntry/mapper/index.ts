@@ -6,7 +6,8 @@ import getEntryFields from './getEntryFields';
 import getAssetFields from './getAssetFields';
 import richTextToMarkdown from './richTextToMarkdown';
 import richTextNodes from './richTextNodes';
-import { OverrideConfig } from '../../config/types';
+import { AppendableFields, OverrideConfig } from '../../config/types';
+import getAppendableFields from './getAppendableFields';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
@@ -155,9 +156,11 @@ const mapFields = (
     type?: string,
     mainContentField?: string,
     resolveList?: ResolveEntryConfig[],
-    overrides?: OverrideConfig[]
+    overrides?: OverrideConfig[],
+    appendFields: AppendableFields = {}
 ): any => {
     const frontMatter: { [key: string]: any } = {};
+    // set default fields
     if (isHeadless) {
         frontMatter.headless = true;
     }
@@ -172,9 +175,13 @@ const mapFields = (
         space: entry.sys.space?.sys.id,
         contentType: entry.sys.contentType.sys.id,
     };
+    frontMatter.date = entry.sys.createdAt;
+
+    // depreciated will be removed in future release
     frontMatter.updated = entry.sys.updatedAt;
     frontMatter.createdAt = entry.sys.createdAt;
-    frontMatter.date = entry.sys.createdAt;
+
+    // loop through every field and add it to frontmatter
     for (const field of Object.keys(entry.fields)) {
         const fieldContent = entry.fields[field];
         let fieldName = field;
@@ -240,6 +247,13 @@ const mapFields = (
                 break;
         }
     }
+
+    // add appendable fields if they exist
+    const fieldsToAppend = getAppendableFields(appendFields, entry);
+    Object.keys(fieldsToAppend).forEach((key) => {
+        frontMatter[key] = fieldsToAppend[key];
+    });
+
     return frontMatter;
 };
 
