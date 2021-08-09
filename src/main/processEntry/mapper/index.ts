@@ -6,8 +6,8 @@ import getEntryFields from './getEntryFields';
 import getAssetFields from './getAssetFields';
 import richTextToMarkdown from './richTextToMarkdown';
 import richTextNodes from './richTextNodes';
-import { AppendableFields, OverrideConfig } from '../../config/types';
-import getAppendableFields from './getAppendableFields';
+import { CustomFieldsConfig, OverrideConfig } from '../../config/types';
+import getAppendableFields from './getCustomFields';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
@@ -157,7 +157,7 @@ const mapFields = (
     mainContentField?: string,
     resolveList?: ResolveEntryConfig[],
     overrides?: OverrideConfig[],
-    appendFields: AppendableFields = {}
+    customFields: CustomFieldsConfig = {}
 ): any => {
     const frontMatter: { [key: string]: any } = {};
     // set default fields
@@ -249,7 +249,7 @@ const mapFields = (
     }
 
     // add appendable fields if they exist
-    const fieldsToAppend = getAppendableFields(appendFields, entry);
+    const fieldsToAppend = getAppendableFields(customFields, entry);
     Object.keys(fieldsToAppend).forEach((key) => {
         frontMatter[key] = fieldsToAppend[key];
     });

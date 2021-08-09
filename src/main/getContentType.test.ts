@@ -17,7 +17,7 @@ test('PrepDirectory', async () => {
             code: '',
             mapTo: '',
         },
-        appendFields: {},
+        customFields: {},
     };
     await prepDirectory(settings);
     expect(await pathExists('./.temp/blah/_index.md')).toBe(false);

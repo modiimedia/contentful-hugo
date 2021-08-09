@@ -19,7 +19,7 @@ export interface OverrideConfig {
     };
 }
 
-export interface AppendableFields {
+export interface CustomFieldsConfig {
     [fieldName: string]: unknown | ((entry: Entry<unknown>) => unknown);
 }
 
@@ -61,7 +61,7 @@ export interface TypeConfig {
      */
     filters?: { [key: string]: string | number | boolean };
     ignoreLocales?: boolean;
-    appendFields?: AppendableFields;
+    customFields?: CustomFieldsConfig;
 }
 
 export interface SingleTypeConfig extends TypeConfig {

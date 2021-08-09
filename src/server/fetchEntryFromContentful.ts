@@ -33,7 +33,7 @@ const fetchEntryFromContentful = async (
             mainContent: cf.mainContent,
             filters: cf.filters || {},
             locale: cf.locale,
-            appendFields: cf.appendFields || {},
+            customFields: cf.customFields || {},
         };
         contentSettings.filters['sys.id'] = entryId;
         const contentfulSettings: ConfigContentfulSettings = config.contentful;

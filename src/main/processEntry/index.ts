@@ -37,7 +37,7 @@ const processEntry = (
         mainContent,
         resolveEntries,
         overrides,
-        appendFields,
+        customFields,
     } = contentSettings;
     const frontMatter = mapFields(
         item,
@@ -46,7 +46,7 @@ const processEntry = (
         mainContent,
         resolveEntries,
         overrides,
-        appendFields
+        customFields
     );
     const content = contentSettings.mainContent
         ? getMainContent(item, contentSettings.mainContent)

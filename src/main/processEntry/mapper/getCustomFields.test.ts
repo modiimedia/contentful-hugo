@@ -1,5 +1,5 @@
 import { Entry } from 'contentful';
-import getAppendableFields from './getAppendableFields';
+import getCustomFields from './getCustomFields';
 
 test('Appendable Fields', () => {
     const appendableFields = {
@@ -22,7 +22,7 @@ test('Appendable Fields', () => {
             lastName: 'Doe',
         },
     };
-    const result = getAppendableFields(appendableFields, entry as any);
+    const result = getCustomFields(appendableFields, entry as any);
     expect(result.field1).toBe('my-first-field');
     expect((result.field2 as any).blah).toBe('blah');
     expect(result.fullName).toBe('John Doe');
