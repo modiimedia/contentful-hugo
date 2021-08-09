@@ -38,6 +38,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
     -   [Resolving Reference Fields](#the-resolve-entries-parameter)
     -   [Overriding Field Names & Field Values](#the-overrides-parameter)
     -   [Filtering Entries Within a Content Type](#the-filters-parameter)
+    -   [Adding Custom Fields To Frontmatter](#adding-custom-fields-to-frontmatter)
 -   [Guides](#guides)
 -   [Known Issues](#known-issues)
 
