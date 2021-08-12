@@ -38,6 +38,7 @@
     },
     "license": "ISC",
     "dependencies": {
+        "@contentful/rich-text-html-renderer": "^15.0.0",
         "@contentful/rich-text-plain-text-renderer": "^15.1.0",
         "@contentful/rich-text-types": "^15.1.0",
         "async-limiter": "^2.0.0",
@@ -59,7 +60,6 @@
     ],
     "devDependencies": {
         "@babel/cli": "^7.14.8",
-        "@contentful/rich-text-html-renderer": "^15.1.0",
         "@types/express": "^4.17.13",
         "@types/fs-extra": "^9.0.12",
         "@types/jest": "^26.0.24",
