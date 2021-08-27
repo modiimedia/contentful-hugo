@@ -177,10 +177,6 @@ const mapFields = (
     };
     frontMatter.date = entry.sys.createdAt;
 
-    // depreciated will be removed in future release
-    frontMatter.updated = entry.sys.updatedAt;
-    frontMatter.createdAt = entry.sys.createdAt;
-
     // loop through every field and add it to frontmatter
     for (const field of Object.keys(entry.fields)) {
         const fieldContent = entry.fields[field];
