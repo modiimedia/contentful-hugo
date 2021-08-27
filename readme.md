@@ -206,13 +206,12 @@ module.exports = {
             id: 'homepage',
             directory: 'content',
             fileName: '_index',
-            fileExtension: 'md',
         },
         {
             id: 'siteSettings',
             directory: 'data',
             fileName: 'settings',
-            fileExtension: 'yaml',
+            fileExtension: 'yaml', // default is md
         },
     ],
 
@@ -220,7 +219,6 @@ module.exports = {
         {
             id: 'posts',
             directory: 'content/posts',
-            fileExtension: 'md',
             mainContent: 'content',
             resolveEntries: [
                 {
@@ -292,12 +290,11 @@ singleTypes:
     - id: homepage
       directory: content
       fileName: _index
-      fileExtension: md
 
     - id: siteSettings
       directory: data
       fileName: settings
-      fileExtension: yaml
+      fileExtension: yaml # default is md
 
 repeatableTypes:
     # fetches all the entries of a content type and places them in a directory.
