@@ -1,15 +1,16 @@
 ## Overrides
 
 ```js
-// 18 lines long
 const oldSyntax = {
     overrides: [
+        // 6 lines long
         {
             field: 'url',
             options: {
                 fieldName: 'link',
             },
         },
+        // 10 lines long
         {
             field: 'my-other-field',
             options: {
@@ -23,12 +24,13 @@ const oldSyntax = {
     ],
 };
 
-// 12 lines long
 const newSyntax = {
     overrides: {
+        // 3 lines long
         url: {
             fieldName: 'link',
         },
+        // 7 lines long
         'my-other-field': {
             fieldName: 'my-new-field-name',
             valueTransformer: (val) => {
