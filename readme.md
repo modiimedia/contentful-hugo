@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c24aacec450c44c1a81ac78d234838b0)](https://www.codacy.com/gh/ModiiMedia/contentful-hugo/dashboard?utm_source=github.com&utm_medium=referral&utm_content=ModiiMedia/contentful-hugo&utm_campaign=Badge_Grade)
 
-This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io). It also includes a simple Express server that can can recieve webhooks from Contentful to retrigger get and delete commands (useful when running a preview environment).
+This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io). It also includes a simple Express server that can can receive webhooks from Contentful to retrigger get and delete commands (useful when running a preview environment).
 
 ## Features
 
@@ -16,7 +16,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
 -   Content Filters
 -   Supports the Content Preview API
 -   Field name and field value overrides
--   Server mode to recieve webhook triggers from Contentful (BETA)
+-   Server mode to receive webhook triggers from Contentful
 
 ## Table of Contents
 
@@ -91,7 +91,7 @@ npx contentful-hugo [flags]
 | --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 | --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
 | --config  | -C      | Specify the path to a config file.                                                                       |
-| --server  | -S      | Run in server mode to recieve webhooks from Contentful (BETA)                                            |
+| --server  | -S      | Run in server mode to receive webhooks from Contentful                                                   |
 | --port    |         | Specify port for server mode (Default 1414)                                                              |
 | --clean   |         | Delete any directories specified in singleTypes and repeatableTypes                                      |
 | --help    |         | Show help                                                                                                |
@@ -255,7 +255,7 @@ module.exports = {
         {
             id: 'category',
             directory: 'content/categories',
-            isTaxonomy: true, // Experimental Feature
+            isTaxonomy: true,
         },
     ],
 
@@ -329,7 +329,7 @@ repeatableTypes:
 
     - id: category
       directory: content/categories
-      isTaxonomy: true # Experimental Feature
+      isTaxonomy: true
 ```
 
 #### **Config Fields**
@@ -361,21 +361,21 @@ repeatableTypes:
 
 ##### <u>**Repeatable Type Options**</u>
 
-| field                     | required | description                                                                                                                                                                                                                                |
-| ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| id                        | required | Contentful content type ID                                                                                                                                                                                                                 |
-| directory                 | required | Directory where you want the files to be generated                                                                                                                                                                                         |
-| fileName                  | optional | Entry property that will dicatate the filename. (By default this will be `sys.id`)                                                                                                                                                         |
-| fileExtension             | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
-| isHeadless                | optional | Turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
-| isTaxonomy (Experimental) | optional | Organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
-| mainContent               | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
-| type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
-| resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
-| overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
-| filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
-| ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
-| customFields              | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                                       |
+| field          | required | description                                                                                                                                                                                                                                |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| id             | required | Contentful content type ID                                                                                                                                                                                                                 |
+| directory      | required | Directory where you want the files to be generated                                                                                                                                                                                         |
+| fileName       | optional | Entry property that will dicatate the filename. (By default this will be `sys.id`)                                                                                                                                                         |
+| fileExtension  | optional | Can be "md", "yml", or "yaml" (defaults to "md")                                                                                                                                                                                           |
+| isHeadless     | optional | Turns all entries in a content type into headless leaf bundles (see [hugo docs](https://gohugo.io/content-management/page-bundles/#headless-bundle)). Cannot be set to true when isTaxonomy is set to true.                                |
+| isTaxonomy     | optional | Organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
+| mainContent    | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
+| type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
+| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+| overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
+| filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
+| ignoreLocales  | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
+| customFields   | optional | Accepts an object of fields and values. The values can be a standard static value or a function that accepts the Contentful entry as a parameter and returns a value                                                                       |
 
 ##### <u>**Localization Options**</u>
 
