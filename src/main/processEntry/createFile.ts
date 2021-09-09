@@ -7,7 +7,7 @@ import {
     writeFile,
 } from 'fs-extra';
 import { ContentSettings } from '@main/index';
-import { removeLeadingAndTrailingSlashes, endsWith } from '@helpers/strings';
+import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
