@@ -40,6 +40,7 @@ This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns 
     -   [Filtering Entries Within a Content Type](#the-filters-parameter)
     -   [Adding Custom Fields To Frontmatter](#adding-custom-fields-to-frontmatter)
 -   [Guides](#guides)
+    -   [Getting live updates from Contentful on localhost](guides/localhost-live-updates.md)
 -   [Known Issues](#known-issues)
 
 ## Prerequisites
