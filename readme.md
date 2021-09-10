@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c24aacec450c44c1a81ac78d234838b0)](https://www.codacy.com/gh/ModiiMedia/contentful-hugo/dashboard?utm_source=github.com&utm_medium=referral&utm_content=ModiiMedia/contentful-hugo&utm_campaign=Badge_Grade)
 
-This is a simple Node.js CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io). It also includes a simple Express server that can can recieve webhooks from Contentful to retrigger get and delete commands (useful when running a preview environment).
+This is a CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io). It also includes a simple Express server that can can recieve webhooks from Contentful to retrigger get and delete commands (useful when running a preview environment).
 
 ## Features
 
