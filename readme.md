@@ -4,6 +4,8 @@
 
 This is a CLI tool that pulls data from Contentful CMS and turns it into Markdown or YAML files for use with a static site generator. It can be used with any static site generator that uses Markdown with YAML frontmatter, but it has some features that are specific to [Hugo](https://gohugo.io). It also includes a simple Express server that can can recieve webhooks from Contentful to retrigger get and delete commands (useful when running a preview environment).
 
+![Screenshot of Contentful Hugo](screenshot.png)
+
 ## Features
 
 -   Markdown and YAML output
