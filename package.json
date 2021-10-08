@@ -59,7 +59,7 @@
         "postInstall.js"
     ],
     "devDependencies": {
-        "@modii/tscpaths": "^0.1.7",
+        "@modii/tscpaths": "^0.2.1",
         "@types/express": "^4.17.13",
         "@types/fs-extra": "^9.0.13",
         "@types/jest": "^27.0.2",
