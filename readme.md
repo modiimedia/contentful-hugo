@@ -47,7 +47,7 @@ This is a CLI tool that pulls data from Contentful CMS and turns it into Markdow
 
 ## Prerequisites
 
-Install [Node.js](https://nodejs.org)
+Install [Node.js](https://nodejs.org) (Minimum supported version is Node v12)
 
 ## Installation
 
