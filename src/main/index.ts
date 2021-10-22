@@ -6,6 +6,8 @@ import {
     OverrideConfig,
     RepeatableTypeConfig,
     SingleTypeConfig,
+    getOverrideConfigs as getOverrides,
+    getResolveEntryConfigs as getResolveEntries,
 } from './config/types';
 import getContentType from './getContentType';
 import getContentTypeResultMessage from './getContentTypeResultMessage';
@@ -176,8 +178,8 @@ const fetchDataFromContentful = async (
                 mainContent: item.mainContent,
                 isSingle: true,
                 type: item.type,
-                resolveEntries: item.resolveEntries,
-                overrides: item.overrides,
+                resolveEntries: getResolveEntries(item.resolveEntries),
+                overrides: getOverrides(item.overrides),
                 filters: item.filters,
                 customFields: item.customFields || {},
             };
@@ -194,8 +196,8 @@ const fetchDataFromContentful = async (
                 mainContent: item.mainContent,
                 type: item.type,
                 isTaxonomy: (item as RepeatableTypeConfig).isTaxonomy,
-                resolveEntries: item.resolveEntries,
-                overrides: item.overrides,
+                resolveEntries: getResolveEntries(item.resolveEntries),
+                overrides: getOverrides(item.overrides),
                 filters: item.filters,
                 fileName: item.fileName,
                 customFields: item.customFields || {},
