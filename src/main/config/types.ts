@@ -139,7 +139,6 @@ export const getResolveEntryConfigs = (
                 resolveTo: data[key],
             });
         });
-        console.log(configs);
         return configs;
     }
     return [];
@@ -159,7 +158,6 @@ export const getOverrideConfigs = (
                 options: data[key],
             });
         });
-        console.log(configs);
         return configs;
     }
     return [];
