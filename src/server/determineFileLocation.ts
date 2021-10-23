@@ -4,6 +4,10 @@ import {
     determineDynamicLocation,
     determineFilePath,
 } from '@main/processEntry/createFile';
+import {
+    getOverrideConfigs,
+    getResolveEntryConfigs,
+} from '@/main/config/types';
 
 export const getSingleTypeConfigs = (
     config: ContentfulHugoConfig,
@@ -25,8 +29,8 @@ export const getSingleTypeConfigs = (
                 isSingle: true,
                 isTaxonomy: false,
                 mainContent: item.mainContent,
-                overrides: item.overrides,
-                resolveEntries: item.resolveEntries,
+                overrides: getOverrideConfigs(item.overrides),
+                resolveEntries: getResolveEntryConfigs(item.resolveEntries),
                 filters: item.filters,
                 customFields: item.customFields || {},
             };
@@ -70,10 +74,10 @@ export const getRepeatableTypeConfigs = (
                 isTaxonomy: item.isTaxonomy,
                 isSingle: false,
                 mainContent: item.mainContent || '',
-                overrides: item.overrides || [],
+                overrides: getOverrideConfigs(item.overrides),
                 filters: item.filters,
                 fileName: item.fileName,
-                resolveEntries: item.resolveEntries,
+                resolveEntries: getResolveEntryConfigs(item.resolveEntries),
                 locale: {
                     code: '',
                     mapTo: '',

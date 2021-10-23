@@ -5,6 +5,10 @@ export interface ResolveEntryConfig {
     resolveTo: string;
 }
 
+export interface ResolveEntryConfigMap {
+    [field: string]: string;
+}
+
 export interface OverrideConfig {
     field: string;
     options: {
@@ -17,6 +21,10 @@ export interface OverrideConfig {
          */
         valueTransformer?: (fieldValue: unknown) => unknown;
     };
+}
+
+export interface OverrideConfigMap {
+    [fieldName: string]: OverrideConfig['options'];
 }
 
 export interface CustomFieldsConfig {
@@ -51,11 +59,11 @@ export interface TypeConfig {
     /**
      * Options specifying how to resolve asset references and entry references
      */
-    resolveEntries?: ResolveEntryConfig[];
+    resolveEntries?: ResolveEntryConfig[] | ResolveEntryConfigMap;
     /**
      * Options that allow you to override field names and modify field values before rendering the content file.
      */
-    overrides?: OverrideConfig[];
+    overrides?: OverrideConfig[] | OverrideConfigMap;
     /**
      * Object of Contentful search filters. See https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters.
      */
@@ -116,3 +124,41 @@ export interface ContentfulHugoConfig {
     repeatableTypes: RepeatableTypeConfig[];
     staticContent: StaticContentConfig[];
 }
+
+export const getResolveEntryConfigs = (
+    data?: TypeConfig['resolveEntries']
+): ResolveEntryConfig[] => {
+    if (Array.isArray(data)) {
+        return data;
+    }
+    if (typeof data === 'object') {
+        const configs: ResolveEntryConfig[] = [];
+        Object.keys(data).forEach((key) => {
+            configs.push({
+                field: key,
+                resolveTo: data[key],
+            });
+        });
+        return configs;
+    }
+    return [];
+};
+
+export const getOverrideConfigs = (
+    data?: TypeConfig['overrides']
+): OverrideConfig[] => {
+    if (Array.isArray(data)) {
+        return data;
+    }
+    if (typeof data === 'object') {
+        const configs: OverrideConfig[] = [];
+        Object.keys(data).forEach((key) => {
+            configs.push({
+                field: key,
+                options: data[key],
+            });
+        });
+        return configs;
+    }
+    return [];
+};

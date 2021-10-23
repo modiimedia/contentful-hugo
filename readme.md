@@ -18,7 +18,7 @@ This is a CLI tool that pulls data from Contentful CMS and turns it into Markdow
 -   Content Filters
 -   Supports the Content Preview API
 -   Field name and field value overrides
--   Server mode to recieve webhook triggers from Contentful (BETA)
+-   Server mode to receive webhook triggers from Contentful
 
 ## Table of Contents
 
@@ -47,7 +47,7 @@ This is a CLI tool that pulls data from Contentful CMS and turns it into Markdow
 
 ## Prerequisites
 
-Install [Node.js](https://nodejs.org)
+Install [Node.js](https://nodejs.org) (Minimum supported version is Node v12)
 
 ## Installation
 
@@ -94,7 +94,7 @@ npx contentful-hugo [flags]
 | --preview | -P      | Runs in preview mode, which pulls both published and unpublished entries from Contentful                 |
 | --wait    | -W      | Wait for the specified number of milliseconds before pulling data from Contentful.                       |
 | --config  | -C      | Specify the path to a config file.                                                                       |
-| --server  | -S      | Run in server mode to recieve webhooks from Contentful (BETA)                                            |
+| --server  | -S      | Run in server mode to receive webhooks from Contentful                                                   |
 | --port    |         | Specify port for server mode (Default 1414)                                                              |
 | --clean   |         | Delete any directories specified in singleTypes and repeatableTypes                                      |
 | --help    |         | Show help                                                                                                |
@@ -223,20 +223,11 @@ module.exports = {
             id: 'posts',
             directory: 'content/posts',
             mainContent: 'content',
-            resolveEntries: [
-                {
-                    field: 'categories',
-                    resolveTo: 'fields.slug',
-                },
-                {
-                    field: 'author',
-                    resolveTo: 'fields.name',
-                },
-                {
-                    field: 'relatedPosts',
-                    resolveTo: 'sys.id',
-                },
-            ],
+            resolveEntries: {
+                categories: 'fields.slug',
+                author: 'fields.name',
+                relatedPosts: 'sys.id',
+            },
         },
         {
             id: 'seoFields',
@@ -258,7 +249,7 @@ module.exports = {
         {
             id: 'category',
             directory: 'content/categories',
-            isTaxonomy: true, // Experimental Feature
+            isTaxonomy: true,
         },
     ],
 
@@ -308,12 +299,9 @@ repeatableTypes:
       fileExtension: md
       mainContent: content
       resolveEntries: # resolves a reference or asset field to a specific property
-          - field: categories
-            resolveTo: fields.slug
-          - field: author
-            resolveTo: fields.name
-          - field: relatedPosts
-            resolveTo: sys.id
+          categories: fields.slug
+          author: fields.name
+          relatedPosts: sys.id
 
     - id: seoFields
       isHeadless: true
@@ -332,7 +320,7 @@ repeatableTypes:
 
     - id: category
       directory: content/categories
-      isTaxonomy: true # Experimental Feature
+      isTaxonomy: true
 ```
 
 #### **Config Fields**
@@ -356,7 +344,7 @@ repeatableTypes:
 | fileExtension  | optional | Can be "md", "yml", "yaml", or "json" (defaults to "md")                                                                                                                                                             |
 | mainContent    | optional | Field ID for field you want to be the main Markdown content. (Can be a markdown, richtext, or string field)                                                                                                          |
 | type           | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                |
-| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                        |
+| resolveEntries | optional | Resolve the specified reference fields and/or asset fields to one of it's properties parameter                                                                                                                       |
 | overrides      | optional | Do custom overrides for field values or field names                                                                                                                                                                  |
 | filters        | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator) |
 | ignoreLocales  | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                               |
@@ -374,7 +362,7 @@ repeatableTypes:
 | isTaxonomy (Experimental) | optional | Organize entries in file structure allowing for custom taxonomy metadata (see [hugo docs](https://gohugo.io/content-management/taxonomies/#add-custom-metadata-a-taxonomy-or-term)). Cannot be set to true when isHeadless is set to true. |
 | mainContent               | optional | Field ID for field you want to be the main markdown content. (Can be a markdown, richtext, or string field)                                                                                                                                |
 | type                      | optional | Manually set value for "type" field in the frontmatter (see [hugo docs](https://gohugo.io/content-management/types/))                                                                                                                      |
-| resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties specified with the `resolveTo` parameter                                                                                                              |
+| resolveEntries            | optional | Resolve the specified reference fields and/or asset fields to one of it's properties                                                                                                                                                       |
 | overrides                 | optional | Do custom overrides for field values or field names                                                                                                                                                                                        |
 | filters                   | optional | Accepts an object of Contentful search parameters to filter results. See [Contentful docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/select-operator)                       |
 | ignoreLocales             | optional | Ignore localization settings and only pull from the default locale (defaults to false)                                                                                                                                                     |
@@ -537,7 +525,36 @@ module.exports = {
         {
             id: "trips",
             directory: "content/trips"
-            overrides: [{
+            overrides: {
+                // change the url field name to "slug"
+                url: {
+                    fieldName: "slug"
+                }
+                /*
+                    rename "distanceInKilometers" to "distanceInMiles"
+                    and change the field value from km to mi
+                */
+                distanceInKilometers: {
+                    fieldName: "distanceInMiles",valueTransformer: (val) => {
+                        if(typeof val === 'number') {
+                            return val * 0.621371
+                        }
+                        return 0
+                    }
+                }
+            }
+        }
+    ]
+}
+
+// ALTERNATIVE SYNTAX
+module.exports = {
+    repeatableTypes: [
+        {
+            id: "trips",
+            directory: "content/trips"
+            overrides: [
+            {
                 field: "url",
                 options: {
                     // change the url field name to "slug" in frontmatter
@@ -613,12 +630,6 @@ sys:
     revision: # the revision number
     space: # the space id
     contentType: # the content type id
-
-# the following fields are depreciated and will be removed in a future version
-# migrate to using the sys.updatedAt and sys.createdAt iterations
-
-updated: # the last time the entry was updated in Contentful
-createdAt: # when the entry was created in Contentful
 ```
 
 ### Asset Information
@@ -627,12 +638,12 @@ Assets like images and videos come with some extra information that makes it eas
 
 ```yaml
 assetFieldName:
-    assetType: # indicates the asset type such as "image" "video" "audio" ect.
+    assetType: # indicates the asset mime type such as image/png, video/mp4, audio/mp3, ect.
     url: # url of the asset
     title: # title of the asset written in Contentful
     description: # description of the asset written in Contentful
     width: # width of the asset (images only)
-    height: # height of the asset (images only )
+    height: # height of the asset (images only)
 ```
 
 If you're using Hugo you can access the information like below:
@@ -641,6 +652,16 @@ If you're using Hugo you can access the information like below:
 <img
     src="{{ .Params.assetFieldName.url }}"
     width="{{ .Params.assetFieldName.width }}"
+/>
+```
+
+For images you can append parameters to the asset url in order to make use of Contentful's [images api](https://www.contentful.com/developers/docs/references/images-api/#/introduction)
+
+```html
+<img
+    src="{{ .Params.assetFieldname.url }}?w=200&h=200&fit=fill"
+    width="200"
+    height="200"
 />
 ```
 
@@ -694,6 +715,18 @@ All files are named after their entry id in Contentful making it easy to retriev
 // for example in a nested partial
 {{ with site.GetPage "<path-to-file>/<entry-id>" }}
     {{ .Title }}
+{{ end }}
+```
+
+**Simple example**
+
+```go
+{{ with .Params.myEntryField }}
+    {{ $pagePage := print "path/to/entryDir/" .id }}
+    {{ with site.GetPage $pagePath }}
+        {{ .Title }}
+        {{ .Params.someOtherField }}
+    {{ end }}
 {{ end }}
 ```
 
@@ -789,18 +822,21 @@ While this makes it easy to find the category, this format does not allow you to
 // from the config file
 module.exports = {
     repeatableTypes: [
-        {
-            id: 'post',
-            directory: 'content/posts',
-            resolveEntries: [
-                {
-                    field: 'category',
-                    resolveTo: 'fields.slug',
-                },
-            ],
-        },
-    ],
-};
+        id: 'posts',
+        directory: 'content/posts',
+        resolveEntries: {
+            category: 'fields.slug'
+        }
+        // alternative syntax
+        resolveEntries: [
+            {
+                field: 'category',
+                resolveTo: 'fields.slug',
+            },
+        ],
+    ]
+
+}
 ```
 
 Now the category field will only display the slug as the value.
@@ -823,11 +859,17 @@ repeatableTypes: [
         id: 'youtubeVideo',
         directory: 'content/_youtubeVideo',
         isHeadless: true,
+        overrides: {
+            // the name of the url field to videoUrl
+            url: {
+                fieldName: 'videoUrl'
+            }
+        }
+        // alternative syntax
         overrides: [
             {
                 field: 'url',
                 options: {
-                    // set new field name in frontmatter
                     fieldName: 'videoUrl',
                 },
             },
@@ -846,17 +888,29 @@ repeatableTypes: [
         id: 'youtubeVideo',
         directory: 'content/_youtubeVideo',
         isHeadless: true,
+        overrides: {
+            url: {
+                fieldName: 'videoId',
+                // "value" is whatever value is currently saved in the field.
+                // in this case it's a url for a youtube video
+                valueTransformer: (value) => {
+                    if (!value) {
+                            return null;
+                        }
+                    const url = new URL(value);
+                    // extract the video id from the url and return it
+                    return url.searchParams.get('v');
+                }
+            }
+        }
+        // alternative syntax
         overrides: [
             {
                 field: 'url',
                 options: {
                     fieldName: 'videoId',
-                    // "value" is whatever value is currently saved in the field.
-                    // in this case it's a url for a youtube video
                     valueTransformer: (value) => {
-                        const url = new URL(value);
-                        // extract the video id from the url and return it
-                        return url.searchParams.get('v');
+                        // transform the value
                     },
                 },
             },
@@ -872,27 +926,23 @@ repeatabledTypes: [
     {
         id: 'post',
         directory: 'content/posts',
-        overrides: [
-            {
-                // the author field is a multi-reference field
-                field: 'authors',
-                options: {
-                    valueTransformer: (authorRefs) => {
-                        const authors = [];
-                        for (const ref of authorRefs) {
-                            // get the name, photo, and bio of the author
-                            // and add it to the array
-                            authors.push({
-                                name: ref.fields.name,
-                                photo: ref.fields.photo.fields.file.url,
-                                bio: ref.fields.bio,
-                            });
-                        }
-                        return authors;
-                    },
+        overrides: {
+            authors: {
+                valueTransformer: (authorRefs) => {
+                    const authors = [];
+                    for (const ref of authorRefs) {
+                        // get the name, photo, and bio of the author
+                        // and add it to the array
+                        authors.push({
+                            name: ref.fields.name,
+                            photo: ref.fields.photo.fields.file.url,
+                            bio: ref.fields.bio,
+                        });
+                    }
+                    return authors;
                 },
             },
-        ],
+        },
     },
 ];
 ```
