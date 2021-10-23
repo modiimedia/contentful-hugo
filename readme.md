@@ -8,16 +8,17 @@ This is a CLI tool that pulls data from Contentful CMS and turns it into Markdow
 
 ## Features
 
--   Markdown and YAML output
+-   Outputs to Markdown, YAML, or JSON files
 -   Singleton support
 -   Rich text field support
--   Multilingual Support
+-   Multilingual support
 -   Default shortcodes for rich text content
--   Automatic Asset field resolution
+-   Automatic asset field resolution
 -   Customizable linked entry resolution
--   Content Filters
--   Supports the Content Preview API
+-   Content filters
+-   Content Preview API support
 -   Field name and field value overrides
+-   Custom field support
 -   Server mode to receive webhook triggers from Contentful
 
 ## Table of Contents
