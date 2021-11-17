@@ -10,6 +10,7 @@ import {
     replaceBackslashesWithForwardSlashes,
 } from '@helpers/strings';
 import { LOG_PREFIX } from '@/helpers/contants';
+import { log } from '@/helpers/logger';
 
 const createWatcher = (config: ContentfulHugoConfig): void => {
     if (!config.singleTypes || !config.staticContent.length) {
@@ -53,15 +54,15 @@ const createWatcher = (config: ContentfulHugoConfig): void => {
         persistent: true,
     });
     watcher.on('add', (path) => {
-        console.log(`${LOG_PREFIX} ${path} added`);
+        log(`${LOG_PREFIX} ${path} added`);
         return handleCopy(replaceBackslashesWithForwardSlashes(path));
     });
     watcher.on('change', (path) => {
-        console.log(`${LOG_PREFIX} ${path} changed`);
+        log(`${LOG_PREFIX} ${path} changed`);
         return handleCopy(replaceBackslashesWithForwardSlashes(path));
     });
     watcher.on('unlink', (path) => {
-        console.log(`${LOG_PREFIX} ${path} deleted`);
+        log(`${LOG_PREFIX} ${path} deleted`);
         return handleDelete(replaceBackslashesWithForwardSlashes(path));
     });
 };

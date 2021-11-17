@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import getEntryFields from './getEntryFields';
 import getAssetFields from './getAssetFields';
+import { log } from '@/helpers/logger';
 
 const mapDataNode = (node: any = {}) => {
     const { target } = node;
@@ -13,7 +14,7 @@ const mapDataNode = (node: any = {}) => {
                     return getAssetFields(target);
             }
         } else {
-            console.log(node);
+            log(node);
         }
     }
     return node;

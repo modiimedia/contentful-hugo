@@ -2,6 +2,7 @@ import { remove } from 'fs-extra';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { LOG_PREFIX } from '@helpers/contants';
 import { ContentfulHugoConfig } from './config';
+import { log } from '@/helpers/logger';
 
 const cleanDirectories = async (
     config: ContentfulHugoConfig
@@ -34,7 +35,7 @@ const cleanDirectories = async (
     for (const dir of dirs) {
         tasks.push(
             remove(dir).then(() => {
-                console.log(`${LOG_PREFIX} cleaned ./${dir}`);
+                log(`${LOG_PREFIX} cleaned ./${dir}`);
             })
         );
     }

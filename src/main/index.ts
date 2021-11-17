@@ -16,6 +16,7 @@ import { isValidFileExtension } from './config/utilities';
 import { copyStaticContent } from './staticContent/fileManager';
 
 import Limiter = require('async-limiter');
+import { log, LogTypes } from '@/helpers/logger';
 
 export interface ContentSettings {
     /**
@@ -63,7 +64,7 @@ const fetchType = (
 ): Promise<void> => {
     return getContentType(limit, skip, settings, contentfulSettings, preview)
         .then((result) => {
-            console.log(
+            log(
                 getContentTypeResultMessage(
                     result.typeId,
                     result.totalItems,
@@ -72,18 +73,19 @@ const fetchType = (
             );
         })
         .catch((error: ContentfulError | string) => {
-            console.log(error);
+            log(error);
             if (typeof error === 'string') {
                 throw new Error(error);
             }
             const { sys } = error;
             if (sys && sys.id && sys.id === 'InvalidQuery') {
-                console.log(
+                log(
                     `   --------------------------\n   ${
                         settings.typeId
                     } - ERROR ${error.message} ${JSON.stringify(
                         error.details
-                    )})\n   --------------------------`
+                    )})\n   --------------------------`,
+                    LogTypes.warn
                 );
             } else {
                 throw new Error(`${JSON.stringify(error)}`);
@@ -143,14 +145,14 @@ const fetchDataFromContentful = async (
 
     // check for wait time (from the --wait flag)
     if (waitTime && typeof waitTime === 'number') {
-        console.log(`waiting ${waitTime}ms...`);
+        log(`waiting ${waitTime}ms...`, LogTypes.warn);
         await new Promise((resolve) => {
             setTimeout(() => {
                 resolve(null);
             }, waitTime);
         });
     }
-    console.log(
+    log(
         `\n---------------------------------------------\n   Pulling ${deliveryMode} from Contentful...\n---------------------------------------------\n`
     );
 
@@ -235,8 +237,9 @@ const fetchDataFromContentful = async (
                 jobs.push(job);
             }
         } else {
-            console.log(
-                `   ERROR: extension "${settings.fileExtension}" not supported`
+            log(
+                `   ERROR: extension "${settings.fileExtension}" not supported`,
+                LogTypes.warn
             );
         }
     };
@@ -271,7 +274,7 @@ const fetchDataFromContentful = async (
             });
         }
         t.onDone(() => {
-            console.log(`\n---------------------------------------------\n`);
+            log(`\n---------------------------------------------\n`);
             resolve();
         });
     });

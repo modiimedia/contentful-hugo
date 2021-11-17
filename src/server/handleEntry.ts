@@ -4,6 +4,7 @@ import { Entry } from 'contentful';
 import determineFileLocations from './determineFileLocation';
 import fetchEntry from './fetchEntryFromContentful';
 import deleteFile from './deleteFile';
+import { log } from '@/helpers/logger';
 
 export interface EntryUpdatePayload {
     entryId: string;
@@ -27,7 +28,7 @@ const updateEntry = (
                 false
             );
             for (const location of fileLocations) {
-                console.log(`[contentful hugo] created ${resolve(location)}`);
+                log(`[contentful hugo] created ${resolve(location)}`);
             }
             const message = `Created ${fileLocations.length} file${
                 fileLocations.length === 1 ? '' : 's'

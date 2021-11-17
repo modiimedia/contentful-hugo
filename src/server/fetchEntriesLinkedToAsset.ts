@@ -1,3 +1,4 @@
+import { log } from '@/helpers/logger';
 import { ContentfulHugoConfig } from '@/main';
 import createClient from '@helpers/contentful';
 import fetchEntryFromContentful from './fetchEntryFromContentful';
@@ -47,7 +48,7 @@ const fetchEntriesLinkedToAsset = async (
         );
     }
     await Promise.all(tasks);
-    console.log(`[contentful hugo] fetched entries linked to asset ${assetId}`);
+    log(`[contentful hugo] fetched entries linked to asset ${assetId}`);
 };
 
 export default fetchEntriesLinkedToAsset;

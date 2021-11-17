@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import { LOG_PREFIX } from './helpers/contants';
+import { initLogger } from './helpers/logger';
 import {
     initializeDirectory,
     loadConfig,
@@ -22,16 +23,17 @@ yargs
         server: { type: 'boolean', default: false, alias: 'S' },
         port: { type: 'number', default: 1414 },
         clean: { type: 'boolean', default: false },
+        quiet: { type: 'boolean', default: false, alias: 'Q' },
     })
     .describe({
         preview: 'Pulls published and unplublished entries',
         init: 'Initialize directory for Contentful-Hugo',
         wait: 'Wait X number of ms before fetching data',
         config: 'Specify path to a config file',
-        server:
-            'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
+        server: 'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
         port: 'Specify server port',
         clean: 'Delete all output directories',
+        quiet: 'Run without emitting any logs',
     })
     .usage('Usage: contentful-hugo [flags]');
 
@@ -43,11 +45,14 @@ interface CliArgs {
     server: boolean;
     port: number;
     clean: boolean;
+    quiet: boolean;
 }
 
-const argv = (yargs.argv as unknown) as CliArgs;
+const argv = yargs.argv as unknown as CliArgs;
 
 const initialize = (): Promise<unknown> | unknown => {
+    const log = initLogger(argv.quiet);
+
     // contentful-hugo --init
     if (argv.init) {
         return initializeDirectory();
@@ -66,7 +71,7 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
         }
 
         if (config.staticContent && config.staticContent.length) {
-            console.log(`${LOG_PREFIX} Copying static content...`);
+            log(`${LOG_PREFIX} Copying static content...`);
             await copyStaticContent(config);
         }
 

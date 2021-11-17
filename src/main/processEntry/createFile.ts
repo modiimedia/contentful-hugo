@@ -8,6 +8,7 @@ import {
 } from 'fs-extra';
 import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import { log } from '@/helpers/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const YAML = require('json-to-pretty-yaml');
@@ -204,7 +205,7 @@ const createFile = async (
     const filePath = determineFilePath(contentSettings, entryId);
     await writeFile(filePath, fileContent).catch((error) => {
         if (error) {
-            console.log(error);
+            log(error);
         }
     });
 

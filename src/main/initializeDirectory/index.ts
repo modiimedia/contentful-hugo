@@ -1,6 +1,7 @@
 import { ensureDir, pathExists, writeFile } from 'fs-extra';
 import shortcodes from './shortcodes';
 import { loadConfig } from '@/main/config';
+import { log } from '@/helpers/logger';
 
 const wait = (milli = 1000): Promise<void> => {
     return new Promise((resolve) => {
@@ -11,7 +12,7 @@ const wait = (milli = 1000): Promise<void> => {
 };
 
 const generateConfig = async (filepath: string) => {
-    console.log(`creating ./contentful-hugo.config.js`);
+    log(`creating ./contentful-hugo.config.js`);
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo#configuration for configuration instructions
 
 /**
@@ -23,11 +24,11 @@ module.exports = {
     repeatableTypes: [],
 };`;
     await writeFile(filepath, configContent);
-    console.log('config file created\n');
+    log('config file created\n');
 };
 
 const checkForConfig = async () => {
-    console.log(`checking for config...`);
+    log(`checking for config...`);
     await wait(1000);
     const config = await loadConfig();
     const filepath = './contentful-hugo.config.js';
@@ -36,7 +37,7 @@ const checkForConfig = async () => {
     }
     const { singleTypes, repeatableTypes } = config;
     if (singleTypes || repeatableTypes) {
-        console.log(`config already exists\n`);
+        log(`config already exists\n`);
         return null;
     }
     return generateConfig(filepath);
@@ -77,7 +78,7 @@ const replaceVariablesWithValues = (template: string): string => {
 };
 
 const addShortcodes = async (override = false) => {
-    console.log('adding shortcodes for rich text...');
+    log('adding shortcodes for rich text...');
     await wait(1000);
     const directory = './layouts/shortcodes/contentful-hugo';
     await ensureDir(directory);
@@ -87,10 +88,10 @@ const addShortcodes = async (override = false) => {
         const finalTemplate = replaceVariablesWithValues(template);
         const filepath = `${directory}/${filename}`;
         if ((await pathExists(filepath)) && !override) {
-            console.log(`${filepath} already exists`);
+            log(`${filepath} already exists`);
         } else {
             await writeFile(filepath, finalTemplate);
-            console.log(`created ${filepath}`);
+            log(`created ${filepath}`);
         }
     };
     const tasks: Promise<unknown>[] = [];
@@ -99,7 +100,7 @@ const addShortcodes = async (override = false) => {
     });
 
     await Promise.all(tasks).then(() => {
-        console.log('\n');
+        log('\n');
     });
 
     return null;
