@@ -16,7 +16,7 @@ export const log = (
     message: unknown,
     type: LogTypes = LogTypes.log,
     category: LogCategories = LogCategories.default
-) => {
+): void => {
     const emitLog = () => {
         switch (type) {
             case LogTypes.info:
@@ -44,7 +44,10 @@ export const log = (
 /**
  * Initialize the logger state. Should run at the beginning of the app.
  */
-export const initLogger = (quietMode = false, verboseMode = false) => {
+export const initLogger = (
+    quietMode = false,
+    verboseMode = false
+): typeof log => {
     isQuietMode = quietMode;
     isVerboseMode = verboseMode;
     return log;
