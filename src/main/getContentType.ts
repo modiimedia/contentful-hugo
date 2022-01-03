@@ -49,7 +49,7 @@ const getContentType = async (
     contentSettings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     previewMode = false,
-    itemsPulled?: number,
+    itemsPulled: number = 0,
     directoryPrepped = false
 ): Promise<{
     totalItems: number;
@@ -79,6 +79,7 @@ const getContentType = async (
     const client = createClient(options);
     // check for file extension default to markdown
     if (!contentSettings.fileExtension) {
+        // eslint-disable-next-line no-param-reassign
         contentSettings.fileExtension = 'md';
     }
     const query: ContentfulClientQuery = {

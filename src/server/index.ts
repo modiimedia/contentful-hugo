@@ -131,9 +131,7 @@ const startServer = (
     if (!config) {
         throw new Error('Missing contentful hugo config');
     }
-    app.get('/status', (_req, res: Response) => {
-        return res.status(200).send('ok');
-    });
+    app.get('/status', (_req, res: Response) => res.status(200).send('ok'));
     app.post('/', async (req: ContentfulWebhookRequest, res: Response) => {
         if (!req.body.sys) {
             return res.status(401).send();
@@ -170,9 +168,7 @@ const startServer = (
             switch (sys.type) {
                 case 'Entry':
                     return updateEntry(config, sys, previewMode).then(
-                        (payload) => {
-                            return res.status(200).send(payload);
-                        }
+                        (payload) => res.status(200).send(payload)
                     );
                 case 'Asset':
                     // handle asset publish / changes (find affected entries and refetch them)
@@ -189,9 +185,7 @@ const startServer = (
             switch (sys.type) {
                 case 'Entry':
                 case 'DeletedEntry':
-                    return removeEntry(config, sys).then((payload) => {
-                        return res.status(200).send(payload);
-                    });
+                    return removeEntry(config, sys).then((payload) => res.status(200).send(payload));
                 case 'Asset':
                     // handle asset removal (find entries connected to an asset that has been modified and refetch them)
                     break;

@@ -16,9 +16,7 @@ for (const name of codeNames) {
     const noExtension = name.replace('.html', '');
     const camelCaseName: string = noExtension.replace(
         /-([a-z])/g,
-        function (g) {
-            return g[1].toUpperCase();
-        }
+        (g) => g[1].toUpperCase()
     );
     shortcodes[camelCaseName] = {
         filename: name,

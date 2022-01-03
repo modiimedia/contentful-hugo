@@ -6,7 +6,7 @@ import createFile from './createFile';
 export const overrideFileName = (
     nameStr: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    entry: any = {},
+    entry: any,
     locale: string
 ): string | null => {
     const strParts = nameStr.split('.');

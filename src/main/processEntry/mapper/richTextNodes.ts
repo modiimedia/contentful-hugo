@@ -12,6 +12,8 @@ const mapDataNode = (node: any = {}) => {
                     return getEntryFields(target);
                 case 'Asset':
                     return getAssetFields(target);
+                default:
+                    break;
             }
         } else {
             log(node);
@@ -23,6 +25,7 @@ const mapDataNode = (node: any = {}) => {
 const mapContentNode = (node = []) => {
     const contentArr = [];
     for (const item of node) {
+        // eslint-disable-next-line no-use-before-define
         contentArr.push(richTextNodes(item));
     }
     return contentArr;

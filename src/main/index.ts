@@ -1,3 +1,4 @@
+import Limiter = require('async-limiter');
 import { loadConfig, ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
@@ -15,8 +16,9 @@ import initializeDirectory from './initializeDirectory';
 import { isValidFileExtension } from './config/utilities';
 import { copyStaticContent } from './staticContent/fileManager';
 
-import Limiter = require('async-limiter');
 import { log, LogTypes } from '@/helpers/logger';
+
+type VoidFunction = () => void;
 
 export interface ContentSettings {
     /**
@@ -61,8 +63,8 @@ const fetchType = (
     settings: ContentSettings,
     contentfulSettings: ConfigContentfulSettings,
     preview = false
-): Promise<void> => {
-    return getContentType(limit, skip, settings, contentfulSettings, preview)
+): Promise<void> =>
+    getContentType(limit, skip, settings, contentfulSettings, preview)
         .then((result) => {
             log(
                 getContentTypeResultMessage(
@@ -91,7 +93,6 @@ const fetchType = (
                 throw new Error(`${JSON.stringify(error)}`);
             }
         });
-};
 
 const configCheck = (config: ContentfulHugoConfig) => {
     const { space, token, environment } = config.contentful;
@@ -232,7 +233,7 @@ const fetchDataFromContentful = async (
                     limit: isSingle ? 1 : 1000,
                     skip: 0,
                     contentSettings: settings,
-                    isPreview: isPreview,
+                    isPreview,
                 };
                 jobs.push(job);
             }

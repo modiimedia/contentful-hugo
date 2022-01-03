@@ -1,6 +1,4 @@
-const removeLeadingAndTrailingSlashes = (string: string): string => {
-    return string.replace(/^\/+|\/+$/g, '');
-};
+const removeLeadingAndTrailingSlashes = (string: string): string => string.replace(/^\/+|\/+$/g, '');
 
 const isMultilineString = (string: string): boolean => {
     const array = string.split(`\n`);
@@ -39,9 +37,7 @@ interface StringSpaceCleanupObject {
     removedSpaces: string;
     count: number;
 }
-const characterIsWhiteSpace = (char: string): boolean => {
-    return /\s/.test(char);
-};
+const characterIsWhiteSpace = (char: string): boolean => /\s/.test(char);
 
 const leadingSpaces = (string: string, count = 0): StringSpaceCleanupObject => {
     if (characterIsWhiteSpace(string.charAt(0))) {
@@ -85,13 +81,9 @@ const trailingSpaces = (
  * @param {String} ext
  * @returns {boolean}
  */
-const endsWith = (str: string | undefined | null, ext: string): boolean => {
-    return new RegExp(`${ext}$`).test(str || '');
-};
+const endsWith = (str: string | undefined | null, ext: string): boolean => new RegExp(`${ext}$`).test(str || '');
 
-const replaceBackslashesWithForwardSlashes = (input: string): string => {
-    return input.replace(/\\/g, '/');
-};
+const replaceBackslashesWithForwardSlashes = (input: string): string => input.replace(/\\/g, '/');
 
 export {
     characterIsWhiteSpace,

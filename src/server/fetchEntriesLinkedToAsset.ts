@@ -1,6 +1,6 @@
+import createClient from '@helpers/contentful';
 import { log } from '@/helpers/logger';
 import { ContentfulHugoConfig } from '@/main';
-import createClient from '@helpers/contentful';
 import fetchEntryFromContentful from './fetchEntryFromContentful';
 
 export interface AssetUpdatePayload {

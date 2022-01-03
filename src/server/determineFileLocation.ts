@@ -1,9 +1,9 @@
 import { pathExists, readFile } from 'fs-extra';
-import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import {
     determineDynamicLocation,
     determineFilePath,
 } from '@main/processEntry/createFile';
+import { ContentfulHugoConfig, ContentSettings } from '@/main';
 import {
     getOverrideConfigs,
     getResolveEntryConfigs,
@@ -123,8 +123,10 @@ const determineFileLocations = async (
     for (const item of singleConfigs) {
         const location = determineFilePath(item, entryId);
         if (isDeleting) {
+            // eslint-disable-next-line no-await-in-loop
             const fileExists = await pathExists(location);
             if (fileExists) {
+                // eslint-disable-next-line no-await-in-loop
                 const data = await readFile(location);
                 if (data.includes(`id: "${entryId}"`)) {
                     locations.push(location);
@@ -143,6 +145,7 @@ const determineFileLocations = async (
         itemCopy.fileName = entryId;
         let path = determineFilePath(itemCopy, entryId);
         if (item.fileName) {
+            // eslint-disable-next-line no-await-in-loop
             path = await determineDynamicLocation(path);
         }
         if (!isDeleting && path.includes(`/${item.fileName}`)) {

@@ -18,11 +18,9 @@ const determineFileType = (fileName: string): string | null => {
     }
 };
 
-const isValidFileExtension = (extension: string | undefined): boolean => {
-    return ['md', 'yaml', 'yml', 'json'].some((ext: string) =>
+const isValidFileExtension = (extension: string | undefined): boolean => ['md', 'yaml', 'yml', 'json'].some((ext: string) =>
         endsWith(extension || 'md', ext)
     );
-};
 
 const isTypeConfig = (input: unknown): input is TypeConfig[] => {
     const mappedInput = input as TypeConfig[];

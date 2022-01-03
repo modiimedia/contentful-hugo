@@ -18,6 +18,7 @@ const loadConfig = async (
      */
     fileName: string | null = null
 ): Promise<ContentfulHugoConfig | false> => {
+    // eslint-disable-next-line no-param-reassign
     rootDir = path.resolve(rootDir);
     if (fileName) {
         const result = await loadFile(rootDir, fileName);
@@ -38,8 +39,8 @@ const loadConfig = async (
     for (const config of defaultConfigs) {
         const file = loadFile(rootDir, config).then((result) => {
             if (result) {
-                const config = checkContentfulSettings(result);
-                configList.push(config);
+                const conf = checkContentfulSettings(result);
+                configList.push(conf);
             }
         });
         tasks.push(file);

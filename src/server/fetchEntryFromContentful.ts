@@ -1,6 +1,6 @@
+import getContentType from '@main/getContentType';
 import { ContentfulHugoConfig } from '@/main';
 import { ConfigContentfulSettings } from '@/main/config/types';
-import getContentType from '@main/getContentType';
 import {
     getRepeatableTypeConfigs,
     getSingleTypeConfigs,

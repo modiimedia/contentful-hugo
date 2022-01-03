@@ -70,9 +70,11 @@ export const determineFilePath = (
             : fileExtension;
     if (isHeadless && !isSingle) {
         return `./${path}/${fName}/index.${ext}`;
-    } else if (isTaxonomy) {
+    }
+    if (isTaxonomy) {
         return `./${path}/${fName}/_index.${ext}`;
-    } else if (isSingle) {
+    }
+    if (isSingle) {
         return `./${path}/${fName}.${ext}`;
     }
     return `./${path}/${fName}.${ext}`;
@@ -142,7 +144,7 @@ export const determineDynamicLocation = async (
 };
 
 const setFileContent = (
-    frontMatter: unknown = {},
+    frontMatter: unknown,
     fileExtension: string | null,
     mainContent: string | null
 ) => {
@@ -177,7 +179,7 @@ const setFileContent = (
 const createFile = async (
     contentSettings: ContentSettings,
     entryId: string,
-    frontMatter: unknown = {},
+    frontMatter: unknown,
     mainContent: string | null
 ): Promise<void> => {
     const { fileExtension, isHeadless, isTaxonomy, isSingle } = contentSettings;

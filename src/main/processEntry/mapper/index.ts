@@ -117,12 +117,12 @@ export const isDateField = (input: unknown): boolean => {
         }
     }
     const year = input.split('-')[0];
-    if (isNaN(Number(year))) {
+    if (Number.isNaN(Number(year))) {
         return false;
     }
     if (typeof input === 'string') {
         const date = Date.parse(input);
-        if (isNaN(date)) {
+        if (Number.isNaN(date)) {
             return false;
         }
         return true;
@@ -183,6 +183,7 @@ const mapFields = (
         let fieldName = field;
         const fieldOverride = shouldOverride(field, overrides);
         if (fieldOverride && fieldOverride.options?.fieldName) {
+            // eslint-disable-next-line prefer-destructuring
             fieldName = fieldOverride.options.fieldName;
         }
         if (fieldOverride && fieldOverride.options?.valueTransformer) {

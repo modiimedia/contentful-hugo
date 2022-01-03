@@ -35,7 +35,7 @@ const checkContentfulSettings = (config: {
 const loadJavascriptConfigFile = (
     filePath: string
 ): ContentfulHugoConfig | false => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line global-require
     let configObject = require(filePath);
     if (configObject && typeof configObject === 'object') {
         configObject = checkContentfulSettings(configObject);
@@ -65,7 +65,7 @@ const loadYamlConfigFile = async (
  */
 const loadFile = async (
     rootDir = '.',
-    fileName: string
+    fileName: string = ''
 ): Promise<ContentfulHugoConfig | false> => {
     const filePath = path.resolve(rootDir, fileName);
     if (await pathExists(filePath)) {

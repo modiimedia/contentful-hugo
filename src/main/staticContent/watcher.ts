@@ -1,14 +1,14 @@
 import chokidar from 'chokidar';
 import {
+    removeLeadingAndTrailingSlashes,
+    replaceBackslashesWithForwardSlashes,
+} from '@helpers/strings';
+import {
     cleanInputAndOutput,
     copyFileToOutputDirectory,
     deleteFileFromOutputDirectory,
 } from './fileManager';
 import { ContentfulHugoConfig } from '../config';
-import {
-    removeLeadingAndTrailingSlashes,
-    replaceBackslashesWithForwardSlashes,
-} from '@helpers/strings';
 import { LOG_PREFIX } from '@/helpers/contants';
 import { log } from '@/helpers/logger';
 
@@ -32,22 +32,22 @@ const createWatcher = (config: ContentfulHugoConfig): void => {
         const pathParts = filePath.split('/');
         return pathParts[0];
     };
-    const handleCopy = (path: string) => {
+    const handleCopy = async (path: string) => {
         const rootDir = getRootDir(path);
         const outDir = directoryMap[rootDir];
         if (!outDir) {
             return;
         }
-        return copyFileToOutputDirectory(path, rootDir, outDir);
+        await copyFileToOutputDirectory(path, rootDir, outDir);
     };
 
-    const handleDelete = (path: string) => {
+    const handleDelete = async (path: string) => {
         const rootDir = getRootDir(path);
         const outDir = directoryMap[rootDir];
         if (!outDir) {
             return;
         }
-        return deleteFileFromOutputDirectory(path, rootDir, outDir);
+        await deleteFileFromOutputDirectory(path, rootDir, outDir);
     };
 
     const watcher = chokidar.watch(watchPaths, {
