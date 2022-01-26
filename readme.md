@@ -257,7 +257,7 @@ module.exports = {
     staticContent: [
         {
             inputDir: 'static_content',
-            ouputDir: 'content',
+            outputDir: 'content',
         },
     ],
 };
