@@ -43,13 +43,13 @@
         "@contentful/rich-text-types": "^15.12.0",
         "async-limiter": "^2.0.0",
         "chokidar": "^3.5.3",
-        "contentful": "^9.1.19",
+        "contentful": "^9.1.22",
         "dotenv": "^16.0.0",
         "express": "^4.17.3",
         "fs-extra": "^10.0.1",
         "js-yaml": "^4.1.0",
         "json-to-pretty-yaml": "^1.2.2",
-        "yargs": "^17.4.0"
+        "yargs": "^17.4.1"
     },
     "bin": {
         "contentful-hugo": "dist/cli.js"
@@ -64,9 +64,9 @@
         "@types/fs-extra": "^9.0.13",
         "@types/jest": "^27.4.1",
         "@types/js-yaml": "^4.0.5",
-        "@typescript-eslint/eslint-plugin": "^5.18.0",
-        "@typescript-eslint/parser": "^5.18.0",
-        "eslint": "^8.12.0",
+        "@typescript-eslint/eslint-plugin": "^5.19.0",
+        "@typescript-eslint/parser": "^5.19.0",
+        "eslint": "^8.13.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.26.0",
