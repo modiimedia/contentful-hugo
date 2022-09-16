@@ -54,6 +54,8 @@ const loadConfig = async (
     });
 };
 
+export const defineConfig = (config: Partial<ContentfulHugoConfig>) => config;
+
 export {
     loadConfig,
     checkContentfulSettings,

@@ -1,5 +1,5 @@
 import Limiter = require('async-limiter');
-import { loadConfig, ContentfulHugoConfig } from './config';
+import { defineConfig, loadConfig, ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
     CustomFieldsConfig,
@@ -282,6 +282,7 @@ const fetchDataFromContentful = async (
 };
 
 export {
+    defineConfig,
     fetchDataFromContentful,
     loadConfig,
     initializeDirectory,
