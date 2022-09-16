@@ -57,7 +57,7 @@ This is an optional step but it will give you access to more features and longer
     ngrok authtoken <your-token-goes-here>
     ```
 
-## 6) Run Ngrok on Port 1414
+## 6) Run Ngrok for Port 1414
 
 ```bash
 ngrok http 1414
