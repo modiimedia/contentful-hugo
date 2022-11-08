@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "allowJs": true,
+        "allowJs": false,
         "declaration": true,
         "rootDir": "./src",
         "outDir": "./dist",
@@ -18,11 +18,12 @@
             "@main/*": ["main/*"],
             "@server/*": ["server/*"]
         },
-        "typeRoots": ["./types", "./node_modules/@types"],
+        "types": ["node", "vitest/globals", "vite/client"],
+        "typeRoots": ["./types"],
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
     "include": ["./src/**/*", "src/cli.ts"],
-    "exclude": ["node_modules", "dist", "**/*.test.ts", "**.*.test.js", "types"]
+    "exclude": ["node_modules", "dist"]
 }

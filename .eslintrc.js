@@ -3,6 +3,9 @@ module.exports = {
         es2021: true,
         node: true,
     },
+    globals: {
+        vitest: true,
+    },
     extends: ['airbnb-base', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {

@@ -1,4 +1,4 @@
-import Limiter = require('async-limiter');
+import Limiter from 'async-limiter';
 import { defineConfig, loadConfig, ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,

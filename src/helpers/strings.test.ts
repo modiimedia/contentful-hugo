@@ -1,4 +1,4 @@
-const {
+import {
     replaceSpecialEntities,
     isMultilineString,
     removeLeadingAndTrailingSlashes,
@@ -6,7 +6,7 @@ const {
     trailingSpaces,
     characterIsWhiteSpace,
     endsWith,
-} = require('./strings');
+} from './strings';
 
 describe('File Ending Tests', () => {
     test('Regular md file', () => {
