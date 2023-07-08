@@ -189,8 +189,9 @@ You can also specify a custom config file using the `--config` flag. (Javascript
 
 ```javascript
 // contentful-hugo.config.js
+const { defineConfig } = require('contentful-hugo');
 
-module.exports = {
+module.exports = defineConfig({
     // fetches from default locale if left blank
     locales: ['en-US', 'fr-FR'],
 
@@ -260,7 +261,7 @@ module.exports = {
             outputDir: 'content',
         },
     ],
-};
+});
 ```
 
 #### Example YAML Config
@@ -376,14 +377,15 @@ The config also has a `locales` field that allows you to specify what locales yo
 By default locale specific file extensions will be used for multiple translations.
 
 ```js
+const { defineConfig } = require('contentful-hugo');
 // produce en-us.md and fr-fr.md files
-module.exports = {
+module.exports = defineConfig({
     locales: ['en-US', 'fr-FR'];
     // rest of config
-}
+})
 
 // produce en.md and fr.md files
-module.exports = {
+module.exports = defineConfig({
     locales: [
         {
             code: 'en-US',
@@ -395,10 +397,10 @@ module.exports = {
         }
     ]
     // rest of config
-}
+})
 
 // produce en-us.md files and fr.md files
-module.exports = {
+module.exports = defineConfig({
     locales: [
         'en-US',
         {
@@ -407,7 +409,7 @@ module.exports = {
         }
     ]
     // rest of config
-}
+})
 ```
 
 After configuring locales in Contentful Hugo you will need to update your Hugo config to account for these locales. Consult the [Hugo docs](https://gohugo.io/content-management/multilingual/) for more details.
@@ -429,7 +431,9 @@ There are sometimes cases where you will want to place content in a directory ba
 When using locale specific directories the locale specific file extensions (i.e. `en.md` or `fr.md`) get dropped
 
 ```js
-module.exports = {
+const { defineConfig } = require('contentful-hugo');
+
+module.exports = defineConfig({
     locales: ['en', 'fr']
     singleTypes: [
         {
@@ -455,7 +459,7 @@ module.exports = {
             */
         },
     ],
-};
+});
 ```
 
 ##### <u>**Static Content Options**</u>
@@ -467,7 +471,9 @@ To deal with this problem Contentful-Hugo has a `staticContent` parameter. This 
 For example in the config below `./static_content/posts/my-post.md` will get copied to `./content/posts/my-post.md`, and `./static_data/global-settings.yaml` will be copied to `./data/global-settings.yaml`.
 
 ```js
-module.exports = {
+const { defineConfig } = require('contentful-hugo');
+
+module.exports = defineConfig({
     // rest of config
     staticContent: [
         {
@@ -481,7 +487,7 @@ module.exports = {
             outputDir: 'data',
         },
     ],
-};
+});
 ```
 
 Contentful-Hugo will also watch for file changes in the inputDir's while running in server mode.
@@ -494,7 +500,7 @@ Here is an example of dynamically change the `token`, `previewToken`, and `envir
 
 ```javascript
 // contentful-hugo.config.js
-
+const { defineConfig } = require('contentful-hugo');
 require('dotenv').config(); // assuming you have "dotenv" in your dependencies
 
 const myMasterToken = process.env.CONTENTFUL_MASTER_TOKEN;
@@ -505,7 +511,7 @@ const myStagingPreviewToken = process.env.CONTENTFUL_STAGING_PREVIEW_TOKEN;
 // set some condition
 const isStaging = true || false;
 
-module.exports = {
+module.exports = defineConfig({
     contentful: {
         space: 'my-space-id',
         token: isStaging ? myStagingToken : myMasterToken,
@@ -513,15 +519,16 @@ module.exports = {
         environment: isStaging ? 'staging' : 'master',
     },
     // rest of config
-};
+});
 ```
 
 ##### Overriding Fields and Field Values
 
 ```js
+const { defineConfig } = require('contentful-hugo');
 // contentful-hugo.config.js
 
-module.exports = {
+module.exports = defineConfig({
     repeatableTypes: [
         {
             id: "trips",
@@ -546,10 +553,10 @@ module.exports = {
             }
         }
     ]
-}
+})
 
 // ALTERNATIVE SYNTAX
-module.exports = {
+module.exports = defineConfig({
     repeatableTypes: [
         {
             id: "trips",
@@ -578,14 +585,22 @@ module.exports = {
             }]
         }
     ]
-}
+})
 ```
 
 #### Config File Autocomplete
 
-For JS config files you can import a `ContentfulHugoConfig` type which will enable autocomplete in text editors that support Typescript typings. (Tested in Visual Studio Code.)
+For JS config files you can use the `defineConfig` helper or you can import the `ContentfulHugoConfig` type.
 
 ```js
+//////////// OPTION 1 ////////////
+const { defineConfig } = require('contentful-hugo');
+
+module.exports = defineConfig({
+    // config goes here
+});
+
+//////////// OPTION 2 ////////////
 /**
  * @type {import('contentful-hugo').ContentfulHugoConfig}
  */
@@ -821,7 +836,7 @@ While this makes it easy to find the category, this format does not allow you to
 
 ```js
 // from the config file
-module.exports = {
+module.exports = defineConfig({
     repeatableTypes: [
         id: 'posts',
         directory: 'content/posts',
@@ -836,8 +851,7 @@ module.exports = {
             },
         ],
     ]
-
-}
+})
 ```
 
 Now the category field will only display the slug as the value.
@@ -971,7 +985,7 @@ Be aware that the following search parameters will be ignored `content_type`, `s
 #### Examples:
 
 ```js
-module.exports = {
+module.exports = defineConfig({
     singleTypes: [
         // get a homepage with a specific entryId
         {
@@ -1002,8 +1016,7 @@ module.exports = {
             },
         },
     ];
-
-}
+})
 ```
 
 ### Adding Custom Fields To Frontmatter
@@ -1021,7 +1034,7 @@ Let's say we have an author content type with the following fields:
 Here's an example config:
 
 ```js
-module.exports = {
+module.exports = defineConfig({
     // rest of config
     repeatableTypes: [
         {
@@ -1038,7 +1051,7 @@ module.exports = {
             },
         },
     ],
-};
+});
 ```
 
 Here's what that config will result in
