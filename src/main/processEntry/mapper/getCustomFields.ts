@@ -12,7 +12,7 @@ const getCustomFields = (
     const fields: AppendableFieldsResult = {};
     if (typeof appendFields === 'object') {
         Object.keys(appendFields).forEach((key) => {
-            const fieldVal = appendFields[key];
+            const fieldVal = appendFields[key] as unknown;
             switch (typeof fieldVal) {
                 case 'function':
                     fields[key] = fieldVal(entry);

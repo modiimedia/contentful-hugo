@@ -27,9 +27,10 @@ export interface OverrideConfigMap {
     [fieldName: string]: OverrideConfig['options'];
 }
 
-export interface CustomFieldsConfig {
-    [fieldName: string]: unknown | ((entry: Entry) => unknown);
-}
+export type CustomFieldsFunction = (entry: Entry) => unknown;
+export type CustomFieldsInput = CustomFieldsFunction | unknown;
+
+export type CustomFieldsConfig = Record<string, CustomFieldsInput>;
 
 type fileExtensionBase = 'md' | 'yaml' | 'yml';
 
