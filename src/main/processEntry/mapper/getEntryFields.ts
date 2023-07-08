@@ -1,7 +1,7 @@
-import { Entry, EntryFields } from 'contentful';
+import { EntryFields, EntrySkeletonType } from 'contentful';
 
 const getEntryFields = (
-    entry: EntryFields.Link<Entry<unknown>>
+    entry: EntryFields.EntryLink<EntrySkeletonType>
 ): { id?: string; contentType?: string } => {
     let obj = {};
     if (entry.sys) {

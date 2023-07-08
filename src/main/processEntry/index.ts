@@ -28,7 +28,7 @@ export const overrideFileName = (
 };
 
 const processEntry = (
-    item: Entry<unknown>,
+    item: Entry,
     contentSettings: import('@main/index').ContentSettings
 ): Promise<void> => {
     const {

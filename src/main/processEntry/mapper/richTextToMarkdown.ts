@@ -29,6 +29,7 @@ import {
 } from '@helpers/strings';
 import { Entry, Asset } from 'contentful';
 import { AssetObject } from './getAssetFields';
+import { parseField } from './common';
 
 const mapEntry = (target: Entry<any>) => ({
     id: target.sys.id,
@@ -38,21 +39,27 @@ const mapEntry = (target: Entry<any>) => ({
 
 const mapAsset = (target: Asset) => {
     const { title, description, file } = target.fields;
-    const { url, details, fileName, contentType } = file;
+    const { url, details, fileName, contentType } = parseField(file) ?? {
+        url: '',
+        details: {
+            size: 0,
+        },
+        fileName: '',
+        contentType: '',
+    };
     const asset: AssetObject = {
-        title,
-        description,
+        title: typeof title === 'string' ? title : title?.['en-US'] ?? '',
+        description:
+            typeof description === 'string'
+                ? description
+                : description?.['en-US'] ?? '',
         url,
         fileName,
         assetType: contentType,
         size: details.size,
-        width: null,
-        height: null,
+        width: details.image?.width ?? null,
+        height: details.image?.height ?? null,
     };
-    if (details.image && details.image.width && details.image.height) {
-        asset.width = details.image.width;
-        asset.height = details.image.height;
-    }
     return asset;
 };
 
@@ -103,7 +110,7 @@ const optionsRenderNode = (parentContentType = ''): any => ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [BLOCKS.HR]: (_node: Hr, _next: Next) => `---\n\n`,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    [BLOCKS.EMBEDDED_ASSET]: (node: any, next: Next) => {
+    [BLOCKS.EMBEDDED_ASSET]: (node: any, _next: Next) => {
         const {
             title,
             description,

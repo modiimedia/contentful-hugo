@@ -28,7 +28,7 @@ export interface OverrideConfigMap {
 }
 
 export interface CustomFieldsConfig {
-    [fieldName: string]: unknown | ((entry: Entry<unknown>) => unknown);
+    [fieldName: string]: unknown | ((entry: Entry) => unknown);
 }
 
 type fileExtensionBase = 'md' | 'yaml' | 'yml';

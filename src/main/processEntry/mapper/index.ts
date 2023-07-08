@@ -8,6 +8,7 @@ import richTextToMarkdown from './richTextToMarkdown';
 import richTextNodes from './richTextNodes';
 import { CustomFieldsConfig, OverrideConfig } from '../../config/types';
 import getAppendableFields from './getCustomFields';
+import { parseField } from './common';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
@@ -44,12 +45,12 @@ const mapArrayField = (
     return array;
 };
 
-const mapReferenceField = (fieldContent: Entry<any> | Asset): any => {
+const mapReferenceField = (fieldContent: Entry | Asset): any => {
     switch (fieldContent.sys.type) {
         case 'Asset':
-            return getAssetFields(fieldContent);
+            return getAssetFields(fieldContent as Asset);
         case 'Entry':
-            return getEntryFields(fieldContent);
+            return getEntryFields(fieldContent as Entry);
         default:
             return fieldContent;
     }
@@ -106,7 +107,7 @@ const resolveEntry = (entry: any = {}, resolvesToString = ''): any => {
     return value;
 };
 
-export const isDateField = (input: unknown): boolean => {
+export const isDateField = (input: unknown): input is string => {
     const requiredSymbols = ['-', ':', 'T'];
     if (typeof input !== 'string') {
         return false;
@@ -179,7 +180,7 @@ const mapFields = (
 
     // loop through every field and add it to frontmatter
     for (const field of Object.keys(entry.fields)) {
-        const fieldContent = entry.fields[field];
+        const fieldContent = parseField(entry.fields[field]);
         let fieldName = field;
         const fieldOverride = shouldOverride(field, overrides);
         if (fieldOverride && fieldOverride.options?.fieldName) {
@@ -206,7 +207,7 @@ const mapFields = (
             continue;
         } else if (field === 'date') {
             // convert dates with time to ISO String so Hugo can properly Parse
-            const d = fieldContent;
+            const d = fieldContent as string;
             if (d.length > 10) {
                 frontMatter.date = new Date(d).toISOString();
             } else {
@@ -216,11 +217,13 @@ const mapFields = (
         }
         switch (typeof fieldContent) {
             case 'object':
-                if ('sys' in fieldContent) {
-                    frontMatter[fieldName] = mapReferenceField(fieldContent);
+                if ('sys' in (fieldContent as Object)) {
+                    frontMatter[fieldName] = mapReferenceField(
+                        fieldContent as Asset | Entry
+                    );
                 }
                 // rich text (see rich text function)
-                else if ('nodeType' in fieldContent) {
+                else if ('nodeType' in (fieldContent as Object)) {
                     frontMatter[fieldName] =
                         mapRichTextField(fieldContent).richText;
                     frontMatter[`${field}_plaintext`] =
@@ -228,7 +231,9 @@ const mapFields = (
                 }
                 // arrays
                 else {
-                    frontMatter[fieldName] = mapArrayField(fieldContent);
+                    frontMatter[fieldName] = mapArrayField(
+                        Array.isArray(fieldContent) ? (fieldContent as any) : []
+                    );
                 }
                 break;
             default:
@@ -263,14 +268,14 @@ const getMainContent = (
     entry: Entry<any>,
     fieldName: string
 ): string | null => {
-    const mainContentField = entry.fields[fieldName];
+    const mainContentField = parseField(entry.fields[fieldName]);
     if (
-        mainContentField &&
-        mainContentField.nodeType &&
-        mainContentField.nodeType === 'document'
+        typeof mainContentField === 'object' &&
+        'nodeType' in (mainContentField as Object) &&
+        (mainContentField as any).nodeType === 'document'
     ) {
         return richTextToMarkdown(
-            mainContentField,
+            mainContentField as any,
             entry.sys.contentType.sys.id
         );
     }

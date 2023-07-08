@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import Fastify from 'fastify';
 import { IncomingHttpHeaders } from 'http';
-import { Entry, Asset, ContentType } from 'contentful';
+import { Entry, Asset, ContentType, EntrySys } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
 import { removeEntry, updateEntry } from './handleEntry';
 import createWatcher from '@/main/staticContent/watcher';
@@ -56,7 +56,7 @@ declare module 'http' {
 
 interface ContentfulWebhookRequest {
     headers: IncomingHttpHeaders;
-    body: Entry<unknown> | Asset | ContentType;
+    body: Entry | Asset | ContentType;
 }
 
 export const isAssetTrigger = (
@@ -172,9 +172,11 @@ const startServer = async (
         if (shouldCreate(triggerType, previewMode)) {
             switch (sys.type) {
                 case 'Entry':
-                    return updateEntry(config, sys, previewMode).then(
-                        (payload) => res.status(200).send(payload)
-                    );
+                    return updateEntry(
+                        config,
+                        sys as EntrySys,
+                        previewMode
+                    ).then((payload) => res.status(200).send(payload));
                 case 'Asset':
                     // handle asset publish / changes (find affected entries and refetch them)
                     break;
@@ -190,8 +192,8 @@ const startServer = async (
             switch (sys.type) {
                 case 'Entry':
                 case 'DeletedEntry':
-                    return removeEntry(config, sys).then((payload) =>
-                        res.status(200).send(payload)
+                    return removeEntry(config, sys as EntrySys).then(
+                        (payload) => res.status(200).send(payload)
                     );
                 case 'Asset':
                     // handle asset removal (find entries connected to an asset that has been modified and refetch them)

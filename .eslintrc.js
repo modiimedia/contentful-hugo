@@ -18,6 +18,10 @@ module.exports = {
         'import/no-dynamic-require': 0,
         'no-unused-vars': 0,
         'no-shadow': 0,
+        '@typescript-eslint/no-unused-vars': [
+            1,
+            { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+        ],
         '@typescript-eslint/no-shadow': 2,
         'no-console': 0,
         semi: [2, 'always'],

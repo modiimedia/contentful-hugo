@@ -7,7 +7,7 @@ dotenv.config();
 const createContentfulClient = (
     settings: ConfigContentfulSettings,
     previewMode = false
-): ContentfulClientApi => {
+): ContentfulClientApi<undefined> => {
     const { token, previewToken, space, environment } = settings;
     if (previewMode && !previewToken) {
         throw new Error(

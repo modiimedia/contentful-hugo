@@ -16,9 +16,10 @@ export interface EntryUpdatePayload {
 
 const updateEntry = (
     config: ContentfulHugoConfig,
-    sys: Entry<unknown>['sys'],
+    sys: Entry['sys'],
     previewMode: boolean
-): Promise<EntryUpdatePayload> => fetchEntry(sys.id, sys.contentType.sys.id, config, previewMode).then(
+): Promise<EntryUpdatePayload> =>
+    fetchEntry(sys.id, sys.contentType.sys.id, config, previewMode).then(
         async () => {
             const fileLocations = await determineFileLocations(
                 config,
@@ -45,7 +46,7 @@ const updateEntry = (
 
 const removeEntry = async (
     config: ContentfulHugoConfig,
-    sys: Entry<unknown>['sys']
+    sys: Entry['sys']
 ): Promise<EntryUpdatePayload> => {
     const filePaths = await determineFileLocations(
         config,

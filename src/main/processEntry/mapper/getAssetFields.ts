@@ -1,4 +1,5 @@
-import { Asset, EntryFields } from 'contentful';
+import { Asset } from 'contentful';
+import { parseField } from './common';
 
 export interface AssetObject {
     assetType: string;
@@ -11,22 +12,16 @@ export interface AssetObject {
     height?: number | null;
 }
 
-const getAssetFields = (
-    contentfulObject: EntryFields.Object<Asset>
-): AssetObject => {
+const getAssetFields = (contentfulObject: Asset): AssetObject => {
     const frontMatter: AssetObject = {
-        assetType: contentfulObject.fields.file?.contentType || '',
-        url: contentfulObject.fields.file?.url || '',
-        title: contentfulObject.fields.title || '',
-        description: contentfulObject.fields.description || '',
+        assetType: parseField(contentfulObject.fields.file)?.contentType || '',
+        url: parseField(contentfulObject.fields.file)?.url || '',
+        title: parseField(contentfulObject.fields.title) || '',
+        description: parseField(contentfulObject.fields.description) || '',
+        size: parseField(contentfulObject.fields.file)?.details.size,
+        width: parseField(contentfulObject.fields.file)?.details.image?.width,
+        height: parseField(contentfulObject.fields.file)?.details.image?.height,
     };
-    // get specific details depending on the asset type
-    const details = contentfulObject.fields.file?.details;
-    if (frontMatter.assetType?.includes('image') && details.image) {
-        // image height and width
-        frontMatter.width = details.image.width;
-        frontMatter.height = details.image.height;
-    }
     return frontMatter;
 };
 

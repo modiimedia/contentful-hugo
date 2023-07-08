@@ -7,7 +7,7 @@ interface AppendableFieldsResult {
 
 const getCustomFields = (
     appendFields: CustomFieldsConfig,
-    entry: Entry<unknown>
+    entry: Entry
 ): AppendableFieldsResult => {
     const fields: AppendableFieldsResult = {};
     if (typeof appendFields === 'object') {

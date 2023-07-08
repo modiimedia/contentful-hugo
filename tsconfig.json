@@ -19,7 +19,7 @@
             "@server/*": ["server/*"]
         },
         "types": ["node", "vitest/globals", "vite/client"],
-        "typeRoots": ["./types"],
+        "typeRoots": ["./types", "node_modules/@types", "node_modules"],
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true

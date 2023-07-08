@@ -1,6 +1,6 @@
 import { ContentSettings } from '@main/index';
 import { ensureDir, writeFile } from 'fs-extra';
-import { createClient } from 'contentful';
+import { EntriesQueries, EntrySkeletonType, createClient } from 'contentful';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/types';
 import { parseDirectoryPath } from './processEntry/createFile';
@@ -8,15 +8,15 @@ import { parseDirectoryPath } from './processEntry/createFile';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-interface ContentfulClientQuery {
-    [key: string]: string | number | undefined | boolean;
-    // eslint-disable-next-line camelcase
-    content_type?: string;
-    limit?: number;
-    skip?: number;
-    order?: string;
-    'sys.id'?: string;
-}
+// export interface ContentfulClientQuery {
+//     [key: string]: string | number | undefined | boolean;
+//     // eslint-disable-next-line camelcase
+//     content_type?: string;
+//     limit?: number;
+//     skip?: number;
+//     order?: string;
+//     'sys.id'?: string;
+// }
 
 export const prepDirectory = async (
     settings: ContentSettings
@@ -82,24 +82,27 @@ const getContentType = async (
         // eslint-disable-next-line no-param-reassign
         contentSettings.fileExtension = 'md';
     }
-    const query: ContentfulClientQuery = {
+    const query: EntriesQueries<EntrySkeletonType, undefined> = {
         content_type: contentSettings.typeId,
         limit,
         skip,
-        order: 'sys.updatedAt',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        order: 'sys.updatedAt' as any,
     };
     if (contentSettings.filters) {
         const { filters } = contentSettings;
         const ignoreKeys = ['content_type', 'limit', 'skip'];
         Object.keys(filters).forEach((key) => {
             if (!ignoreKeys.includes(key)) {
-                query[key] = filters[key];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (query as any)[key] = filters[key];
             }
         });
     }
 
     if (contentSettings.locale && contentSettings.locale.code) {
-        query.locale = contentSettings.locale.code;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (query as any).locale = contentSettings.locale.code;
     }
     return client.getEntries(query).then(async (data) => {
         // variable for counting number of items pulled
