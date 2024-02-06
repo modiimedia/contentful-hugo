@@ -227,8 +227,7 @@ describe('Marks', () => {
                                 type: 'italic',
                             },
                         ],
-                        value:
-                            'We may collect limited data from public databases, marketing partners, social media platforms, and other outside sources.',
+                        value: 'We may collect limited data from public databases, marketing partners, social media platforms, and other outside sources.',
                         nodeType: 'text',
                     },
                 ],

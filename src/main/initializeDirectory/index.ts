@@ -3,7 +3,8 @@ import shortcodes from './shortcodes';
 import { loadConfig } from '@/main/config';
 import { log } from '@/helpers/logger';
 
-const wait = (milli = 1000): Promise<void> => new Promise((resolve) => {
+const wait = (milli = 1000): Promise<void> =>
+    new Promise((resolve) => {
         setTimeout(() => resolve(), milli);
     });
 

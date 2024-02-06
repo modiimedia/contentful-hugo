@@ -1,4 +1,5 @@
-const removeLeadingAndTrailingSlashes = (string: string): string => string.replace(/^\/+|\/+$/g, '');
+const removeLeadingAndTrailingSlashes = (string: string): string =>
+    string.replace(/^\/+|\/+$/g, '');
 
 const isMultilineString = (string: string): boolean => {
     const array = string.split(`\n`);
@@ -81,9 +82,11 @@ const trailingSpaces = (
  * @param {String} ext
  * @returns {boolean}
  */
-const endsWith = (str: string | undefined | null, ext: string): boolean => new RegExp(`${ext}$`).test(str || '');
+const endsWith = (str: string | undefined | null, ext: string): boolean =>
+    new RegExp(`${ext}$`).test(str || '');
 
-const replaceBackslashesWithForwardSlashes = (input: string): string => input.replace(/\\/g, '/');
+const replaceBackslashesWithForwardSlashes = (input: string): string =>
+    input.replace(/\\/g, '/');
 
 export {
     characterIsWhiteSpace,
