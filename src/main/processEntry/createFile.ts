@@ -1,17 +1,9 @@
-import {
-    ensureDir,
-    ensureFile,
-    pathExists,
-    readFile,
-    remove,
-    writeFile,
-} from 'fs-extra';
+import fs from 'fs-extra';
 import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
+import * as YAML from 'json-to-pretty-yaml';
 import { log } from '@/helpers/logger';
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const YAML = require('json-to-pretty-yaml');
 
 export const parseDirectoryPath = (
     directory: string,
@@ -91,11 +83,11 @@ export const createDirectoryForFile = async (
     ).path;
     const fName = fileName || entryId;
     if (isHeadless && !isSingle) {
-        await ensureDir(`./${directory}/${fName}`);
+        await fs.ensureDir(`./${directory}/${fName}`);
     } else if (isTaxonomy) {
-        await ensureDir(`./${directory}/${fName}`);
+        await fs.ensureDir(`./${directory}/${fName}`);
     } else {
-        await ensureDir(`./${directory}`);
+        await fs.ensureDir(`./${directory}`);
     }
 };
 
@@ -107,14 +99,14 @@ const cleanPreviousDynamicLocation = async (
     settings.fileName = '';
     const tmpPath = determineFilePath(settings, entryId);
     const tmpPathFinal = tmpPath.replace('./', './.contentful-hugo/');
-    if (await pathExists(tmpPathFinal)) {
-        const path = (await readFile(tmpPathFinal)).toString();
-        await remove(path);
+    if (await fs.pathExists(tmpPathFinal)) {
+        const path = (await fs.readFile(tmpPathFinal)).toString();
+        await fs.remove(path);
         if (path.includes('/index.md')) {
-            await remove(path.replace('/index.md', ''));
+            await fs.remove(path.replace('/index.md', ''));
         }
         if (path.includes('/_index.md')) {
-            await remove(path.replace('/_index.md', ''));
+            await fs.remove(path.replace('/_index.md', ''));
         }
     }
 };
@@ -128,16 +120,16 @@ const logDynamicLocation = async (
     settings.fileName = '';
     const tmpPath = determineFilePath(settings, entryId);
     const tmpPathFinal = tmpPath.replace('./', './.contentful-hugo/');
-    await ensureFile(tmpPathFinal);
-    await writeFile(tmpPathFinal, filePath);
+    await fs.ensureFile(tmpPathFinal);
+    await fs.writeFile(tmpPathFinal, filePath);
 };
 
 export const determineDynamicLocation = async (
     filePath: string
 ): Promise<string> => {
     const path = filePath.replace('./', './.contentful-hugo/');
-    if (await pathExists(path)) {
-        const newPath = (await readFile(path)).toString();
+    if (await fs.pathExists(path)) {
+        const newPath = (await fs.readFile(path)).toString();
         return newPath;
     }
     return filePath;
@@ -205,7 +197,7 @@ const createFile = async (
     // create file
     await createDirectoryForFile(contentSettings, entryId);
     const filePath = determineFilePath(contentSettings, entryId);
-    await writeFile(filePath, fileContent).catch((error) => {
+    await fs.writeFile(filePath, fileContent).catch((error) => {
         if (error) {
             log(error);
         }

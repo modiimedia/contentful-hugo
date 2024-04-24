@@ -1,14 +1,12 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
+        "target": "ES2022",
+        "module": "ES2022",
         "allowJs": false,
         "declaration": true,
-        "rootDir": "./src",
-        "outDir": "./dist",
         "strict": true,
         "noImplicitAny": true,
-        "moduleResolution": "node",
+        "moduleResolution": "Bundler",
         "baseUrl": "./src",
         "newLine": "LF",
         "sourceMap": true,

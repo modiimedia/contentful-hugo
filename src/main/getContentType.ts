@@ -1,22 +1,12 @@
 import { ContentSettings } from '@main/index';
-import { ensureDir, writeFile } from 'fs-extra';
-import { EntriesQueries, EntrySkeletonType, createClient } from 'contentful';
+import fs from 'fs-extra';
+import contentful from 'contentful';
+import dotenv from 'dotenv';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/types';
 import { parseDirectoryPath } from './processEntry/createFile';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
-
-// export interface ContentfulClientQuery {
-//     [key: string]: string | number | undefined | boolean;
-//     // eslint-disable-next-line camelcase
-//     content_type?: string;
-//     limit?: number;
-//     skip?: number;
-//     order?: string;
-//     'sys.id'?: string;
-// }
+dotenv.config();
 
 export const prepDirectory = async (
     settings: ContentSettings
@@ -27,16 +17,16 @@ export const prepDirectory = async (
         settings.locale.mapTo
     );
     const newDir = parsedDir.path;
-    await ensureDir(newDir);
+    await fs.ensureDir(newDir);
     if (settings.isHeadless && !settings.isSingle) {
         const listPageFrontMatter = `---\n# this is a work-around to prevent hugo from rendering a list page\nurl: /\n---\n`;
         if (settings.locale && settings.locale.mapTo) {
-            await writeFile(
+            await fs.writeFile(
                 `${newDir}/_index.${settings.locale.mapTo.toLowerCase()}.md`,
                 listPageFrontMatter
             );
         } else {
-            await writeFile(`${newDir}/_index.md`, listPageFrontMatter);
+            await fs.writeFile(`${newDir}/_index.md`, listPageFrontMatter);
         }
     }
 };
@@ -76,13 +66,16 @@ const getContentType = async (
         accessToken,
         environment,
     };
-    const client = createClient(options);
+    const client = contentful.createClient(options);
     // check for file extension default to markdown
     if (!contentSettings.fileExtension) {
         // eslint-disable-next-line no-param-reassign
         contentSettings.fileExtension = 'md';
     }
-    const query: EntriesQueries<EntrySkeletonType, undefined> = {
+    const query: contentful.EntriesQueries<
+        contentful.EntrySkeletonType,
+        undefined
+    > = {
         content_type: contentSettings.typeId,
         limit,
         skip,

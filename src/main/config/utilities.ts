@@ -10,6 +10,8 @@ const determineFileType = (fileName: string): string | null => {
     switch (fileExtension) {
         case 'js':
             return 'javascript';
+        case 'ts':
+            return 'typescript';
         case 'yaml':
         case 'yml':
             return 'yaml';

@@ -1,5 +1,5 @@
 import Limiter from 'async-limiter';
-import { defineConfig, loadConfig, ContentfulHugoConfig } from './config';
+import { defineConfig, loadConfig, type ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
     CustomFieldsConfig,
@@ -97,31 +97,23 @@ const fetchType = (
 const configCheck = (config: ContentfulHugoConfig) => {
     const { space, token, environment } = config.contentful;
     const missingParams: string[] = [];
+    const missingEnvVars: string[] = [];
     if (!space) {
-        missingParams.push('space');
+        missingParams.push('contentful.space');
+        missingEnvVars.push('CONTENTFUL_SPACE');
     }
     if (!token) {
-        missingParams.push('token');
+        missingParams.push('contentful.token');
+        missingEnvVars.push('CONTENTFUL_TOKEN');
     }
     if (!environment) {
-        missingParams.push('environment');
+        missingParams.push('contentful.environment');
+        missingEnvVars.push('CONTENTFUL_PREVIEW_TOKEN');
     }
     if (missingParams.length > 0) {
-        const errorMessage = () => {
-            let paramString = '';
-            for (let i = 0; i < missingParams.length; i++) {
-                const param = missingParams[i];
-                if (i === 0) {
-                    paramString += `"${param}"`;
-                } else if (i === missingParams.length - 1) {
-                    paramString += `, and "${param}"`;
-                } else {
-                    paramString += `, "${param}"`;
-                }
-            }
-            return `Config is missing required contentful parameters: ${paramString}`;
-        };
-        throw new Error(errorMessage());
+        const errorMessage = `Missing [${missingParams.join(', ')}]. Update your config or set the following environment variables: [${missingEnvVars.join(', ')}]`;
+
+        throw new Error(errorMessage);
     }
     return null;
 };

@@ -1,4 +1,6 @@
-module.exports = {
+import { defineConfig } from '../../src/main/index';
+
+export default defineConfig({
     contentful: {
         space: 'some-space-id', // pulls from .env variable CONTENTFUL_SPACE if not specified
         token: 'some-access-token', // pulls from .env variable CONTENTFUL_TOKEN if not specified
@@ -50,4 +52,4 @@ module.exports = {
             directory: 'content',
         },
     ],
-};
+});

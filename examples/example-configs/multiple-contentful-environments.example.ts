@@ -1,15 +1,17 @@
-// contentful-hugo.config.js
+// contentful-hugo.config.ts
+import { defineConfig } from '../../src/main';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 const isProductionEnv = process.env.SOME_ENVIRONMENT_VARIABLE === 'some-value';
 
-module.exports = {
+export default defineConfig({
     contentful: {
         space: 'some-id',
-        accessToken: 'some-token',
+        token: 'some-token',
         previewToken: 'some-preview-token',
         environment: isProductionEnv ? 'master' : 'some-other-contentful-env',
     },
     // rest of config
-};
+});

@@ -1,8 +1,7 @@
-import { ensureDir, unlink, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import { ContentfulHugoConfig } from '../main/config/types';
 import determineFileLocations from './determineFileLocation';
-
-const YAML = require('json-to-pretty-yaml');
+import YAML from 'json-to-pretty-yaml';
 
 const testConfig: ContentfulHugoConfig = {
     locales: [],
@@ -67,17 +66,17 @@ const testConfig: ContentfulHugoConfig = {
 const testEntryId = 'my-test-entry-id';
 
 beforeAll(async () => {
-    await ensureDir('content');
+    await fs.ensureDir('content');
     const fileContent = {
         sys: {
             id: testEntryId,
         },
     };
-    await writeFile('./content/home.md', YAML.stringify(fileContent));
+    await fs.writeFile('./content/home.md', YAML.stringify(fileContent));
 });
 
 afterAll(async () => {
-    await unlink('./content/home.md');
+    await fs.unlink('./content/home.md');
 });
 test('Single Type', async () => {
     const result = await determineFileLocations(

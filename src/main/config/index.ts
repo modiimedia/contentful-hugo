@@ -1,14 +1,16 @@
+import dotenv from 'dotenv';
 import path from 'path';
 import { loadFile, checkContentfulSettings } from './fileLoader';
-import { ContentfulHugoConfig, ResolveEntryConfig } from './types';
+import type { ContentfulHugoConfig } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+export * from './types';
+
+dotenv.config();
 
 /**
  * Load Contentful Hugo config file
  */
-const loadConfig = async (
+export const loadConfig = async (
     /**
      * Directory of the config file. (Default ".")
      */
@@ -16,7 +18,7 @@ const loadConfig = async (
     /**
      * Config filename with extension.
      */
-    fileName: string | null = null
+    fileName: string = ''
 ): Promise<ContentfulHugoConfig | false> => {
     // eslint-disable-next-line no-param-reassign
     rootDir = path.resolve(rootDir);
@@ -29,6 +31,7 @@ const loadConfig = async (
         throw new Error(`${fileName} does not exist or it is empty.`);
     }
     const defaultConfigs = [
+        'contentful-hugo.config.ts',
         'contentful-hugo.config.js',
         'contentful-hugo.config.yaml',
         'contentful-hugo.yaml',
@@ -55,10 +58,3 @@ const loadConfig = async (
 };
 
 export const defineConfig = (config: Partial<ContentfulHugoConfig>) => config;
-
-export {
-    loadConfig,
-    checkContentfulSettings,
-    ContentfulHugoConfig,
-    ResolveEntryConfig,
-};

@@ -1,4 +1,4 @@
-import { checkContentfulSettings } from './index';
+import { checkContentfulSettings } from './fileLoader';
 
 test('Check For Contentful Settings In Config', () => {
     const config = {

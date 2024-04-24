@@ -1,9 +1,24 @@
 {
     "name": "contentful-hugo",
+    "type": "module",
     "version": "3.1.0",
     "packageManager": "pnpm@9.0.5",
     "description": "Node module that pulls data from Contentful and turns it into markdown files for Hugo. Can be used with other Static Site Generators, but has some Hugo specific features.",
-    "main": "./dist/main/index.js",
+    "main": "./dist/index.cjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "bin": {
+        "contentful-hugo": "dist/cli.mjs"
+    },
+    "files": [
+        "dist",
+        "postInstall.js"
+    ],
     "repository": {
         "typ": "git",
         "url": "https://github.com/ModiiMedia/contentful-hugo"
@@ -31,11 +46,11 @@
         "lint": "eslint --ext .js,.ts .",
         "lint:fix": "eslint --ext .js,.ts . --fix",
         "postinstall": "node postInstall.js",
-        "prebuild": "npm run lint",
-        "build": "tsc --project tsconfig.build.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
-        "postbuild": "node copyAssets",
-        "prepare": "node deleteDist && npm run build",
-        "server-dev": "npm run build && node dist/cli --server"
+        "prebuild": "pnpm run lint",
+        "build": "unbuild",
+        "postbuild": "jiti ./copyAssets.ts",
+        "prepare": "pnpm run build",
+        "server-dev": "pnpm run build && node dist/cli.mjs --server"
     },
     "license": "ISC",
     "dependencies": {
@@ -43,26 +58,22 @@
         "@contentful/rich-text-plain-text-renderer": "^16.0.11",
         "@contentful/rich-text-types": "^16.3.4",
         "async-limiter": "^2.0.0",
+        "c12": "^1.10.0",
         "chokidar": "^3.5.3",
-        "contentful": "^10.6.21",
-        "dotenv": "^16.4.1",
-        "fastify": "^4.26.0",
+        "citty": "^0.1.6",
+        "contentful": "^10.8.9",
+        "dotenv": "^16.4.5",
+        "fastify": "^4.26.2",
         "fs-extra": "^11.2.0",
         "js-yaml": "^4.1.0",
         "json-to-pretty-yaml": "^1.2.2",
-        "yargs": "^17.7.2"
+        "pathe": "^1.1.2"
     },
-    "bin": {
-        "contentful-hugo": "dist/cli.js"
-    },
-    "files": [
-        "dist",
-        "postInstall.js"
-    ],
     "devDependencies": {
         "@modii/tscpaths": "^0.2.3",
         "@types/fs-extra": "^11.0.4",
         "@types/js-yaml": "^4.0.9",
+        "@types/json-to-pretty-yaml": "^1.2.1",
         "@types/node": "^20.11.16",
         "@types/yargs": "^17.0.32",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -74,10 +85,12 @@
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^6.1.1",
+        "jiti": "^1.21.0",
         "prettier": "^3.2.5",
-        "typescript": "^5.3.3",
-        "vite": "^5.0.12",
-        "vite-tsconfig-paths": "^4.3.1",
-        "vitest": "^1.2.2"
+        "typescript": "^5.4.5",
+        "unbuild": "^2.0.0",
+        "vite": "^5.2.10",
+        "vite-tsconfig-paths": "^4.3.2",
+        "vitest": "^1.5.0"
     }
 }
