@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import yargs from 'yargs';
+import dotenv from 'dotenv';
+import { defineCommand, runMain } from 'citty';
 import { LOG_PREFIX } from './helpers/contants';
 import { initLogger } from './helpers/logger';
 import {
@@ -11,54 +12,68 @@ import {
 import cleanDirectories from './main/clean';
 import startServer from './server';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+dotenv.config();
 
-yargs
-    .options({
-        preview: { type: 'boolean', default: false, alias: 'P' },
-        init: { type: 'boolean', default: false },
-        wait: { type: 'number', default: 0, alias: 'W' },
-        config: { type: 'string', default: null, alias: 'C' },
-        server: { type: 'boolean', default: false, alias: 'S' },
-        port: { type: 'number', default: 1414 },
-        clean: { type: 'boolean', default: false },
-        quiet: { type: 'boolean', default: false, alias: 'Q' },
-    })
-    .describe({
-        preview: 'Pulls published and unplublished entries',
-        init: 'Initialize directory for Contentful-Hugo',
-        wait: 'Wait X number of ms before fetching data',
-        config: 'Specify path to a config file',
-        server: 'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
-        port: 'Specify server port',
-        clean: 'Delete all output directories',
-        quiet: 'Run without emitting any logs',
-    })
-    .usage('Usage: contentful-hugo [flags]');
+const main = defineCommand({
+    meta: {
+        name: 'Contentful Hugo',
+    },
+    args: {
+        preview: {
+            type: 'boolean',
+            default: false,
+            alias: 'P',
+            description: 'Pulls published and unplublished entries',
+        },
+        init: {
+            type: 'boolean',
+            default: false,
+            description: 'Initialize directory for Contentful-Hugo',
+        },
+        wait: {
+            type: 'string',
+            default: '0',
+            alias: 'W',
+            description: 'Wait X number of ms before fetching data',
+        },
+        config: {
+            type: 'string',
+            default: '',
+            alias: 'C',
+            description: 'Specify path to a config file',
+        },
+        server: {
+            type: 'boolean',
+            default: false,
+            alias: 'S',
+            description:
+                'Run a server that can receive webhooks from Contentful to trigger Contentful Hugo',
+        },
+        port: {
+            type: 'string',
+            default: '1414',
+            description: 'Specify server port',
+        },
+        clean: {
+            type: 'boolean',
+            default: false,
+            description: 'Delete all output directories',
+        },
+        quiet: {
+            type: 'boolean',
+            default: false,
+            alias: 'Q',
+            description: "'Run without emitting any logs'",
+        },
+    },
+    async run({ args }) {
+        const log = initLogger(args.quiet);
 
-interface CliArgs {
-    preview: boolean;
-    init: boolean;
-    wait: number;
-    config: string | null;
-    server: boolean;
-    port: number;
-    clean: boolean;
-    quiet: boolean;
-}
+        if (args.init) {
+            return initializeDirectory();
+        }
 
-const argv = yargs.argv as unknown as CliArgs;
-
-const initialize = (): Promise<unknown> | unknown => {
-    const log = initLogger(argv.quiet);
-
-    // contentful-hugo --init
-    if (argv.init) {
-        return initializeDirectory();
-    }
-
-    return loadConfig('.', argv.config).then(async (config) => {
+        const config = await loadConfig('.', args.config);
         if (config === false) {
             throw new Error(
                 `There is an error in your config file, or it doesn't exits.
@@ -66,7 +81,7 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
             );
         }
 
-        if (argv.clean) {
+        if (args.clean) {
             return cleanDirectories(config);
         }
 
@@ -75,16 +90,14 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
             await copyStaticContent(config);
         }
 
-        await fetchDataFromContentful(
-            config,
-            argv.preview || false,
-            argv.wait || 0
-        );
-        if (argv.server) {
-            return startServer(config, argv.port, argv.preview || false);
+        const waitVal = Number.isNaN(args.wait) ? 0 : Number(args.wait);
+        const portVal = Number.isNaN(args.port) ? 1414 : Number(args.port);
+        await fetchDataFromContentful(config, args.preview || false, waitVal);
+        if (args.server) {
+            return startServer(config, portVal, args.preview || false);
         }
         return null;
-    });
-};
+    },
+});
 
-initialize();
+runMain(main);

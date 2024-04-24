@@ -1,10 +1,11 @@
 import path from 'path';
-import { pathExists, readFile } from 'fs-extra';
 import yaml from 'js-yaml';
+import * as c12 from 'c12';
+import { readFileSync, existsSync } from 'node:fs';
 import { determineFileType, isContentfulHugoConfig } from './utilities';
 import { ContentfulHugoConfig } from './types';
 
-const checkContentfulSettings = (config: {
+export const checkContentfulSettings = (config: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }): ContentfulHugoConfig => {
@@ -32,24 +33,26 @@ const checkContentfulSettings = (config: {
     return newConfig;
 };
 
-const loadJavascriptConfigFile = (
+export const loadJavascriptConfigFile = async (
     filePath: string
-): ContentfulHugoConfig | false => {
+): Promise<ContentfulHugoConfig | null> => {
     // eslint-disable-next-line global-require
-    let configObject = require(filePath);
-    if (configObject && typeof configObject === 'object') {
-        configObject = checkContentfulSettings(configObject);
-        if (isContentfulHugoConfig(configObject)) {
-            return configObject;
+    let { config } = await c12.loadConfig({
+        configFile: filePath,
+    });
+    if (config && typeof config === 'object') {
+        config = checkContentfulSettings(config);
+        if (isContentfulHugoConfig(config)) {
+            return config;
         }
     }
-    return false;
+    return null;
 };
 
-const loadYamlConfigFile = async (
+export const loadYamlConfigFile = (
     filePath: string
-): Promise<ContentfulHugoConfig | false> => {
-    const file = await readFile(filePath);
+): ContentfulHugoConfig | null => {
+    const file = readFileSync(filePath);
     let configObject = yaml.load(file.toString());
     if (configObject && typeof configObject === 'object') {
         configObject = checkContentfulSettings(configObject);
@@ -57,32 +60,25 @@ const loadYamlConfigFile = async (
             return configObject;
         }
     }
-    return false;
+    return null;
 };
 
 /**
  * Attempt to load a config file
  */
-const loadFile = async (
+export const loadFile = async (
     rootDir = '.',
     fileName: string = ''
-): Promise<ContentfulHugoConfig | false> => {
+): Promise<ContentfulHugoConfig | null> => {
     const filePath = path.resolve(rootDir, fileName);
-    if (await pathExists(filePath)) {
+    if (existsSync(filePath)) {
         const fileType = determineFileType(fileName);
-        if (fileType === 'javascript') {
+        if (fileType === 'javascript' || fileType === 'typescript') {
             return loadJavascriptConfigFile(filePath);
         }
         if (fileType === 'yaml') {
             return loadYamlConfigFile(filePath);
         }
     }
-    return false;
-};
-
-export {
-    loadFile,
-    loadJavascriptConfigFile,
-    loadYamlConfigFile,
-    checkContentfulSettings,
+    return null;
 };

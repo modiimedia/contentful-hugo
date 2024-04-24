@@ -1,4 +1,4 @@
-import { ensureDir, pathExists, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 import shortcodes from './shortcodes';
 import { loadConfig } from '@/main/config';
 import { log } from '@/helpers/logger';
@@ -20,7 +20,7 @@ module.exports = {
     singleTypes: [],
     repeatableTypes: [],
 };`;
-    await writeFile(filepath, configContent);
+    await fs.writeFile(filepath, configContent);
     log('config file created\n');
 };
 
@@ -78,16 +78,16 @@ const addShortcodes = async (override = false) => {
     log('adding shortcodes for rich text...');
     await wait(1000);
     const directory = './layouts/shortcodes/contentful-hugo';
-    await ensureDir(directory);
+    await fs.ensureDir(directory);
 
     const handleShortCode = async (key: string) => {
         const { filename, template } = shortcodes[key];
         const finalTemplate = replaceVariablesWithValues(template);
         const filepath = `${directory}/${filename}`;
-        if ((await pathExists(filepath)) && !override) {
+        if ((await fs.pathExists(filepath)) && !override) {
             log(`${filepath} already exists`);
         } else {
-            await writeFile(filepath, finalTemplate);
+            await fs.writeFile(filepath, finalTemplate);
             log(`created ${filepath}`);
         }
     };

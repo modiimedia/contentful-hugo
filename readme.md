@@ -178,6 +178,7 @@ export CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 
 Before getting started, you will need to create a config file in the root of your repository. Contentful-hugo by default will search for the following files as a config.
 
+-   `contentful-hugo.config.ts`
 -   `contentful-hugo.config.js`
 -   `contentful-hugo.config.yaml`
 -   `contentful-hugo.yaml`
@@ -185,13 +186,12 @@ Before getting started, you will need to create a config file in the root of you
 
 You can also specify a custom config file using the `--config` flag. (Javascript or YAML config files are the only currently accepted filetypes)
 
-#### Example Javascript Config
+#### Example Typescript Config
 
-```javascript
-// contentful-hugo.config.js
-const { defineConfig } = require('contentful-hugo');
+```ts
+import { defineConfig } from 'contentful-hugo';
 
-module.exports = defineConfig({
+export default defineConfig({
     // fetches from default locale if left blank
     locales: ['en-US', 'fr-FR'],
 
@@ -261,6 +261,28 @@ module.exports = defineConfig({
             outputDir: 'content',
         },
     ],
+});
+```
+
+##### Using a Javascript Config
+
+A javascript config is pretty much the same as a typescript config.
+
+```js
+import { defineConfig } from 'contentful-hugo';
+
+export default defineConfig({
+    // stuff goes here
+});
+```
+
+CommonJS syntax _should_ also work (I don't actually test against this maybe it doesn't maybe it doesn't)
+
+```js
+const { defineConfig } = require('contentful-hugo');
+
+module.exports = defineConfig({
+    // stuff goes here
 });
 ```
 

@@ -1,4 +1,4 @@
-import { pathExists, unlink } from 'fs-extra';
+import fs from 'fs-extra';
 import { resolve as pathResolve } from 'path';
 import { log } from '@/helpers/logger';
 
@@ -10,8 +10,8 @@ const deleteFile = async (
         return null;
     }
     const path = pathResolve(filePath);
-    if (await pathExists(path)) {
-        await unlink(path);
+    if (await fs.pathExists(path)) {
+        await fs.unlink(path);
         if (!quietMode) {
             log(`[contentful hugo] deleted ${path}`);
         }

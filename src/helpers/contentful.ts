@@ -1,4 +1,4 @@
-import { ContentfulClientApi, createClient } from 'contentful';
+import contentful from 'contentful';
 import dotenv from 'dotenv';
 import { ConfigContentfulSettings } from '@/main/config/types';
 
@@ -7,7 +7,7 @@ dotenv.config();
 const createContentfulClient = (
     settings: ConfigContentfulSettings,
     previewMode = false
-): ContentfulClientApi<undefined> => {
+): contentful.ContentfulClientApi<undefined> => {
     const { token, previewToken, space, environment } = settings;
     if (previewMode && !previewToken) {
         throw new Error(
@@ -26,7 +26,7 @@ const createContentfulClient = (
         accessToken,
         environment,
     };
-    return createClient(options);
+    return contentful.createClient(options);
 };
 
 export default createContentfulClient;

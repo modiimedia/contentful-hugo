@@ -1,4 +1,4 @@
-import { remove } from 'fs-extra';
+import { rm } from 'node:fs/promises';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { LOG_PREFIX } from '@helpers/contants';
 import { ContentfulHugoConfig } from './config';
@@ -34,7 +34,7 @@ const cleanDirectories = async (
     const tasks: Promise<void>[] = [];
     for (const dir of dirs) {
         tasks.push(
-            remove(dir).then(() => {
+            rm(dir, { recursive: true, force: true }).then(() => {
                 log(`${LOG_PREFIX} cleaned ./${dir}`);
             })
         );

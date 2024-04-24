@@ -12,6 +12,7 @@ contentful-settings.yaml
 contentful-hugo.config.js
 contentful-hugo.config**.js
 contentful-hugo.yaml
+contentful-hugo.config.ts
 !examples/**/contentful-settings.yaml
 !examples/**/contentful-hugo.config.js
 coverage

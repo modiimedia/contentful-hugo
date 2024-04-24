@@ -1,4 +1,4 @@
-import { pathExists, readFile } from 'fs-extra';
+import fs from 'fs-extra';
 import {
     determineDynamicLocation,
     determineFilePath,
@@ -124,10 +124,10 @@ const determineFileLocations = async (
         const location = determineFilePath(item, entryId);
         if (isDeleting) {
             // eslint-disable-next-line no-await-in-loop
-            const fileExists = await pathExists(location);
+            const fileExists = await fs.pathExists(location);
             if (fileExists) {
                 // eslint-disable-next-line no-await-in-loop
-                const data = await readFile(location);
+                const data = await fs.readFile(location);
                 if (data.includes(`id: "${entryId}"`)) {
                     locations.push(location);
                 }
