@@ -276,7 +276,7 @@ export default defineConfig({
 });
 ```
 
-CommonJS syntax _should_ also work (I don't actually test against this maybe it doesn't maybe it doesn't)
+CommonJS syntax _should_ also work (I don't actually test against this maybe it works maybe it doesn't)
 
 ```js
 const { defineConfig } = require('contentful-hugo');
