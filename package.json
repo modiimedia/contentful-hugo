@@ -5,6 +5,7 @@
     "packageManager": "pnpm@9.0.5",
     "description": "Node module that pulls data from Contentful and turns it into markdown files for Hugo. Can be used with other Static Site Generators, but has some Hugo specific features.",
     "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
@@ -13,7 +14,7 @@
         }
     },
     "bin": {
-        "contentful-hugo": "dist/cli.mjs"
+        "contentful-hugo": "./dist/cli.mjs"
     },
     "files": [
         "dist",
