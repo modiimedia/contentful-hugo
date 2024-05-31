@@ -30,7 +30,7 @@ export const loadConfig = async (
         }
         throw new Error(`${fileName} does not exist or it is empty.`);
     }
-    const defaultConfigs = [
+    const defaultConfigNames = [
         'contentful-hugo.config.ts',
         'contentful-hugo.config.js',
         'contentful-hugo.config.yaml',
@@ -38,23 +38,26 @@ export const loadConfig = async (
         'contentful-settings.yaml',
     ];
     const tasks = [];
-    const configList: ContentfulHugoConfig[] = [];
-    for (const config of defaultConfigs) {
-        const file = loadFile(rootDir, config).then((result) => {
+    const configMap: Record<string, ContentfulHugoConfig | null> = {};
+    for (const name of defaultConfigNames) {
+        const file = loadFile(rootDir, name).then((result) => {
             if (result) {
                 const conf = checkContentfulSettings(result);
-                configList.push(conf);
+                configMap[name] = conf;
+                return;
             }
+            configMap[name] = null;
         });
         tasks.push(file);
     }
-    return Promise.all(tasks).then(() => {
-        // eslint-disable-next-line no-unreachable-loop
-        for (const config of configList) {
-            return config;
+    await Promise.all(tasks);
+    for (const filename of defaultConfigNames) {
+        if (configMap[filename]) {
+            console.log(`Using config at ${filename}`);
+            return configMap[filename]!;
         }
-        return false;
-    });
+    }
+    return false;
 };
 
 export const defineConfig = (config: Partial<ContentfulHugoConfig>) => config;
