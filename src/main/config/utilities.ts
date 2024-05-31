@@ -1,5 +1,5 @@
-import { endsWith } from '@/helpers/strings';
 import { ContentfulHugoConfig, TypeConfig } from './types';
+import { endsWith } from '@/helpers/strings';
 
 /**
  * Determine if a file is yaml or js depending on the file extension

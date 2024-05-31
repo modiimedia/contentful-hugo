@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import dotenv from 'dotenv';
 import { defineCommand, runMain } from 'citty';
-import { LOG_PREFIX } from './helpers/contants';
+import { LOG_PREFIX } from './helpers/constants';
 import { initLogger } from './helpers/logger';
 import {
     initializeDirectory,

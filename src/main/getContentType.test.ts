@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
-import { ContentSettings } from './index';
 import { prepDirectory } from './getContentType';
+import { ContentSettings } from './index';
 
 afterAll(async () => {
     await fs.remove('./.temp');

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
+import YAML from 'json-to-pretty-yaml';
 import { ContentfulHugoConfig } from '../main/config/types';
 import determineFileLocations from './determineFileLocation';
-import YAML from 'json-to-pretty-yaml';
 
 const testConfig: ContentfulHugoConfig = {
     locales: [],

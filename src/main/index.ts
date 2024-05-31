@@ -1,5 +1,6 @@
 import Limiter from 'async-limiter';
-import { defineConfig, loadConfig, type ContentfulHugoConfig } from './config';
+import { defineConfig, loadConfig } from './config';
+import type { ContentfulHugoConfig } from './config';
 import {
     ConfigContentfulSettings,
     CustomFieldsConfig,

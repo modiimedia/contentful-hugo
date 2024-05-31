@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { documentToPlainTextString as richTextToPlain } from '@contentful/rich-text-plain-text-renderer';
 import { Asset, Entry } from 'contentful';
-import { ResolveEntryConfig } from '@/main/config';
+import { CustomFieldsConfig, OverrideConfig } from '../../config/types';
 import getEntryFields from './getEntryFields';
 import getAssetFields from './getAssetFields';
 import richTextToMarkdown from './richTextToMarkdown';
 import richTextNodes from './richTextNodes';
-import { CustomFieldsConfig, OverrideConfig } from '../../config/types';
 import getAppendableFields from './getCustomFields';
 import { parseField } from './common';
+import { ResolveEntryConfig } from '@/main/config';
 
 const mapArrayField = (
     fieldContent: Entry<any>[] | Asset[] | string[] | { [key: string]: any }[]
@@ -217,13 +217,13 @@ const mapFields = (
         }
         switch (typeof fieldContent) {
             case 'object':
-                if ('sys' in (fieldContent as Object)) {
+                if ('sys' in (fieldContent as object)) {
                     frontMatter[fieldName] = mapReferenceField(
                         fieldContent as Asset | Entry
                     );
                 }
                 // rich text (see rich text function)
-                else if ('nodeType' in (fieldContent as Object)) {
+                else if ('nodeType' in (fieldContent as object)) {
                     frontMatter[fieldName] =
                         mapRichTextField(fieldContent).richText;
                     frontMatter[`${field}_plaintext`] =
@@ -271,7 +271,7 @@ const getMainContent = (
     const mainContentField = parseField(entry.fields[fieldName]);
     if (
         typeof mainContentField === 'object' &&
-        'nodeType' in (mainContentField as Object) &&
+        'nodeType' in (mainContentField as object) &&
         (mainContentField as any).nodeType === 'document'
     ) {
         return richTextToMarkdown(

@@ -1,10 +1,10 @@
 import getContentType from '@main/getContentType';
-import { ContentfulHugoConfig } from '@/main';
-import { ConfigContentfulSettings } from '@/main/config/types';
 import {
     getRepeatableTypeConfigs,
     getSingleTypeConfigs,
 } from './determineFileLocation';
+import { ContentfulHugoConfig } from '@/main';
+import { ConfigContentfulSettings } from '@/main/config/types';
 
 const fetchEntryFromContentful = async (
     entryId: string,

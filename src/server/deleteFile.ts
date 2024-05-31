@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
 import { resolve as pathResolve } from 'path';
+import fs from 'fs-extra';
 import { log } from '@/helpers/logger';
 
 const deleteFile = async (

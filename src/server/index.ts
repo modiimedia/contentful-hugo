@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-import Fastify from 'fastify';
 import { IncomingHttpHeaders } from 'http';
+import Fastify from 'fastify';
 import { Entry, Asset, ContentType, EntrySys } from 'contentful';
 import { ContentfulHugoConfig } from '@main/index';
 import { removeEntry, updateEntry } from './handleEntry';
-import createWatcher from '@/main/staticContent/watcher';
 import fetchEntriesLinkedToAsset, {
     AssetUpdatePayload,
 } from './fetchEntriesLinkedToAsset';
+import createWatcher from '@/main/staticContent/watcher';
 
 const app = Fastify({});
 

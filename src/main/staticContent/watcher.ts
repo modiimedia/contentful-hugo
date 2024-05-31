@@ -3,13 +3,13 @@ import {
     removeLeadingAndTrailingSlashes,
     replaceBackslashesWithForwardSlashes,
 } from '@helpers/strings';
+import { ContentfulHugoConfig } from '../config';
 import {
     cleanInputAndOutput,
     copyFileToOutputDirectory,
     deleteFileFromOutputDirectory,
 } from './fileManager';
-import { ContentfulHugoConfig } from '../config';
-import { LOG_PREFIX } from '@/helpers/contants';
+import { LOG_PREFIX } from '@/helpers/constants';
 import { log } from '@/helpers/logger';
 
 const createWatcher = (config: ContentfulHugoConfig): void => {

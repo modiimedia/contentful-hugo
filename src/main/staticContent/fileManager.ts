@@ -1,6 +1,6 @@
-import fs from 'fs-extra';
 import { copyFile, unlink } from 'node:fs/promises';
 import path from 'path';
+import fs from 'fs-extra';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import { ContentfulHugoConfig } from '../config';
 

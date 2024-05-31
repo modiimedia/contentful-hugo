@@ -1,6 +1,6 @@
 import { rm } from 'node:fs/promises';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
-import { LOG_PREFIX } from '@helpers/contants';
+import { LOG_PREFIX } from '@helpers/constants';
 import { ContentfulHugoConfig } from './config';
 import { log } from '@/helpers/logger';
 

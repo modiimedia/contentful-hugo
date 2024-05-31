@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
 import path from 'path';
+import dotenv from 'dotenv';
 import { loadFile, checkContentfulSettings } from './fileLoader';
 import type { ContentfulHugoConfig } from './types';
 

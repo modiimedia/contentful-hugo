@@ -1,7 +1,7 @@
 import path from 'path';
+import { readFileSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
 import * as c12 from 'c12';
-import { readFileSync, existsSync } from 'node:fs';
 import { determineFileType, isContentfulHugoConfig } from './utilities';
 import { ContentfulHugoConfig } from './types';
 

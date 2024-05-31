@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entry } from 'contentful';
 import { OverrideConfig } from '../../config/types';
 import {
@@ -52,7 +53,11 @@ const entryFactory = (fields: { [key: string]: any } = {}): Entry<any> => {
         },
         sys: {
             id: 'my-id',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             createdAt: '2016-01-10',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             updatedAt: '2016-01-10',
             type: 'Entry',
             contentType: {
@@ -69,7 +74,7 @@ const entryFactory = (fields: { [key: string]: any } = {}): Entry<any> => {
             return {};
         },
         update: () => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, _) => {
                 setTimeout(() => {
                     resolve(entry);
                 });
