@@ -9,5 +9,6 @@
     "eslint.experimental.useFlatConfig": true,
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
-    }
+    },
+    "cSpell.words": ["milli", "shortcodes"]
 }

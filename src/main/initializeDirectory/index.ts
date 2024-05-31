@@ -9,17 +9,15 @@ const wait = (milli = 1000): Promise<void> =>
     });
 
 const generateConfig = async (filepath: string) => {
-    log(`creating ./contentful-hugo.config.js`);
+    log(`creating ./contentful-hugo.config.ts`);
     const configContent = `// go to https://github.com/ModiiMedia/contentful-hugo#configuration for configuration instructions
+import { defineConfig } from 'contentful-hugo';
 
-/**
- * @type {import('contentful-hugo').ContentfulHugoConfig}
- */
-module.exports = {
+export default defineConfig({
     locales: [], // uses default locale if left empty
     singleTypes: [],
     repeatableTypes: [],
-};`;
+});`;
     await fs.writeFile(filepath, configContent);
     log('config file created\n');
 };
@@ -28,7 +26,7 @@ const checkForConfig = async () => {
     log(`checking for config...`);
     await wait(1000);
     const config = await loadConfig();
-    const filepath = './contentful-hugo.config.js';
+    const filepath = './contentful-hugo.config.ts';
     if (!config) {
         return generateConfig(filepath);
     }
