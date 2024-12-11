@@ -1,6 +1,6 @@
 import { ContentSettings } from '@main/index';
 import fs from 'fs-extra';
-import contentful from 'contentful';
+import * as contentful from 'contentful';
 import dotenv from 'dotenv';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/types';
@@ -69,7 +69,6 @@ const getContentType = async (
     const client = contentful.createClient(options);
     // check for file extension default to markdown
     if (!contentSettings.fileExtension) {
-        // eslint-disable-next-line no-param-reassign
         contentSettings.fileExtension = 'md';
     }
     const query: contentful.EntriesQueries<
