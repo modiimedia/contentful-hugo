@@ -8,43 +8,43 @@ This is a CLI tool that pulls data from Contentful CMS and turns it into Markdow
 
 ## Features
 
--   Outputs to Markdown, YAML, or JSON files
--   Singleton support
--   Rich text field support
--   Multilingual support
--   Default shortcodes for rich text content
--   Automatic asset field resolution
--   Customizable linked entry resolution
--   Content filters
--   Content Preview API support
--   Field name and field value overrides
--   Custom field support
--   Server mode to receive webhook triggers from Contentful
+- Outputs to Markdown, YAML, or JSON files
+- Singleton support
+- Rich text field support
+- Multilingual support
+- Default shortcodes for rich text content
+- Automatic asset field resolution
+- Customizable linked entry resolution
+- Content filters
+- Content Preview API support
+- Field name and field value overrides
+- Custom field support
+- Server mode to receive webhook triggers from Contentful
 
 ## Table of Contents
 
--   [Prerequisites](#prerequisites)
--   [Installation](#installation)
--   [Usage](#usage)
--   [Configuration](#configuration)
-    -   [Environenment Variables](#environment-variables)
-    -   [Config File(s)](#config-file)
-        -   [Example JS Config](#example-javascript-config)
-        -   [Example YAML Config](#example-yaml-config)
-        -   [Config Fields](#config-fields)
-        -   [Advanced Config Examples](#advanced-config-examples)
-        -   [Config Autocomplete](#config-file-autocomplete)
-    -   [Gitignore Setup](#gitignore-setup)
--   [Expected Output](#expected-output)
-    -   [Standard Fields](#default-metadata-fields-and-date-field)
-    -   [Richtext Fields](#rich-text-as-main-content)
-    -   [Resolving Reference Fields](#the-resolve-entries-parameter)
-    -   [Overriding Field Names & Field Values](#the-overrides-parameter)
-    -   [Filtering Entries Within a Content Type](#the-filters-parameter)
-    -   [Adding Custom Fields To Frontmatter](#adding-custom-fields-to-frontmatter)
--   [Guides](#guides)
-    -   [Getting live updates from Contentful on localhost](guides/localhost-live-updates.md)
--   [Known Issues](#known-issues)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+    - [Environenment Variables](#environment-variables)
+    - [Config File(s)](#config-file)
+        - [Example JS Config](#example-javascript-config)
+        - [Example YAML Config](#example-yaml-config)
+        - [Config Fields](#config-fields)
+        - [Advanced Config Examples](#advanced-config-examples)
+        - [Config Autocomplete](#config-file-autocomplete)
+    - [Gitignore Setup](#gitignore-setup)
+- [Expected Output](#expected-output)
+    - [Standard Fields](#default-metadata-fields-and-date-field)
+    - [Richtext Fields](#rich-text-as-main-content)
+    - [Resolving Reference Fields](#the-resolve-entries-parameter)
+    - [Overriding Field Names & Field Values](#the-overrides-parameter)
+    - [Filtering Entries Within a Content Type](#the-filters-parameter)
+    - [Adding Custom Fields To Frontmatter](#adding-custom-fields-to-frontmatter)
+- [Guides](#guides)
+    - [Getting live updates from Contentful on localhost](guides/localhost-live-updates.md)
+- [Known Issues](#known-issues)
 
 ## Prerequisites
 
@@ -54,14 +54,22 @@ Install [Node.js](https://nodejs.org) (Minimum supported version is Node v18)
 
 with NPM
 
-```powershell
+```bash
+# local install
 npm install contentful-hugo
+
+# global install
+npm install contentful-hugo -g
 ```
 
-with Yarn
+with PNPM
 
-```powershell
-yarn add contentful-hugo
+```bash
+# local install
+pnpm install contentful-hugo
+
+# global install
+pnpm install contentful-hugo -g
 ```
 
 ## Usage
@@ -85,6 +93,10 @@ contentful-hugo [flags]
 ```powershell
 npx contentful-hugo --init
 npx contentful-hugo [flags]
+
+# or when using pnpm
+pnpm contentful-hugo --init
+pnpm contentful-hugo [flags]
 ```
 
 ### Flags
@@ -140,9 +152,9 @@ Check your config for errors or run "contentful-hugo --init" to create a config 
 
 By default this library will look for the following environment variables. You can also override these values with the config file. (See [config](#config-file))
 
--   CONTENTFUL_SPACE
--   CONTENTFUL_TOKEN
--   CONTENTFUL_PREVIEW_TOKEN
+- CONTENTFUL_SPACE
+- CONTENTFUL_TOKEN
+- CONTENTFUL_PREVIEW_TOKEN
 
 **.env File:**
 
@@ -178,11 +190,11 @@ export CONTENTFUL_PREVIEW_TOKEN="<contentful_preview_accessToken>"
 
 Before getting started, you will need to create a config file in the root of your repository. Contentful-hugo by default will search for the following files as a config.
 
--   `contentful-hugo.config.ts`
--   `contentful-hugo.config.js`
--   `contentful-hugo.config.yaml`
--   `contentful-hugo.yaml`
--   `contentful-settings.yaml`
+- `contentful-hugo.config.ts`
+- `contentful-hugo.config.js`
+- `contentful-hugo.config.yaml`
+- `contentful-hugo.yaml`
+- `contentful-settings.yaml`
 
 You can also specify a custom config file using the `--config` flag. (Javascript or YAML config files are the only currently accepted filetypes)
 
@@ -770,8 +782,8 @@ All files are named after their entry id in Contentful making it easy to retriev
 
 Relevant Documentation:
 
--   [GetPage Method](https://gohugo.io/functions/getpage/#readout)
--   [Getting the Site object from a partial](https://gohugo.io/variables/site/#get-the-site-object-from-a-partial)
+- [GetPage Method](https://gohugo.io/functions/getpage/#readout)
+- [Getting the Site object from a partial](https://gohugo.io/variables/site/#get-the-site-object-from-a-partial)
 
 ### Rich Text As Main Content
 
@@ -790,11 +802,11 @@ Before fetching rich text data make sure you have run `contentful-hugo --init` s
 
 The list of rich text short codes includes:
 
--   contentful-hugo/asset-hyperlink.html
--   contentful-hugo/embedded-asset.html
--   contentful-hugo/embedded-entry.html
--   contentful-hugo/entry-hyperlink.html
--   contentful-hugo/inline-entry.html
+- contentful-hugo/asset-hyperlink.html
+- contentful-hugo/embedded-asset.html
+- contentful-hugo/embedded-entry.html
+- contentful-hugo/entry-hyperlink.html
+- contentful-hugo/inline-entry.html
 
 By default the richtext short codes will show a notification for an unconfigured item.
 
@@ -1049,9 +1061,9 @@ You can use the `customFields` parameter to add additional fields to your entrie
 
 Let's say we have an author content type with the following fields:
 
--   firstName
--   lastName
--   slug
+- firstName
+- lastName
+- slug
 
 Here's an example config:
 
@@ -1116,12 +1128,12 @@ You could also use this for Hugo specific fields like [Build Options](https://go
 
 ## Guides
 
--   [Getting live Contentful updates on Localhost with Contentful-Hugo and Ngrok](guides/localhost-live-updates.md)
+- [Getting live Contentful updates on Localhost with Contentful-Hugo and Ngrok](guides/localhost-live-updates.md)
 
 ## Known Issues
 
 These are some known issues.
 
--   **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
--   **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distrubuted across Contentful's CDN. If you run into this issue add teh the `--wait` flag to your script. Here's an example where we wait an additional 6 seconds `contentful-hugo --wait=6000`.
--   **Hugo --server Rendering Issues**: If you have fields that where multiple different files are referenced such as a rich text field that references other entries Hugo's default server mode may not rerender everything. To fix this run `hugo server --disableFastRender`
+- **Date & Time Field w/o Timezone**: Date fields that include time but do not have a specified timezone will have a timezone set based on whatever machine the script is run on. So using a date field in contentful with this setting could lead to unexpected results when formatting dates. Date fields that don't include time (ex: YYYY-MM-DD) are not effected by this.
+- **Fetching Data Before Contentful CDN Updates**: Sometimes when triggering a build from a webhook, it won't always get the latest data. This is because it sometimes takes a couple seconds for the latest data to get distributed across Contentful's CDN. If you run into this issue add the the `--wait` flag to your script. Here's an example where we wait an additional 6 seconds `contentful-hugo --wait=6000`.
+- **Hugo --server Rendering Issues**: If you have fields that where multiple different files are referenced such as a rich text field that references other entries Hugo's default server mode may not rerender everything. To fix this run `hugo server --disableFastRender`
