@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Entry } from 'contentful';
 import { OverrideConfig } from '../../config/types';
 import {

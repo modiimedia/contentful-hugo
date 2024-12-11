@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const parseField = <T>(field: T | { [x: string]: T }): T => {
     if (
         typeof field === 'object' &&

@@ -3,7 +3,6 @@ import { ContentSettings } from '@main/index';
 import { removeLeadingAndTrailingSlashes } from '@helpers/strings';
 import * as YAML from 'json-to-pretty-yaml';
 import { log } from '@/helpers/logger';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export const parseDirectoryPath = (
     directory: string,

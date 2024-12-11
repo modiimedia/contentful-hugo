@@ -36,7 +36,6 @@ export const checkContentfulSettings = (config: {
 export const loadJavascriptConfigFile = async (
     filePath: string
 ): Promise<ContentfulHugoConfig | null> => {
-    // eslint-disable-next-line global-require
     let { config } = await c12.loadConfig({
         configFile: filePath,
     });

@@ -20,7 +20,6 @@ export const loadConfig = async (
      */
     fileName: string = ''
 ): Promise<ContentfulHugoConfig | false> => {
-    // eslint-disable-next-line no-param-reassign
     rootDir = path.resolve(rootDir);
     if (fileName) {
         const result = await loadFile(rootDir, fileName);

@@ -48,11 +48,11 @@ const mapAsset = (target: Asset) => {
         contentType: '',
     };
     const asset: AssetObject = {
-        title: typeof title === 'string' ? title : title?.['en-US'] ?? '',
+        title: typeof title === 'string' ? title : (title?.['en-US'] ?? ''),
         description:
             typeof description === 'string'
                 ? description
-                : description?.['en-US'] ?? '',
+                : (description?.['en-US'] ?? ''),
         url,
         fileName,
         assetType: contentType,
@@ -107,9 +107,7 @@ const optionsRenderNode = (parentContentType = ''): any => ({
         string = string.replace(/\n\n/g, `\n`);
         return `${string}\n`;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [BLOCKS.HR]: (_node: Hr, _next: Next) => `---\n\n`,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [BLOCKS.EMBEDDED_ASSET]: (node: any, _next: Next) => {
         const {
             title,
@@ -122,7 +120,6 @@ const optionsRenderNode = (parentContentType = ''): any => ({
             height,
         } = mapAsset(node.data.target);
         const handleQuotes = (string: string) => {
-            // eslint-disable-next-line prefer-regex-literals
             const regex = new RegExp(/"/, 'g');
             return string.replace(regex, '\\"');
         };

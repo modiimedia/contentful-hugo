@@ -123,10 +123,8 @@ const determineFileLocations = async (
     for (const item of singleConfigs) {
         const location = determineFilePath(item, entryId);
         if (isDeleting) {
-            // eslint-disable-next-line no-await-in-loop
             const fileExists = await fs.pathExists(location);
             if (fileExists) {
-                // eslint-disable-next-line no-await-in-loop
                 const data = await fs.readFile(location);
                 if (data.includes(`id: "${entryId}"`)) {
                     locations.push(location);
@@ -145,7 +143,6 @@ const determineFileLocations = async (
         itemCopy.fileName = entryId;
         let path = determineFilePath(itemCopy, entryId);
         if (item.fileName) {
-            // eslint-disable-next-line no-await-in-loop
             path = await determineDynamicLocation(path);
         }
         if (!isDeleting && path.includes(`/${item.fileName}`)) {

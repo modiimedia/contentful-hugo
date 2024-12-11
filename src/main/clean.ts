@@ -30,7 +30,6 @@ const cleanDirectories = async (
             dirs.push(newDir);
         }
     }
-
     const tasks: Promise<void>[] = [];
     for (const dir of dirs) {
         tasks.push(

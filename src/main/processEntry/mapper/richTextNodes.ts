@@ -25,7 +25,6 @@ const mapDataNode = (node: any = {}) => {
 const mapContentNode = (node = []) => {
     const contentArr = [];
     for (const item of node) {
-        // eslint-disable-next-line no-use-before-define
         contentArr.push(richTextNodes(item));
     }
     return contentArr;

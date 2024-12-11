@@ -57,7 +57,6 @@ const mapReferenceField = (fieldContent: Entry | Asset): any => {
 };
 
 const mapRichTextField = (
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     fieldContent: any
 ): { richText: any; plainText: string } => {
     const richText = [];
@@ -136,7 +135,7 @@ export const isDateField = (input: unknown): input is string => {
  * @param {Object} fieldContent - contentful entry or array of contentful entries
  * @param {String} resolvesToString - string indicating which property to resolve to i.e. 'fields.title'
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
 const resolveField = (fieldContent: any, resolvesToString = ''): any => {
     if (!resolvesToString || typeof fieldContent !== 'object') {
         return null;
@@ -184,7 +183,6 @@ const mapFields = (
         let fieldName = field;
         const fieldOverride = shouldOverride(field, overrides);
         if (fieldOverride && fieldOverride.options?.fieldName) {
-            // eslint-disable-next-line prefer-destructuring
             fieldName = fieldOverride.options.fieldName;
         }
         if (fieldOverride && fieldOverride.options?.valueTransformer) {
