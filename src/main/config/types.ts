@@ -103,6 +103,12 @@ export interface ConfigContentfulSettings {
      * Contentful environment ID
      */
     environment: string;
+
+    /**
+     * Number of entries to fetch per request.
+     * Defaults to 1000
+     */
+    pageSize?: number;
 }
 
 export type LocaleConfig = {

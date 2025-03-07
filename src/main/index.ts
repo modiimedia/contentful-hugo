@@ -200,6 +200,7 @@ const fetchDataFromContentful = async (
             };
         }
         if (isValidFileExtension(settings.fileExtension)) {
+            const pageSize: number = config.contentful.pageSize ? config.contentful.pageSize : 1000;
             if (config.locales.length && !item.ignoreLocales) {
                 // add a job for each locale
                 for (const locale of config.locales) {
@@ -213,7 +214,7 @@ const fetchDataFromContentful = async (
                         newSettings.locale = locale;
                     }
                     const job = {
-                        limit: isSingle ? 1 : 1000,
+                        limit: isSingle ? 1 : pageSize,
                         skip: 0,
                         contentSettings: newSettings,
                         isPreview,
@@ -223,7 +224,7 @@ const fetchDataFromContentful = async (
             } else {
                 // add single job if no locales
                 const job = {
-                    limit: isSingle ? 1 : 1000,
+                    limit: isSingle ? 1 : pageSize,
                     skip: 0,
                     contentSettings: settings,
                     isPreview,
