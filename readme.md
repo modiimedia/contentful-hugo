@@ -216,6 +216,8 @@ export default defineConfig({
         previewToken: 'content-preview-token',
         // defaults to "master"
         environment: 'master',
+        // defaults to 1000
+        pageSize: 150,
     },
 
     singleTypes: [
@@ -312,6 +314,7 @@ contentful:
     token: 'content-deliver-token' # defaults to  CONTENTFUL_TOKEN env variable
     previewToken: 'content-preview-token' # defaults to  CONTENTFUL_PREVIEW_TOKEN env variable
     environment: 'master' # defaults to "master"
+    pageSize: 150 # defaults to 1000
 
 singleTypes:
     # fetches only the most recently updated entry in a particular content type
@@ -369,6 +372,7 @@ repeatableTypes:
 | token        | optional | Content delivery token (Defaults to CONTENTFUL_TOKEN environment variable if not set)        |
 | previewToken | optional | Content preview token (Defaults to CONTENTFUL_PREVIEW_TOKEN environment variable if not set) |
 | environment  | optional | Contentful environment ID (Defaults to "master" if not set)                                  |
+| pageSize | optional | Configure how many entries to fetch per page when querying the API. (Defaults to 1000 if not set) |
 
 ##### <u>**Single Type Options**</u>
 
@@ -528,7 +532,7 @@ Contentful-Hugo will also watch for file changes in the inputDir's while running
 
 #### Advanced Config Examples
 
-##### Dynmically Changing Tokens
+##### Dynamically Changing Tokens
 
 Here is an example of dynamically change the `token`, `previewToken`, and `environment` options depending on any arbitrary condition.
 
