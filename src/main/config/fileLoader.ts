@@ -25,6 +25,7 @@ export const checkContentfulSettings = (config: {
             token,
             previewToken,
             environment,
+            pageSize: contentful.pageSize,
         },
         singleTypes: config.singleTypes || [],
         repeatableTypes: config.repeatableTypes || [],
