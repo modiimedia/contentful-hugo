@@ -200,7 +200,9 @@ const fetchDataFromContentful = async (
             };
         }
         if (isValidFileExtension(settings.fileExtension)) {
-            const pageSize: number = config.contentful.pageSize ? config.contentful.pageSize : 1000;
+            const pageSize: number = config.contentful.pageSize
+                ? config.contentful.pageSize
+                : 1000;
             if (config.locales.length && !item.ignoreLocales) {
                 // add a job for each locale
                 for (const locale of config.locales) {
