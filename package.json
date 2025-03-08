@@ -46,6 +46,7 @@
         "test": "vitest run --coverage",
         "lint": "eslint ./src",
         "lint:fix": "eslint ./src --fix",
+        "format": "prettier --write src guides examples",
         "typecheck": "tsc --noEmit",
         "postinstall": "node postInstall.js",
         "prebuild": "pnpm run lint",

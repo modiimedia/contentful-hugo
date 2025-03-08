@@ -48,10 +48,10 @@ After doing this you should have access to the `ngrok` command.
 
 This is an optional step but it will give you access to more features and longer session times.
 
--   Go to https://ngrok.com and create a free account.
--   Navigate to "getting started" -> "setup & installation"
--   find your auth token
--   type the following command in your terminal
+- Go to https://ngrok.com and create a free account.
+- Navigate to "getting started" -> "setup & installation"
+- find your auth token
+- type the following command in your terminal
 
     ```bash
     ngrok authtoken <your-token-goes-here>
