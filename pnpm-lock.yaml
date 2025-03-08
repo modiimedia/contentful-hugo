@@ -3866,7 +3866,7 @@ snapshots:
       process: 0.11.10
       qs: 6.14.0
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.34.3
+      '@rollup/rollup-linux-x64-gnu': 4.35.0
 
   contentful@11.5.4:
     dependencies:
