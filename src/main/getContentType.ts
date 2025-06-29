@@ -1,12 +1,9 @@
 import { ContentSettings } from '@main/index';
 import fs from 'fs-extra';
 import * as contentful from 'contentful';
-import dotenv from 'dotenv';
 import processEntry from './processEntry';
 import { ConfigContentfulSettings } from './config/types';
 import { parseDirectoryPath } from './processEntry/createFile';
-
-dotenv.config();
 
 export const prepDirectory = async (
     settings: ContentSettings

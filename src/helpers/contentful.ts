@@ -1,8 +1,5 @@
 import * as contentful from 'contentful';
-import dotenv from 'dotenv';
 import { ConfigContentfulSettings } from '@/main/config/types';
-
-dotenv.config();
 
 const createContentfulClient = (
     settings: ConfigContentfulSettings,

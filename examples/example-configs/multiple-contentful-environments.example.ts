@@ -2,7 +2,7 @@
 import { defineConfig } from '../../src/main';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const isProductionEnv = process.env.SOME_ENVIRONMENT_VARIABLE === 'some-value';
 

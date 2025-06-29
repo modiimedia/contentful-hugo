@@ -1,11 +1,8 @@
 import path from 'path';
-import dotenv from 'dotenv';
 import { loadFile, checkContentfulSettings } from './fileLoader';
 import type { ConfigContentfulSettings, ContentfulHugoConfig } from './types';
 
 export * from './types';
-
-dotenv.config();
 
 /**
  * Load Contentful Hugo config file
@@ -61,6 +58,6 @@ export const loadConfig = async (
 
 export const defineConfig = (
     config: Partial<Omit<ContentfulHugoConfig, 'contentful'>> & {
-        contentful: Partial<ConfigContentfulSettings>;
+        contentful?: Partial<ConfigContentfulSettings>;
     }
 ) => config;
