@@ -12,7 +12,7 @@ import {
 import cleanDirectories from './main/clean';
 import startServer from './server';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const main = defineCommand({
     meta: {
