@@ -4,7 +4,6 @@ node_modules
 data
 /.temp
 /layouts
-.env
 resources
 public
 contentful-settings.**.yaml
@@ -19,3 +18,4 @@ coverage
 dist
 examples/multilingual-example
 .contentful-hugo
+config.bat
